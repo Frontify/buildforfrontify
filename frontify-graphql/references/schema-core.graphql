@@ -1,0 +1,468 @@
+# Frontify GraphQL — Core
+# Scalars, base interfaces (Node, Asset, User, Comment, Marking, Attachment),
+# and shared value types (Tag, Copyright, License, Target, Breadcrumb, RgbaColor).
+
+"""`NodeInterface` is the base for all types."""
+interface Node {
+  """`Node` Id."""
+  id: ID!
+}
+
+
+"""`AssetInterface` for `Asset` returnable types."""
+interface Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `creator` is the `User` who created the asset on Frontify."""
+  creator: User!
+
+  """DateTime of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `modifier` is the `User` who last modified the asset on Frontify."""
+  modifier: User
+
+  """DateTime of the `Asset`'s last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """List of `Asset`'s `Attachments`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Asset`'s tags."""
+  tags: [Tag]
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range.When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """List of `Asset`'s licenses."""
+  licenses: [License]
+
+  """**BETA** List of `Target` items linked to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** Metadata values details. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Additional querying options."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """`Asset` permissions of the current `User`."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+}
+
+
+"""`UserInterface` for `User` returnable types."""
+interface User {
+  """`User` Id."""
+  id: ID!
+
+  """
+  **DEPRECATED** `User` email. This field will be removed. Use `AccountUser.email` instead. | Date: 2025-07-01
+  """
+  email: Email! @deprecated(reason: "This field will be removed. Use `AccountUser.email` instead. | Date: 2025-07-01")
+
+  """`User` name."""
+  name: String
+
+  """
+  **DEPRECATED** `User` avatar. This field will be removed. Use `AccountUser.avatar` instead. | Date: 2025-07-01
+  """
+  avatar: Url @deprecated(reason: "This field will be removed. Use `AccountUser.avatar` instead. | Date: 2025-07-01")
+}
+
+
+"""The `Email` scalar type represents email addresses."""
+scalar Email
+
+
+"""The `Url` scalar type represents absolute urls."""
+scalar Url
+
+
+"""
+The `DateTime` scalar type represents date and time data in RFC 3339 format with millisecond precision (i.e., 2001-12-31T22:10:30.000+00:00).
+"""
+scalar DateTime
+
+
+"""`AttachmentInterface` for `Attachment` returnable types."""
+interface Attachment {
+  """`Attachment` Id."""
+  id: ID!
+
+  """The `User` who created the `Attachment` on Frontify."""
+  creator: User!
+
+  """`DateTime` of the `Attachment` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Attachment` on Frontify."""
+  modifier: User
+
+  """`DateTime` of the `Attachment`'s last modification."""
+  modifiedAt: DateTime
+
+  """The `Attachment`'s filename."""
+  filename: String
+
+  """The `Attachment`'s name or title."""
+  name: String
+
+  """The `Attachment`'s original file extension."""
+  extension: String
+
+  """The `Attachment`'s Media (MIME) type."""
+  type: String
+
+  """The `Attachment`'s size in bytes."""
+  size: BigInt
+
+  """The `Attachment`'s External Id."""
+  externalId: ID
+}
+
+
+"""The `BigInt` scalar type represents big integers (2^63 signed)."""
+scalar BigInt
+
+
+type Tag {
+  """`Tag` value."""
+  value: String!
+
+  """
+  `Tag` source indicating how the tag was linked to the `Asset`. AUTO: created by AI `Asset` recognition. MANUAL: manually added.
+  """
+  source: TagSource
+}
+
+
+"""The source of a `tag`."""
+enum TagSource {
+  MANUAL
+  AUTO
+}
+
+
+type Copyright {
+  """Asset `copyright` status."""
+  status: CopyrightStatus!
+
+  """Asset `copyright` notice."""
+  notice: String
+}
+
+
+"""List of possible asset `copyright` status."""
+enum CopyrightStatus {
+  UNKNOWN
+  COPYRIGHTED
+  PUBLIC
+}
+
+
+type DateTimeRange {
+  """Start `DateTime` of the range."""
+  from: DateTime
+
+  """End `DateTime` of the range."""
+  to: DateTime
+}
+
+
+type License {
+  """`License` id."""
+  id: ID!
+
+  """`License` title."""
+  title: String!
+
+  """`License` terms."""
+  license: String!
+
+  """`License` is applied to new assets by default."""
+  addByDefault: Boolean!
+
+  """`License` requires `User` to accept terms before download."""
+  requireConsensus: Boolean!
+}
+
+
+type Target {
+  """The unique identifier of the `Target`."""
+  id: ID!
+
+  """The name of the `Target`."""
+  name: String
+}
+
+
+"""List of possible `Asset` status types."""
+enum AssetStatusType {
+  FINISHED
+  PROCESSING
+  PROCESSING_FAILED
+}
+
+
+type AssetItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """`Asset` items list."""
+  items: [Asset]
+}
+
+
+"""`CommentInterface` for `Comment` returnable types."""
+interface Comment {
+  """The `Comment` identifier."""
+  id: ID!
+
+  """The `User` representing the `Comment` creator."""
+  creator: User!
+
+  """The `DateTime` of the `Comment` creation."""
+  createdAt: DateTime!
+
+  """The last `User` to modify the `Comment`."""
+  modifier: User
+
+  """The `DateTime` of the `Comment` last modification."""
+  modifiedAt: DateTime
+
+  """The `Comment` message."""
+  content: String!
+}
+
+
+"""
+Interface representing a visual `Marking` (highlighted point/area) of an `Asset`.
+"""
+interface Marking {
+  """
+  The `Marking` position in percentage relative to the top left corner of the annotated subject.
+  """
+  position: MarkingPosition!
+
+  """
+  The `Marking` dimensions in percentage relative to the annotated subject size.
+  """
+  dimensions: MarkingDimensions
+}
+
+
+type MarkingPosition {
+  """
+  The horizontal position of the `Marking` in percentage, in relation to the `Asset` total width.
+  """
+  x: Percent!
+
+  """
+  The vertical position of the `Marking` in percentage, in relation to the `Asset` total height.
+  """
+  y: Percent!
+}
+
+
+"""
+Represents an integer or a float value between `0` and `1`, corresponding to percentage values between 0% and 100% (both inclusive).
+"""
+scalar Percent
+
+
+type MarkingDimensions {
+  """
+  The width of the `Marking` area in percentage of the annotated subject total width, relative to the top left corner.
+  """
+  width: Percent
+
+  """
+  The height of the `Marking` area in percentage of the annotated subject total height, relative to the top left corner.
+  """
+  height: Percent
+}
+
+
+"""
+The `Any` scalar type represents any of the supported types: Null, Integer, Float, String, Boolean, Enum, Object and List.
+"""
+scalar Any
+
+
+type RgbaColor {
+  """Red color channel value."""
+  red: RgbColorChannel!
+
+  """Green color channel value."""
+  green: RgbColorChannel!
+
+  """Blue color channel value."""
+  blue: RgbColorChannel!
+
+  """Alpha channel value."""
+  alpha: Percent!
+}
+
+
+"""
+The `RgbColorChannel` scalar represents an integer value between 0 and 255 (both inclusive).
+"""
+scalar RgbColorChannel
+
+
+type Breadcrumb {
+  """`Breadcrumb` folder id."""
+  id: ID
+
+  """`Breadcrumb` folder name."""
+  name: String
+}
+
+
+"""
+Condition types. A Condition defines which field value of the `Asset` is compared against a given value.
+We currently support 4 different kinds of Conditions on `Assets`:
+- **TAG**: Refers to a tag of the `Asset`.
+- **METADATA_VALUE**: Refers to a value of a custom `MetadataField` of an `Asset`.
+- **CUSTOM_METADATA_VALUE**: Refers to a value of a `CustomMetadata` of an `Asset`.
+- **EXTERNAL_ID**: Refers to the `externalId` assigned to the `Asset`.
+- **FILE_EXTENSION**: Refers to the file extension of an `Asset`.
+"""
+enum ConditionType {
+  METADATA_VALUE
+  CUSTOM_METADATA_VALUE
+  EXTERNAL_ID
+  TAG
+  FILE_EXTENSION
+}
+
+
+"""
+Condition operators. Defines how the value of the `Asset` is compared to the provided value.
+Supported Operators:
+- **IS**: equals to the provided value.
+- **IS_NOT**: is not equal to provided value.
+"""
+enum ConditionOperator {
+  IS
+  IS_NOT
+}
+
+
+"""
+The `JsonObject` scalar type represents a JSON object according to the ECMA-404 JSON data interchange syntax. Note, that it is not encoded as a string.
+"""
+scalar JsonObject
+
+
+input TagInput {
+  """Tag name."""
+  value: String!
+}
+
+
+input CreateCopyrightInput {
+  """`Asset` copyright status."""
+  status: CopyrightStatus! = UNKNOWN
+
+  """`Asset` copyright notice. Supports medium text length."""
+  notice: String = ""
+}
+
+
+input DateTimeRangeInput {
+  """Start `DateTime` of the range."""
+  from: DateTime
+
+  """End `DateTime` of the range."""
+  to: DateTime
+}
+
+
+input RgbaColorInput {
+  """Red color channel value."""
+  red: RgbColorChannel!
+
+  """Green color channel value."""
+  green: RgbColorChannel!
+
+  """Blue color channel value."""
+  blue: RgbColorChannel!
+
+  """Alpha channel value."""
+  alpha: Percent!
+}
+

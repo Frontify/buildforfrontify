@@ -1,0 +1,18 @@
+{
+  "appId": "<APP_ID>",
+  "appType": "platform-app",
+  "name": "<APP_NAME>",
+  "metadata": {
+    "version": 1
+  },
+  "permissions": {
+    "scopes": ["basic:write"]
+  },
+  "surfaces": {
+    "mediaLibrary": {
+      "assetCreation": {
+        "title": "<APP_TITLE>"
+      }
+    }
+  }
+}

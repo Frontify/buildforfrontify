@@ -1,0 +1,763 @@
+# Frontify GraphQL — Operations (RootQuery + RootMutation)
+# All available queries and mutations. Load this file to understand the full API surface.
+
+type RootQuery {
+  """Get the current `User`."""
+  currentUser: User!
+
+  """Retrieve current `Account` details."""
+  account: Account!
+
+  """
+  **DEPRECATED** Retrieve `Project` details by Id. This field will be removed. Use `library` or `workspaceProject` instead. | Date: 2023-01-01
+  """
+  project(
+    """`Project` Id."""
+    id: ID!
+  ): Project @deprecated(reason: "This field will be removed. Use `library` or `workspaceProject` instead. | Date: 2023-01-01")
+
+  """Retrieve `Library` details by Id."""
+  library(
+    """`Library` Id."""
+    id: ID!
+  ): Library
+
+  """Retrieve `WorkspaceProject` details by Id."""
+  workspaceProject(
+    """`Workspace` Id."""
+    id: ID!
+  ): Workspace
+
+  """Retrieve `Assets` details by Ids."""
+  assets(
+    """`Asset` Ids."""
+    ids: [ID!]!
+  ): [Asset]
+
+  """Retrieve `Asset` details by Id."""
+  asset(
+    """`Asset` Id."""
+    id: ID!
+  ): Asset
+
+  """Retrieve a `CreativeTemplate` item by Id."""
+  creativeTemplate(
+    """`CreativeTemplate` Id."""
+    id: ID!
+  ): CreativeTemplate
+
+  """Retrieve a `CreativeExport` item by `CreativeJob` Id."""
+  creativeExport(
+    """`CreativeJob` Id."""
+    id: ID!
+  ): CreativeExport
+
+  """Retrieve a `Brand` by its Id."""
+  brand(
+    """`Brand` Id."""
+    id: ID!
+  ): Brand
+
+  """Retrieve `Brand` list for current `Account`."""
+  brands: [Brand]
+
+  """**BETA** Retrieve a `GuidelinePage` by its id."""
+  guidelinePage(
+    """**BETA** The id of the `GuidelinePage` to retrieve."""
+    id: ID!
+
+    """
+    **BETA** Specifies the language in which the GuidelinePage should be delivered. If the requested language is unavailable, the default language will be used as a fallback.
+    """
+    language: LanguageCode
+  ): GuidelinePage
+
+  """Retrieve `Node` details by Id."""
+  node(
+    """`Node` Id."""
+    id: ID!
+  ): Node
+
+  """**BETA** Retrieve the account-bound ServiceApps"""
+  serviceApps(
+    """**BETA**"""
+    limit: Int = 25
+
+    """**BETA**"""
+    page: Int = 1
+  ): ServiceAppItems
+
+  """Retrieve `WebhookItems` related to current `Account`."""
+  webhooks(
+    """How many `WebhookItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): WebhookItems
+}
+
+
+type RootMutation {
+  """
+  Add a relation between an existing `Asset` and `License`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  addAssetLicense(
+    """`AddAssetLicense` input argument."""
+    input: AddAssetLicenseInput!
+  ): AddAssetLicense
+
+  """
+  **DEPRECATED** Add a new relation between an existing `Asset` and an existing `MetadataField` with its value. The value will be automatically created and linked to its `MetadataField`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`. This field will be removed. Use `addCustomMetadata` instead. | Date: 2026-07-01
+  """
+  addAssetMetadataFieldValue(
+    """`AddAssetMetadataFieldValue` input argument."""
+    input: AddAssetMetadataFieldValueInput!
+  ): AddAssetMetadataFieldValue @deprecated(reason: "This field will be removed. Use `addCustomMetadata` instead. | Date: 2026-07-01")
+
+  """
+  Add new `Asset` preview image. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  addAssetPreviewImage(
+    """`AddAssetPreviewImage` input argument."""
+    input: AddAssetPreviewImageInput!
+  ): AddAssetPreviewImage
+
+  """
+  Relate existing `Asset`s. The `relatedAssetIds` input field list is limited to 100 ids per request and cannot contain the same `assetId` input field value. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  addAssetRelations(
+    """`AddAssetRelations` input argument."""
+    input: AddAssetRelationsInput!
+  ): AddAssetRelations
+
+  """
+  Add new `Asset` tags. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  addAssetTags(
+    """`AddAssetTags` input argument."""
+    input: AddAssetTagsInput!
+  ): AddAssetTags
+
+  """
+  Add `Assets` to the existing `Collection`. Requires `basic:write` scope to be accessible and `Collection` permission level `EDIT`.
+  """
+  addCollectionAssets(
+    """`AddCollectionAssets` input argument."""
+    input: AddCollectionAssetsInput!
+  ): AddCollectionAssets
+
+  """
+  Add `CustomMetadata` values to a supported parent (`Asset` | `WorkspaceProject`). Requires `basic:write` scope to be accessible and permission level `EDIT` for the respective parent.
+  """
+  addCustomMetadata(
+    """`AddCustomMetadata` input argument."""
+    input: AddCustomMetadataInput!
+  ): AddCustomMetadata
+
+  """
+  Add options to an existing `SELECT` or `MULTISELECT` type `CustomMetadataProperty`. RequiresRequires `basic:write` scope to be accessible and `CustomMetadataProperty` permission level `EDIT`.
+  """
+  addCustomMetadataPropertyOptions(
+    """`AddCustomMetadataPropertyOptions` input argument."""
+    input: AddCustomMetadataPropertyOptionsInput!
+  ): AddCustomMetadataPropertyOptions
+
+  """
+  **BETA** Add a new `WorkflowChecklistItem` for a given `WorkflowTask`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  addWorkflowChecklistItem(
+    """**BETA** `AddWorkflowChecklistItem` input argument."""
+    input: AddWorkflowChecklistItemInput!
+  ): AddWorkflowChecklistItem
+
+  """
+  **BETA** Add a new `WorkflowChecklistPreset` for a given `WorkflowStatus`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  addWorkflowChecklistPreset(
+    """**BETA** `AddWorkflowChecklistPreset` input argument."""
+    input: AddWorkflowChecklistPresetInput!
+  ): AddWorkflowChecklistPreset
+
+  """
+  **BETA** Add assignees to an existing `WorkflowStatus`. Currently, only one assignee is supported. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  addWorkflowStatusAssignees(
+    """**BETA** `AddWorkflowStatusAssignees` input argument."""
+    input: AddWorkflowStatusAssigneesInput!
+  ): AddWorkflowStatusAssignees
+
+  """
+  **BETA** Add assignees to an existing `WorkflowTask`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  addWorkflowTaskAssignees(
+    """**BETA** `AddWorkflowTaskAssignees` input argument."""
+    input: AddWorkflowTaskAssigneesInput!
+  ): AddWorkflowTaskAssignees
+
+  """
+  Create a new `Asset`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createAsset(
+    """`CreateAsset` input argument."""
+    input: CreateAssetInput!
+  ): CreateAsset
+
+  """
+  Create a new `Asset` `Comment`. Requires `basic:write` scope to be accessible and `Asset` permission level `COMMENT`.
+  """
+  createAssetComment(
+    """`CreateAssetComment` input argument."""
+    input: CreateAssetCommentInput!
+  ): CreateAssetComment
+
+  """
+  Create a new `Attachment`. Attachments require a valid parent ID string. This mutation currently only supports attachments for parents of `Asset` type. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  createAttachment(
+    """`CreateAttachment` input argument."""
+    input: CreateAttachmentInput!
+  ): CreateAttachment
+
+  """
+  Create a new `Collection`. Currently supported for `Library` type parent entities only. Requires `basic:write` scope to be accessible and `Collection` permission level `EDIT`.
+  """
+  createCollection(
+    """`CreateCollection` input argument."""
+    input: CreateCollectionInput!
+  ): CreateCollection
+
+  """
+  Create a new `CustomMetadataProperty`. RequiresRequires `basic:write` scope to be accessible and `Brand` or `Project` permission level `EDIT`.
+  """
+  createCustomMetadataProperty(
+    """`CreateCustomMetadataProperty` input argument."""
+    input: CreateCustomMetadataPropertyInput!
+  ): CreateCustomMetadataProperty
+
+  """
+  Create a new External `Asset` from a url. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createExternalAsset(
+    """`CreateExternalAsset` input argument."""
+    input: CreateExternalAssetInput!
+  ): CreateExternalAsset
+
+  """
+  Create a new `Folder`. Requires `basic:write` scope to be accessible and `Project` or `Folder` permission level `EDIT`.
+  """
+  createFolder(
+    """`CreateFolder` input argument."""
+    input: CreateFolderInput!
+  ): CreateFolder
+
+  """
+  Create a new `Project` `License`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createLicense(
+    """`CreateLicense` input argument."""
+    input: CreateLicenseInput!
+  ): CreateLicense
+
+  """
+  **DEPRECATED** Create a new `Project` `MetadataField` with your desired configuration. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`. This field will be removed. Use `createCustomMetadataProperty` instead. | Date: 2026-07-01
+  """
+  createMetadataField(
+    """`CreateMetadataField` input argument."""
+    input: CreateMetadataFieldInput!
+  ): CreateMetadataField @deprecated(reason: "This field will be removed. Use `createCustomMetadataProperty` instead. | Date: 2026-07-01")
+
+  """
+  **BETA** Create new `WorkflowStatus` in a given `Workflow`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createWorkflowStatus(
+    """**BETA** `CreateWorkflowStatus` input argument."""
+    input: CreateWorkflowStatusInput!
+  ): CreateWorkflowStatus
+
+  """
+  **BETA** Create a new `WorkflowTask` for an `Asset` in a given `WorkflowStatus`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createAssetWorkflowTask(
+    """**BETA** `CreateAssetWorkflowTask` input argument."""
+    input: CreateAssetWorkflowTaskInput!
+  ): CreateAssetWorkflowTask
+
+  """
+  Create a new `Workspace` type `Project`. Requires `basic:write` scope to be accessible.
+  """
+  createWorkspaceProject(
+    """`CreateWorkspaceProject` input argument."""
+    input: CreateWorkspaceProjectInput!
+  ): CreateWorkspaceProject
+
+  """
+  Delete an existing `Asset`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  deleteAsset(
+    """`DeleteAsset` input argument."""
+    input: DeleteAssetInput!
+  ): DeleteAsset
+
+  """
+  Delete an existing `Attachment`. Requires `basic:write` scope to be accessible and depending on the `Attachment` type, either `Portal` or `Asset` permission level `EDIT`.
+  """
+  deleteAttachment(
+    """`DeleteAttachment` input argument."""
+    input: DeleteAttachmentInput!
+  ): DeleteAttachment
+
+  """
+  Delete an existing `Collection`. Requires `basic:write` scope to be accessible and `Collection` permission level `EDIT`.
+  """
+  deleteCollection(
+    """`DeleteCollection` input argument."""
+    input: DeleteCollectionInput!
+  ): DeleteCollection
+
+  """
+  Delete an existing `Comment`. This will update and/or remove all relations to that `Comment`. Requires `basic:write` scope to be accessible and `Asset` permission level `COMMENT`.
+  """
+  deleteComment(
+    """`DeleteComment` input argument."""
+    input: DeleteCommentInput!
+  ): DeleteComment
+
+  """Delete an existing `CustomMetadataProperty`."""
+  deleteCustomMetadataProperty(
+    """`DeleteCustomMetadataProperty` input argument."""
+    input: DeleteCustomMetadataPropertyInput!
+  ): DeleteCustomMetadataProperty
+
+  """
+  Delete the existing `Folders`. This will delete all of the `Assets` and `SubFolders` within the `Folders`. Requires `basic:write` scope to be accessible and `Folder` permission level `EDIT`.
+  """
+  deleteFolders(
+    """`DeleteFolders` input argument."""
+    input: DeleteFoldersInput!
+  ): DeleteFolders
+
+  """
+  Delete an existing `Project` `License`. This will remove all relations to that `License`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  deleteLicense(
+    """`DeleteLicense` input argument."""
+    input: DeleteLicenseInput!
+  ): DeleteLicense
+
+  """
+  **DEPRECATED** Delete an existing `Project` `MetadataField`. Existing `MetadataField`'s with the same value with be automatically removed. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`. This field will be removed. Use `deleteCustomMetadataProperty` instead. | Date: 2026-07-01
+  """
+  deleteMetadataField(
+    """`DeleteMetadataField` input argument."""
+    input: DeleteMetadataFieldInput!
+  ): DeleteMetadataField @deprecated(reason: "This field will be removed. Use `deleteCustomMetadataProperty` instead. | Date: 2026-07-01")
+
+  """
+  **BETA** Delete an existing `WorkflowStatus`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  deleteWorkflowStatus(
+    """**BETA** `DeleteWorkflowStatus` input argument."""
+    input: DeleteWorkflowStatusInput!
+  ): DeleteWorkflowStatus
+
+  """
+  **BETA** Delete an existing `WorkflowTask`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  deleteWorkflowTask(
+    """**BETA** `DeleteWorkflowTask` input argument."""
+    input: DeleteWorkflowTaskInput!
+  ): DeleteWorkflowTask
+
+  """
+  Edit an existing `AssetComment`. Requires `basic:write` scope to be accessible and `Asset` permission level `COMMENT`.
+  """
+  editComment(
+    """`EditComment` input argument."""
+    input: EditCommentInput!
+  ): EditComment
+
+  """
+  Invite `Project` user. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`. Limitations: Does not work if User Provisioning feature is enabled.
+  """
+  inviteProjectUser(
+    """`InviteProjectUser` input argument."""
+    input: InviteProjectUserInput!
+  ): InviteProjectUser
+
+  """
+  Move existing `Asset` item(s) to the given `Library`, `Workspace` or `Folder` destination. Only moves within the same `Library`/`Workspace` are supported by this operation. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  moveAssets(
+    """`MoveAssets` input argument."""
+    input: MoveAssetsInput!
+  ): MoveAssets
+
+  """
+  Move existing `Folder` item(s) to the given `Library`, `Workspace` or `Folder` destination. This operation will move all of the `Asset` item(s) and `SubFolder` item(s) within the provided `Folder` item(s). Only moves within the same `Library`/`Workspace` are supported by this operation. Requires `basic:write` scope to be accessible and `Folder` permission level `EDIT`.
+  """
+  moveFolders(
+    """`MoveFolders` input argument."""
+    input: MoveFoldersInput!
+  ): MoveFolders
+
+  """
+  **BETA** Move one or more `WorkflowTask` to a new `WorkflowStatus`. All `EnterRule` of the destination `WorkflowStatus` have to be satisfied to be able to move. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  moveWorkflowTask(
+    """**BETA** `MoveWorkflowTask` input argument."""
+    input: MoveWorkflowTaskInput!
+  ): MoveWorkflowTask
+
+  """
+  Remove an existing relation between an `Asset` and a `License`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  removeAssetLicense(
+    """`RemoveAssetLicense` input argument."""
+    input: RemoveAssetLicenseInput!
+  ): RemoveAssetLicense
+
+  """
+  Remove existing `Asset` preview image. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  removeAssetPreviewImage(
+    """`RemoveAssetPreviewImage` input argument."""
+    input: RemoveAssetPreviewImageInput!
+  ): RemoveAssetPreviewImage
+
+  """
+  **BETA** Remove existing relations between `Asset` items. The `relatedAssetIds` input field list is limited to 100 ids per request and cannot contain the same `assetId` input field value. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  removeAssetRelations(
+    """**BETA** `RemoveAssetRelations` input argument."""
+    input: RemoveAssetRelationsInput!
+  ): RemoveAssetRelations
+
+  """
+  Remove existing `Asset` tags. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  removeAssetTags(
+    """`RemoveAssetTags` input argument."""
+    input: RemoveAssetTagsInput!
+  ): RemoveAssetTags
+
+  """
+  Remove `Assets` from the existing `Collection`. Requires `basic:write` scope to be accessible and `Collection` permission level `EDIT`.
+  """
+  removeCollectionAssets(
+    """`RemoveCollectionAssets` input argument."""
+    input: RemoveCollectionAssetsInput!
+  ): RemoveCollectionAssets
+
+  """
+  Remove `CustomMetadata` values from a supported parent (`Asset` | `WorkspaceProject`). Requires `basic:write` scope to be accessible and permission level `EDIT` for the respective parent.
+  """
+  removeCustomMetadata(
+    """`RemoveCustomMetadata` input argument."""
+    input: RemoveCustomMetadataInput!
+  ): RemoveCustomMetadata
+
+  """
+  Remove options from an existing `SELECT` or `MULTISELECT` type `CustomMetadataProperty`. RequiresRequires `basic:write` scope to be accessible and `CustomMetadataProperty` permission level `EDIT`.
+  """
+  removeCustomMetadataPropertyOptions(
+    """`RemoveCustomMetadataPropertyOptions` input argument."""
+    input: RemoveCustomMetadataPropertyOptionsInput!
+  ): RemoveCustomMetadataPropertyOptions
+
+  """
+  **DEPRECATED** Remove existing `MetadataField` value.Existing relations to that `MetadataField` with the same value will be automatically removed.Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`. This field will be removed. Use `removeCustomMetadata` instead. | Date: 2026-07-01
+  """
+  removeMetadataValue(
+    """`RemoveMetadataValue` input argument."""
+    input: RemoveMetadataValueInput!
+  ): RemoveMetadataValue @deprecated(reason: "This field will be removed. Use `removeCustomMetadata` instead. | Date: 2026-07-01")
+
+  """
+  **BETA** Remove a `WorkflowChecklistItem`.Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  removeWorkflowChecklistItem(
+    """**BETA** `RemoveWorkflowChecklistItem` input argument."""
+    input: RemoveWorkflowChecklistItemInput!
+  ): RemoveWorkflowChecklistItem
+
+  """
+  **BETA** Remove a `WorkflowChecklistPreset`.Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  removeWorkflowChecklistPreset(
+    """**BETA** `RemoveWorkflowChecklistPreset` input argument."""
+    input: RemoveWorkflowChecklistPresetInput!
+  ): RemoveWorkflowChecklistPreset
+
+  """
+  **BETA** Remove assignees from an existing `WorkflowStatus`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  removeWorkflowStatusAssignees(
+    """**BETA** `RemoveWorkflowStatusAssignees` input argument."""
+    input: RemoveWorkflowStatusAssigneesInput!
+  ): RemoveWorkflowStatusAssignees
+
+  """
+  **BETA** Remove assignees from an existing `WorkflowTask`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  removeWorkflowTaskAssignees(
+    """**BETA** `RemoveWorkflowTaskAssignees` input argument."""
+    input: RemoveWorkflowTaskAssigneesInput!
+  ): RemoveWorkflowTaskAssignees
+
+  """
+  Export `CreativeTemplate` with provided parameters. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  exportCreative(
+    """`ExportCreative` input argument."""
+    input: ExportCreativeInput!
+  ): ExportCreative
+
+  """
+  Reopens a resolved `AssetComment`. Requires `basic:write` scope to be accessible and `Comment` permission level `EDIT`.
+  """
+  reopenAssetComment(
+    """`ReopenAssetComment` input argument."""
+    input: ReopenAssetCommentInput!
+  ): ReopenAssetComment
+
+  """
+  Replace an existing `Asset`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  replaceAsset(
+    """`ReplaceAsset` input argument."""
+    input: ReplaceAssetInput!
+  ): ReplaceAsset
+
+  """
+  Add a new reply to an existing `Asset` `Comment`. Requires `basic:write` scope to be accessible and `Asset` permission level `COMMENT`.
+  """
+  replyToComment(
+    """`ReplyToComment` input argument."""
+    input: ReplyToCommentInput!
+  ): ReplyToComment
+
+  """
+  Resolve an open `AssetComment`. Requires `basic:write` scope to be accessible and `Comment` permission level `EDIT`.
+  """
+  resolveAssetComment(
+    """`ResolveAssetComment` input argument."""
+    input: ResolveAssetCommentInput!
+  ): ResolveAssetComment
+
+  """
+  **BETA** Set `CustomMetadataProperty` values to any supported parent (`WorkspaceProject` | `Asset`). Attention: Existing `CustomMetadataProperty` values for the selected parents will be overwritten and/or removed. Requires `basic:write` scope to be accessible and permission level `EDIT` for the respective parent.
+  """
+  setCustomMetadata(
+    """**BETA** `SetCustomMetadata` input argument."""
+    input: SetCustomMetadataInput!
+  ): SetCustomMetadata
+
+  """
+  Replace the existing set of the `Assets` in the `Collection` with the new set of the `Assets`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  setCollectionAssets(
+    """`SetCollectionAssets` input argument."""
+    input: SetCollectionAssetsInput!
+  ): SetCollectionAssets
+
+  """
+  Sync `Asset` tags. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  syncAssetTags(
+    """`SyncAssetTags` input argument."""
+    input: SyncAssetTagsInput!
+  ): SyncAssetTags
+
+  """
+  Update an existing `Asset`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  updateAsset(
+    """`UpdateAsset` input argument."""
+    input: UpdateAssetInput!
+  ): UpdateAsset
+
+  """
+  Update an existing `Collection`. Requires `basic:write` scope to be accessible and `Collection` permission level `EDIT`.
+  """
+  updateCollection(
+    """`UpdateCollection` input argument."""
+    input: UpdateCollectionInput!
+  ): UpdateCollection
+
+  """
+  Update an existing `CustomMetadataProperty`. RequiresRequires `basic:write` scope to be accessible and `CustomMetadataProperty` permission level `EDIT`.
+  """
+  updateCustomMetadataProperty(
+    """`UpdateCustomMetadataProperty` input argument."""
+    input: UpdateCustomMetadataPropertyInput!
+  ): UpdateCustomMetadataProperty
+
+  """
+  Update an existing `Folder`. Requires `basic:write` scope to be accessible and `Folder` permission level `EDIT`.
+  """
+  updateFolder(
+    """`UpdateFolder` input argument."""
+    input: UpdateFolderInput!
+  ): UpdateFolder
+
+  """
+  **BETA** Update an existing `WorkflowChecklistItem`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  updateWorkflowChecklistItem(
+    """**BETA** `UpdateWorkflowChecklistItem` input argument."""
+    input: UpdateWorkflowChecklistItemInput!
+  ): UpdateWorkflowChecklistItem
+
+  """
+  **BETA** Update an existing `WorkflowChecklistPreset`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  updateWorkflowChecklistPreset(
+    """**BETA** `UpdateWorkflowChecklistPreset` input argument."""
+    input: UpdateWorkflowChecklistPresetInput!
+  ): UpdateWorkflowChecklistPreset
+
+  """
+  **BETA** Update an existing `WorkflowStatus`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  updateWorkflowStatus(
+    """**BETA** `UpdateWorkflowStatus` input argument."""
+    input: UpdateWorkflowStatusInput!
+  ): UpdateWorkflowStatus
+
+  """
+  **BETA** Update an existing `WorkflowTask`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  updateWorkflowTask(
+    """**BETA** `UpdateWorkflowTask` input argument."""
+    input: UpdateWorkflowTaskInput!
+  ): UpdateWorkflowTask
+
+  """
+  **BETA** Create a new `Brand`. Requires `basic:write` scope to be accessible and `Account` permission level `EDIT`.
+  """
+  createBrand(
+    """`CreateBrand` input argument."""
+    input: CreateBrandInput!
+  ): CreateBrand
+
+  """
+  **BETA** Delete an existing `Brand`. Requires `basic:write` scope to be accessible and `Brand` permission level `EDIT`.
+  """
+  deleteBrand(
+    """`DeleteBrand` input argument."""
+    input: DeleteBrandInput!
+  ): DeleteBrand
+
+  """
+  **BETA** Update an existing `Brand`. Requires `basic:write` scope to be accessible and `Brand` permission level `EDIT`.
+  """
+  updateBrand(
+    """`UpdateBrand` input argument."""
+    input: UpdateBrandInput!
+  ): UpdateBrand
+
+  """
+  Upload a new file. Requires `basic:write` scope to be accessible
+  
+  Creates a temporary unique file Id and returns presigned URLs for uploading a binary file in multiple parts.
+  After the upload is completed, this Id can be used (**once only**) to permanently link the file to a specific type (e.g., Asset, Attachment, Revision) via another mutation.
+  
+  When `chunkSize` is provided as `null` (to be the future default), the number of upload parts and thus their corresponding part size will be computed dynamically based on the specified file size, following these rules:
+  - Maxmum of 1000 parts.
+  - For files of 5TB (maximum): 1000 parts of 5GB each.
+  - For files less than 15MB: 1 single part of 15MB.
+  - Otherwise: an inclusive range of [1, 1000] parts of [15MB, 5GB] each.
+  """
+  uploadFile(
+    """`UploadFile` input argument."""
+    input: UploadFileInput!
+  ): UploadFile
+
+  """
+  Cancels `CreativeJobs` by provided parameters. `CreativeJob` can be canceled prior to the `RENDERING` status. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  cancelExportCreatives(
+    """`CancelExportCreatives` input argument."""
+    input: CancelExportCreativesInput!
+  ): CancelExportCreatives
+
+  """
+  **BETA** Add target IDs to asset IDs, avoiding duplicates.
+  Requires `basic:write` scope to be accessible and `Asset` edit permission.
+  
+  Limitations: All assets must belong to the same library.
+  Library must have the "Targets" setting enabled.
+  """
+  addLibraryAssetTargets(
+    """**BETA**"""
+    input: AddLibraryAssetTargetsInput!
+  ): AddLibraryAssetTargets
+
+  """
+  **BETA** Remove target IDs from asset IDs.
+  Requires `basic:write` scope to be accessible and `Asset` edit permission.
+  
+  Limitations: All assets must belong to the same library.
+  Library must have the "Targets" setting enabled.
+  """
+  removeLibraryAssetTargets(
+    """**BETA**"""
+    input: RemoveLibraryAssetTargetsInput!
+  ): RemoveLibraryAssetTargets
+
+  """
+  **BETA** Sync target IDs on asset IDs (add missing, remove extra).
+  Requires `basic:write` scope to be accessible and `Asset` edit permission.
+  
+  Limitations: All assets must belong to the same library.
+  Library must have the "Targets" setting enabled.
+  """
+  setLibraryAssetTargets(
+    """**BETA**"""
+    input: SetLibraryAssetTargetsInput!
+  ): SetLibraryAssetTargets
+
+  """
+  Publish a marketplace app with the specified release notes and availability.
+  """
+  publishMarketplaceApp(
+    """`PublishMarketplaceApp` input argument."""
+    input: PublishMarketplaceAppInput!
+  ): PublishMarketplaceApp
+
+  """**BETA** Creates a ServiceApp following the ClientCredentials flow"""
+  createServiceApp(
+    """**BETA** The input required to create a ServiceApp"""
+    input: CreateServiceAppInput!
+  ): CreateServiceApp
+
+  """**BETA** Removes a ServiceApp"""
+  deleteServiceApp(
+    """**BETA** The input for removing a ServiceApp"""
+    input: DeleteServiceAppInput!
+  ): DeleteServiceApp
+
+  """
+  Install `Webhook`. Requires `basic:write` and `webhook:write` scopes to be accessible and `Project` permission level `EDIT`.
+  """
+  installProjectWebhook(
+    """`InstallProjectWebhook` input argument."""
+    input: InstallProjectWebhookInput!
+  ): InstallProjectWebhook
+
+  """**BETA** `configureProjectWebhook` mutation field"""
+  configureProjectWebhook(
+    """**BETA** `configureProjectWebhook ` input argument."""
+    input: ConfigureProjectWebhookInput!
+  ): ConfigureProjectWebhook
+
+  """
+  Uninstall `Webhook`. Requires `basic:write` and `webhook:write` scopes to be accessible and `Project` permission level `EDIT`.
+  """
+  uninstallWebhook(
+    """`UninstallWebhook` input argument."""
+    input: UninstallWebhookInput!
+  ): UninstallWebhook
+}
+

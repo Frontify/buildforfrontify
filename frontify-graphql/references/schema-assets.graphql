@@ -1,0 +1,2014 @@
+# Frontify GraphQL — Assets
+# Concrete asset types (Image, Video, Audio, Document, File, EmbeddedContent),
+# comments, markings, locations, permissions, and asset mutation types.
+
+type Audio implements Node & Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `User` who created the `Asset`."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Asset`."""
+  modifier: User
+
+  """`DateTime` of the `Asset` last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean!
+
+  """`Attachment` items linked to `Asset`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Tag` items linked to `Asset`"""
+  tags: [Tag]
+
+  """**BETA** List of `Target` related to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** `MetadataValue` items linked to `Asset`. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range. When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """`License` items linked to `Asset`."""
+  licenses: [License]
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """`AssetComment` query for results filtering."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """Current `User` `Asset` permissions."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+
+  """Original filename of the `Asset` `File`."""
+  filename: String
+
+  """Size of the `Asset` `File` in bytes."""
+  size: BigInt
+
+  """Extension of the `Asset` `File`."""
+  extension: String!
+
+  """`DateTime` of the `Asset` `File` creation."""
+  fileCreatedAt: DateTime
+
+  """
+  Signed `Url` to download the original `Audio` type file. Is null if the asset is download-protected and there is no approved and still valid download request.
+  """
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+
+  """Preview `Url` of converted `Audio` file in mp3 format."""
+  previewUrl(
+    """`Audio` preview width value in pixels."""
+    width: Int
+
+    """`Audio` preview height value in pixels."""
+    height: Int
+  ): Url!
+
+  """
+  Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
+  """
+  thumbnailUrl: Url
+}
+
+
+input AssetCommentQueryInput {
+  """Filter `AssetComment` by status."""
+  status: AssetCommentStatusFilter! = ALL
+}
+
+
+"""Defines how the `AssetComment` list should be filtered."""
+enum AssetCommentStatusFilter {
+  OPEN
+  RESOLVED
+  ALL
+}
+
+
+type AssetCommentItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `AssetComment` type comments."""
+  items: [AssetComment]
+}
+
+
+type AssetCommentReplyItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `AssetCommentReply`."""
+  items: [AssetCommentReply]
+}
+
+
+type AssetCommentUserPermissions {
+  """Check if the current user can edit this `AssetComment`."""
+  canEdit: Boolean!
+
+  """Check if the current user can delete this `AssetComment`."""
+  canDelete: Boolean!
+
+  """Check if the current user can reply to this `AssetComment`."""
+  canReply: Boolean!
+}
+
+
+type AssetUserPermissions {
+  """
+  Check if current user has `Asset` editing permissions for a specific `Asset`.
+  """
+  canEdit: Boolean!
+
+  """
+  Check if current user has `Asset` deleting permissions for a specific `Asset`.
+  """
+  canDelete: Boolean!
+
+  """
+  Check if current user has `Asset` download permissions for a specific `Asset`.
+  """
+  canDownload: Boolean!
+
+  """
+  Check if current user has `Comment` creation permissions for a specific `Asset`.
+  """
+  canComment: Boolean!
+}
+
+
+type AssetLocation {
+  """`Brand` location of the `Asset`."""
+  brand: AssetLocationBrand
+
+  """`Library` location of the `Asset`."""
+  library: AssetLocationLibrary
+
+  """`WorkspaceProject` location of the `Asset`."""
+  workspaceProject: AssetLocationWorkspaceProject
+
+  """`Folder` location of the `Asset`."""
+  folder: AssetLocationFolder
+}
+
+
+type AssetLocationBrand {
+  """`Brand` Id."""
+  id: ID!
+
+  """`Brand` name."""
+  name: String!
+}
+
+
+type AssetLocationLibrary {
+  """`Library` Id."""
+  id: ID!
+
+  """`Library` name."""
+  name: String
+}
+
+
+type AssetLocationWorkspaceProject {
+  """`WorkspaceProject` Id."""
+  id: ID!
+
+  """`WorkspaceProject` name."""
+  name: String
+}
+
+
+type AssetLocationFolder {
+  """`Folder` Id."""
+  id: ID!
+
+  """`Folder` name."""
+  name: String!
+
+  """
+  A list of `Breadcrumb` items representing the parent folders structure for the current `Folder`.
+  """
+  breadcrumbs: [Breadcrumb!]!
+}
+
+
+type Document implements Node & Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `User` who created the `Asset`."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Asset`."""
+  modifier: User
+
+  """`DateTime` of the `Asset` last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean!
+
+  """`Attachment` items linked to `Asset`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Tag` items linked to `Asset`"""
+  tags: [Tag]
+
+  """**BETA** List of `Target` related to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** `MetadataValue` items linked to `Asset`. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range. When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """`License` items linked to `Asset`."""
+  licenses: [License]
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """`AssetComment` query for results filtering."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """Current `User` `Asset` permissions."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+
+  """Original filename of the `Asset` `File`."""
+  filename: String
+
+  """Size of the `Asset` `File` in bytes."""
+  size: BigInt
+
+  """Extension of the `Asset` `File`."""
+  extension: String!
+
+  """`DateTime` of the `Asset` `File` creation."""
+  fileCreatedAt: DateTime
+
+  """
+  Preview `Url` which has optional `width`, `height` and `page` arguments. If parameters are not specified, a `Url` without any parameters will be returned.
+  """
+  previewUrl(
+    """`Document` preview width value in pixels."""
+    width: Int
+
+    """`Document` preview height value in pixels."""
+    height: Int
+
+    """`Document` preview page number."""
+    page: Int
+  ): Url!
+
+  """
+  Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
+  """
+  thumbnailUrl: Url
+
+  """
+  Signed `Url` to download the original `Document` type file. Is null if the asset is download-protected and there is no approved and still valid download request.
+  """
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+
+  """`Document` focal point position. Example: `[0.4803, 0.4340]`."""
+  focalPoint: [Float]
+
+  """`Document` width in pixels."""
+  width: Int!
+
+  """`Document` height in pixels."""
+  height: Int!
+
+  """`Document` total number of pages."""
+  pageCount: Int
+}
+
+
+type Image implements Node & Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `User` who created the `Asset`."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Asset`."""
+  modifier: User
+
+  """`DateTime` of the `Asset` last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean!
+
+  """`Attachment` items linked to `Asset`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Tag` items linked to `Asset`"""
+  tags: [Tag]
+
+  """**BETA** List of `Target` related to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** `MetadataValue` items linked to `Asset`. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range. When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """`License` items linked to `Asset`."""
+  licenses: [License]
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """`AssetComment` query for results filtering."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """Current `User` `Asset` permissions."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+
+  """Original filename of the `Asset` `File`."""
+  filename: String
+
+  """Size of the `Asset` `File` in bytes."""
+  size: BigInt
+
+  """Extension of the `Asset` `File`."""
+  extension: String!
+
+  """`DateTime` of the `Asset` `File` creation."""
+  fileCreatedAt: DateTime
+
+  """
+  Preview `Url` which has optional `width` and `height` URL parameters. If parameters are not specified, `Url` without any URL parameters will be returned.
+  """
+  previewUrl(
+    """`Image` preview width value in pixels."""
+    width: Int
+
+    """`Image` preview height value in pixels."""
+    height: Int
+  ): Url!
+
+  """
+  Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
+  """
+  thumbnailUrl: Url
+
+  """
+  Signed `Url` to download the original `Image` type file. Is null if the asset is download-protected and there is no approved and still valid download request.
+  """
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+
+  """`Image` focal point position. Example: `[0.4803, 0.4340]`."""
+  focalPoint: [Float]
+
+  """`Image` width in pixels."""
+  width: Int!
+
+  """`Image` height in pixels."""
+  height: Int!
+}
+
+
+type Video implements Node & Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `User` who created the `Asset`."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Asset`."""
+  modifier: User
+
+  """`DateTime` of the `Asset` last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean!
+
+  """`Attachment` items linked to `Asset`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Tag` items linked to `Asset`"""
+  tags: [Tag]
+
+  """**BETA** List of `Target` related to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** `MetadataValue` items linked to `Asset`. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range. When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """`License` items linked to `Asset`."""
+  licenses: [License]
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """`AssetComment` query for results filtering."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """Current `User` `Asset` permissions."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+
+  """Original filename of the `Asset` `File`."""
+  filename: String
+
+  """Size of the `Asset` `File` in bytes."""
+  size: BigInt
+
+  """Extension of the `Asset` `File`."""
+  extension: String!
+
+  """`DateTime` of the `Asset` `File` creation."""
+  fileCreatedAt: DateTime
+
+  """Preview `Url` of converted `Video` in mp4 format."""
+  previewUrl(
+    """`Video` preview width value in pixels."""
+    width: Int
+
+    """`Video` preview height value in pixels."""
+    height: Int
+  ): Url!
+
+  """
+  Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
+  """
+  thumbnailUrl: Url
+
+  """
+  Signed `Url` to download the original `Video` type file. Is null if the asset is download-protected and there is no approved and still valid download request.
+  """
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+
+  """`Video` width in pixels."""
+  width: Int!
+
+  """`Video` height in pixels."""
+  height: Int!
+
+  """`Video` duration in seconds."""
+  duration: Float!
+
+  """`Video` bitrate in bits per second."""
+  bitrate: Int!
+}
+
+
+type File implements Node & Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `User` who created the `Asset`."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Asset`."""
+  modifier: User
+
+  """`DateTime` of the `Asset` last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean!
+
+  """`Attachment` items linked to `Asset`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Tag` items linked to `Asset`"""
+  tags: [Tag]
+
+  """**BETA** List of `Target` related to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** `MetadataValue` items linked to `Asset`. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range. When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """`License` items linked to `Asset`."""
+  licenses: [License]
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """`AssetComment` query for results filtering."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """Current `User` `Asset` permissions."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+
+  """Original filename of the `Asset` `File`."""
+  filename: String
+
+  """Size of the `Asset` `File` in bytes."""
+  size: BigInt
+
+  """Extension of the `Asset` `File`."""
+  extension: String!
+
+  """`DateTime` of the `Asset` `File` creation."""
+  fileCreatedAt: DateTime
+
+  """`File` type icon in `svg` format."""
+  previewUrl: Url!
+
+  """
+  Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
+  """
+  thumbnailUrl: Url
+
+  """
+  Signed `Url` to download the original `File` type file. Is null if the asset is download-protected and there is no approved and still valid download request.
+  """
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+}
+
+
+type EmbeddedContent implements Node & Asset {
+  """`Asset` id."""
+  id: ID!
+
+  """The `User` who created the `Asset`."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Asset`."""
+  modifier: User
+
+  """`DateTime` of the `Asset` last modification."""
+  modifiedAt: DateTime
+
+  """Title of the `Asset`."""
+  title: String!
+
+  """Description of the `Asset`."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean!
+
+  """`Attachment` items linked to `Asset`."""
+  attachments: [AssetAttachment]
+
+  """External Id of the `Asset`."""
+  externalId: ID
+
+  """List of `Tag` items linked to `Asset`"""
+  tags: [Tag]
+
+  """**BETA** List of `Target` related to `Asset`"""
+  targets: [Target]
+
+  """
+  **DEPRECATED** `MetadataValue` items linked to `Asset`. This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01
+  """
+  metadataValues: [MetadataValue] @deprecated(reason: "This field will be removed. Use `customMetadata` instead. | Date: 2026-07-01")
+
+  """`Asset` copyright details."""
+  copyright: Copyright
+
+  """
+  `Asset` will be available only during the defined `DateTime` range. When `null` it represents an unspecified start and/or open-ended date.
+  """
+  availability: DateTimeRange!
+
+  """`Asset` available until date."""
+  expiresAt: DateTime
+
+  """`License` items linked to `Asset`."""
+  licenses: [License]
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """Represents the conversion status of the `Asset`. Example: FINISHED."""
+  status: AssetStatusType!
+
+  """Paginated list of `Asset` items related to `Asset`."""
+  relatedAssets(
+    """How many `Asset` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """Paginated list of `AssetComment` items for `Asset`."""
+  comments(
+    """How many `AssetComment` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """`AssetComment` query for results filtering."""
+    query: AssetCommentQueryInput
+  ): AssetCommentItems
+
+  """Current `User` `Asset` permissions."""
+  currentUserPermissions: AssetUserPermissions!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Asset`.
+  """
+  customMetadata: [CustomMetadata!]!
+
+  """**BETA** The `WorkflowTask` this `Asset` is linked to."""
+  workflowTask: WorkflowTask
+
+  """`Location` of the `Asset`."""
+  location: AssetLocation!
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColor
+
+  """
+  Preview of the embedded content. If the preview is not available, an svg icon will be returned.
+  """
+  previewUrl: Url!
+
+  """
+  Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
+  """
+  thumbnailUrl: Url
+}
+
+
+type AssetAttachment implements Node & Attachment {
+  """`Attachment` Id."""
+  id: ID!
+
+  """The `creator` is the `User` who created this `Attachment`."""
+  creator: User!
+
+  """`DateTime` of the `Attachment` creation."""
+  createdAt: DateTime!
+
+  """The `modifier` is the `User` who last modified this `Attachment`."""
+  modifier: User
+
+  """`DateTime` of the `Attachment`last modification."""
+  modifiedAt: DateTime
+
+  """Name of the `Attachment`."""
+  name: String
+
+  """Filename of the `Attachment` `File`."""
+  filename: String
+
+  """Mediatype (MIME) of the `Attachment`."""
+  type: String
+
+  """External Id of the `Attachment`."""
+  externalId: ID
+
+  """Extension of the `Attachment` `File`."""
+  extension: String
+
+  """Size of the `Attachment` `File` in bytes."""
+  size: BigInt
+
+  """Signed `Url` to download the original `AssetAttachment` from Frontify."""
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+}
+
+
+type AssetComment implements Node & Comment {
+  """`AssetComment` id."""
+  id: ID!
+
+  """`User` who created the `AssetComment`."""
+  creator: User!
+
+  """`DateTime` of the `AssetComment`'s creation."""
+  createdAt: DateTime!
+
+  """`User` who last modified the `AssetComment`."""
+  modifier: User
+
+  """`DateTime` of the `AssetComment`'s last modification."""
+  modifiedAt: DateTime
+
+  """
+  The content of the `AssetComment`. Contains `User` mentions in the format `@[user:USER_ID].`
+  """
+  content: String!
+
+  """Mentioned `User` list in the `content` field."""
+  mentionedUsers: [User]!
+
+  """Indicates if an `AssetComment` is resolved or not."""
+  isResolved: Boolean!
+
+  """`AssetComment`'s `AssetCommentReplyItems` list."""
+  replies(
+    """How many `AssetCommentReplyItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetCommentReplyItems!
+
+  """The `AssetComment` `Marking` if it exists."""
+  marking: Marking
+
+  """`AssetComment` permissions of the current `User`."""
+  currentUserPermissions: AssetCommentUserPermissions!
+}
+
+
+type AssetCommentReply implements Comment {
+  """The id of the current `AssetCommentReply`."""
+  id: ID!
+
+  """The `User` representing the creator."""
+  creator: User!
+
+  """The `DateTime` of creation."""
+  createdAt: DateTime!
+
+  """The `User` representing the last modifier."""
+  modifier: User
+
+  """The `DateTime` of the last modification."""
+  modifiedAt: DateTime
+
+  """
+  The content of the `AssetCommentReply`. Contains `User` mentions in the format `@[user:USER_ID].`
+  """
+  content: String!
+
+  """Mentioned `User` list in the `content` field."""
+  mentionedUsers: [User]!
+}
+
+
+input AddAssetLicenseInput {
+  """`Asset` Id."""
+  assetId: ID!
+
+  """`License` Id."""
+  licenseId: ID!
+}
+
+
+type AddAssetLicense {
+  """`Asset` details."""
+  asset: Asset
+
+  """`License` details."""
+  license: License
+}
+
+
+input AddAssetMetadataFieldValueInput {
+  """`Asset` Id."""
+  assetId: ID!
+
+  """Metadata field Id."""
+  metadataFieldId: ID!
+
+  """Value to be assigned to `Asset` and `Metadata Field`."""
+  value: String!
+}
+
+
+type AddAssetMetadataFieldValue {
+  """`MetadataValue` Id."""
+  id: ID!
+
+  """`User` who created the `MetadataValue`."""
+  creator: User!
+
+  """`DateTime` of the `MetadataValue` creation."""
+  createdAt: DateTime!
+
+  """`User` who last modified the `MetadataValue`."""
+  modifier: User
+
+  """`DateTime` of the `MetadataValue` last modification."""
+  modifiedAt: DateTime
+
+  """`MetadataField` related to the `MetadataValue`."""
+  metadataField: MetadataField!
+
+  """`MetadataValue` value."""
+  value: String!
+}
+
+
+input AddAssetPreviewImageInput {
+  """`Asset` Id."""
+  assetId: ID!
+
+  """`File` Id. Signed Id returned by `uploadFile` mutation."""
+  fileId: ID!
+}
+
+
+type AddAssetPreviewImage {
+  """The newly created `Asset` preview image processing job response."""
+  job: AssetPreviewProcessingJob!
+}
+
+
+input AddAssetRelationsInput {
+  """`Asset` Id."""
+  assetId: ID!
+
+  """Related `Asset` Id list."""
+  relatedAssetIds: [ID]!
+}
+
+
+type AddAssetRelations {
+  """`Asset` details."""
+  asset: Asset!
+
+  """Related `Assets` details."""
+  relatedAssets: [Asset]
+}
+
+
+input AddAssetTagsInput {
+  """`Asset` Id."""
+  id: ID!
+
+  """List of `Tag` values linked to `Asset`."""
+  tags: [TagInput]
+}
+
+
+type AddAssetTags {
+  """`Asset` details."""
+  asset: Asset
+}
+
+
+input CreateAssetInput {
+  """File Id. Signed Id returned in `uploadFile`."""
+  fileId: ID!
+
+  """`Asset` title or display name."""
+  title: String!
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean
+
+  """`Asset` description."""
+  description: String = ""
+
+  """`Asset` external Id."""
+  externalId: ID
+
+  """Add `Asset` copyright details."""
+  copyright: CreateCopyrightInput
+
+  """List of tags to create with `Asset`"""
+  tags: [TagInput]
+
+  """
+  Skip file's EXIF metadata. When true, it will ignore all file metadata contents.
+  """
+  skipFileMetadata: Boolean = false
+
+  """
+  An array of strings representing the directory, if a folder does not exist, it is created. Example: ["My Folder", "Sub-Folder"] will create the necessary folders if they do not yet exist and place the `Asset` in it. **Important:** Cannot be used in conjunction with `parentId` that is from a `Folder`.
+  """
+  directory: [String]
+
+  """
+  The parent Id, where the `Asset` should be located in. Should either be a `Library`, `WorkspaceProject` or `Folder` Id. **Important:** Cannot be used in conjunction with `directory` if the Id is from a `Folder`.
+  """
+  parentId: ID
+
+  """
+  `Asset` will become available only during the interval.When undefined or `null` the `Asset` will be immediately and indefinitely available.
+  """
+  availability: DateTimeRangeInput
+
+  """`Asset` will expire once the defined date is reached."""
+  expiresAt: DateTime
+
+  """Represents the Author of the `Asset`. Example: Photographer Name"""
+  author: String = ""
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColorInput
+}
+
+
+type CreateAsset {
+  """The newly created `Asset` processing job response."""
+  job: AssetProcessingJob!
+}
+
+
+input CreateAssetCommentInput {
+  """Id of the `Asset` where you wish to create a new `AssetComment`."""
+  assetId: ID!
+
+  """
+  `AssetComment` content. Can include `User` mentions by wrapping an authorized `Project` `User` Id in the form of `@[user:<id>]` where `<id>` is the `User` integer or global identifier.
+  """
+  content: String!
+
+  """Add a `Marking` (highlighted area) to the new `AssetComment`."""
+  marking: MarkingInput
+}
+
+
+type CreateAssetComment {
+  """`AssetComment` details."""
+  comment: AssetComment!
+}
+
+
+input CreateAttachmentInput {
+  """Parent Id."""
+  parentId: ID!
+
+  """File Id. Signed Id returned in `uploadFile`."""
+  fileId: ID!
+
+  """Attachment name or display name."""
+  name: String!
+
+  """Attachment external Id."""
+  externalId: ID
+}
+
+
+type CreateAttachment {
+  """The newly created `Attachment` processing job response."""
+  job: AttachmentProcessingJob!
+}
+
+
+input CreateAssetWorkflowTaskInput {
+  """
+  **BETA** Id of the `Asset` which should be linked to the `WorkflowTask`.
+  """
+  assetId: ID!
+
+  """
+  **BETA** Id of the `WorkflowStatus` where the `WorkflowTask` should be created.
+  """
+  workflowStatusId: ID!
+
+  """
+  **BETA** List of `User` ids to be assigned to the `WorkflowTask`. Currently, only one Id is supported.
+  """
+  assigneeUserIds: [ID!]
+
+  """
+  **BETA** `WorkflowTask` enter message. Optionally required by a `EnterRule` of the given `WorkflowStatus`.
+  """
+  statusEnterMessage: String
+}
+
+
+type CreateAssetWorkflowTask {
+  """**BETA** The newly created `WorkflowTask`."""
+  workflowTask: WorkflowTask
+}
+
+
+input DeleteAssetInput {
+  """Id of the `Asset` to delete."""
+  id: ID!
+}
+
+
+type DeleteAsset {
+  """The Id of the deleted `Asset`."""
+  id: ID!
+
+  """
+  **DEPRECATED** `Asset` details. This field will be removed. Use `id` instead. | Date: 2024-01-01
+  """
+  asset: Asset! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
+}
+
+
+input DeleteAttachmentInput {
+  """Id of the `Attachment` to delete."""
+  id: ID!
+}
+
+
+type DeleteAttachment {
+  """The Id of the deleted `Attachment`."""
+  id: ID!
+
+  """
+  **DEPRECATED** `Attachment` details. This field will be removed. Use `id` instead. | Date: 2024-01-01
+  """
+  attachment: Attachment! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
+}
+
+
+input DeleteCommentInput {
+  """Id of the `AssetComment` to delete."""
+  id: ID!
+}
+
+
+type DeleteComment {
+  """The Id of the deleted `Comment`."""
+  id: ID!
+
+  """
+  **DEPRECATED** `Comment` details. This field will be removed. Use `id` instead. | Date: 2024-01-01
+  """
+  comment: Comment! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
+}
+
+
+input EditCommentInput {
+  """`AssetComment` Id you wish to edit."""
+  id: ID!
+
+  """
+  `AssetComment` content to edit. Can include `User` mentions by wrapping an authorized `Project` `User` Id in the form of `@[user:<id>]` where `<id>` is the user identifier.
+  """
+  content: String!
+}
+
+
+type EditComment {
+  """`Comment` details."""
+  comment: Comment!
+}
+
+
+input MoveAssetsInput {
+  """Ids of the `Asset` items to be moved."""
+  assetIds: [ID!]!
+
+  """
+  Id of the destination entity where `Asset` items should be moved to. Allows `Library`/`Workspace`/`Folder` Ids only.
+  """
+  destinationId: ID!
+}
+
+
+type MoveAssets {
+  """List of moved `Asset` items."""
+  assets: [Asset!]
+}
+
+
+input RemoveAssetLicenseInput {
+  """`Asset` Id."""
+  assetId: ID!
+
+  """`License` Id."""
+  licenseId: ID!
+}
+
+
+type RemoveAssetLicense {
+  """`Asset` details."""
+  asset: Asset
+
+  """`License` details."""
+  license: License
+}
+
+
+input RemoveAssetPreviewImageInput {
+  """`Asset` Id."""
+  id: ID!
+}
+
+
+type RemoveAssetPreviewImage {
+  """`Asset` details."""
+  asset: Asset
+}
+
+
+input RemoveAssetRelationsInput {
+  """`Asset` Id."""
+  assetId: ID!
+
+  """Related `Asset` Id list."""
+  relatedAssetIds: [ID!]!
+}
+
+
+type RemoveAssetRelations {
+  """`Asset` details."""
+  asset: Asset!
+
+  """Related `Asset` items details."""
+  relatedAssets: [Asset!]!
+}
+
+
+input RemoveAssetTagsInput {
+  """`Asset` Id."""
+  id: ID!
+
+  """`Asset` tags."""
+  tags: [TagInput]
+}
+
+
+type RemoveAssetTags {
+  """`Asset` details."""
+  asset: Asset
+}
+
+
+input ReopenAssetCommentInput {
+  """`AssetComment` Id to reopen."""
+  id: ID!
+}
+
+
+type ReopenAssetComment {
+  """The reopened `AssetComment`."""
+  comment: AssetComment
+}
+
+
+input ReplaceAssetInput {
+  """Parent `Asset` Id."""
+  assetId: ID!
+
+  """Signed file Id returned in `uploadFile`."""
+  fileId: ID!
+
+  """
+  Skip file's EXIF metadata. When true, it will ignore all file metadata contents.
+  """
+  skipFileMetadata: Boolean = false
+}
+
+
+type ReplaceAsset {
+  """The newly created `Asset` processing job response."""
+  job: AssetProcessingJob!
+}
+
+
+input ReplyToCommentInput {
+  """`AssetComment` Id of the comment you want to reply to."""
+  id: ID!
+
+  """
+  `AssetComment` reply content. Can include `User` mentions by wrapping an authorized `Project` `User` Id in the form of `@[user:<id>]` where `<id>` is the `User` integer or global identifier.
+  """
+  reply: String!
+}
+
+
+type ReplyToComment {
+  """`AssetCommentReply` details."""
+  reply: AssetCommentReply!
+}
+
+
+input ResolveAssetCommentInput {
+  """`AssetComment` Id to resolve."""
+  id: ID!
+}
+
+
+type ResolveAssetComment {
+  """The resolved `AssetComment`."""
+  comment: AssetComment
+}
+
+
+input SyncAssetTagsInput {
+  """`Asset` Id."""
+  id: ID!
+
+  """`Asset` tags."""
+  tags: [TagInput]
+}
+
+
+type SyncAssetTags {
+  """`Asset` details."""
+  asset: Asset
+}
+
+
+input UpdateAssetInput {
+  """`Asset` Id."""
+  id: ID!
+
+  """`Asset` data."""
+  data: UpdateAssetDataInput!
+}
+
+
+input UpdateAssetDataInput {
+  """`Asset` title or display name."""
+  title: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative.
+  """
+  alternativeText: String
+
+  """
+  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  """
+  isDecorative: Boolean
+
+  """`Asset` filename, including extension."""
+  filename: String
+
+  """`Asset` description."""
+  description: String
+
+  """Change `Asset` copyright details."""
+  copyright: UpdateCopyrightInput
+
+  """
+  Modify availability start date. `Asset` becomes available once the defined date is reached.
+  """
+  beginsAt: DateTime
+
+  """
+  Modify expiry date. `Asset` will expire once the defined date is reached.
+  """
+  expiresAt: DateTime
+
+  """Represents the Author of the `Asset`. Example: Photographer Name."""
+  author: String
+
+  """**BETA** Background color of the `Asset` preview."""
+  previewBackgroundColor: RgbaColorInput
+}
+
+
+input UpdateCopyrightInput {
+  """`Asset` copyright status."""
+  status: CopyrightStatus!
+
+  """`Asset` copyright notice."""
+  notice: String
+}
+
+
+type UpdateAsset {
+  """`Asset` details."""
+  asset: Asset
+}
+
+
+input UploadFileInput {
+  """
+  `File` name. This value will be passed on to the `fileId` input variable used in file mutations such as `createAsset`, `replaceAsset`, `createAttachment` or `addAssetPreviewImage`.
+  """
+  filename: String!
+
+  """`File` size in bytes. Value must be a positive integer up to 5TB."""
+  size: BigInt!
+}
+
+
+type UploadFile {
+  """Signed Id."""
+  id: ID!
+
+  """List of presigned urls to upload the file parts."""
+  urls: [Url]!
+}
+
+
+"""The events a webhook can subscribe to."""
+enum AssetWebhookEvent {
+  ASSET_ATTACHMENT_ADDED
+  ASSET_ATTACHMENT_REMOVED
+  ASSET_COLLECTION_ADDED
+  ASSET_COLLECTION_REMOVED
+  ASSET_CREATED
+  ASSET_CUSTOM_METADATA_UPDATED
+  ASSET_DELETED
+  ASSET_LICENCE_ADDED
+  ASSET_LICENCE_REMOVED
+  ASSET_MOVED
+  ASSET_PROCESSED
+  ASSET_RELATION_ADDED
+  ASSET_RELATION_REMOVED
+  ASSET_REVISION_ADDED
+  ASSET_TAG_ADDED
+  ASSET_TAG_REMOVED
+  ASSET_TARGET_CHANGED
+  ASSET_UPDATED
+  ASSET_VARIANT_ADDED
+  ASSET_VARIANT_REMOVED
+  ASSET_VARIANT_UPDATED
+  WORKFLOW_TASK_ASSIGNED
+  WORKFLOW_TASK_DELETED
+  WORKFLOW_TASK_MOVED
+}
+
+
+"""
+Search sorting option. Defines how the search results should be sorted.
+"""
+enum AssetQueryFilterSortType {
+  """Sorts the results by the relevance (query score)."""
+  RELEVANCE
+
+  """Sorts the results by the newest `Assets`."""
+  NEWEST
+
+  """Sorts the results by the oldest `Assets`."""
+  OLDEST
+
+  """Sorts the results ascending by the title of the `Assets`."""
+  TITLE_ASCENDING
+
+  """sorts the results descending by the title of the `Assets`."""
+  TITLE_DESCENDING
+}
+
+
+input AssetQueryInput {
+  """
+  Use filters to reduce the set of matched `Asset` items by complex filtering.
+  """
+  filter: AssetQueryFilterInput
+
+  """Limit the result set to a specific `Folder` of this `Library`."""
+  inFolder: AssetQueryInFolderInput
+
+  """Sort set of the matched `AssetItems`."""
+  sortBy: AssetQueryFilterSortType
+
+  """Limit the result set by the externalId of an `Asset`."""
+  externalId: ID
+
+  """Limit the result set by the search term."""
+  search: String
+
+  """Limit the result set by the `Asset` types."""
+  types: [AssetType]
+}
+
+
+input AssetQueryFilterInput {
+  """
+  The Asset must pass **all conditions** in this List to be present in the result set.
+  """
+  andConditions: [AssetQueryFilterConditionInput]
+
+  """
+  The Asset must pass **at least one condition** in this List to be present in the result set.
+  """
+  orConditions: [AssetQueryFilterConditionInput]
+}
+
+
+input AssetQueryFilterConditionInput {
+  """
+  Defines which property of the `Asset` is compared to the provided value.
+  """
+  type: ConditionType!
+
+  """
+  Defines how the value of the `Asset` is compared to the provided value.
+  """
+  operator: ConditionOperator = IS
+
+  """The value which is compared against the property of the `Asset`."""
+  value: String!
+
+  """
+  **REQUIRED** for type `METADATA_VALUE` to identify which metadata field it is compared against. You can find all available `metadataFields` on the project.
+  """
+  metadataFieldId: ID
+
+  """
+  **REQUIRED** for type `CUSTOM_METADATA_VALUE` to identify which `CustomMetadataProperty` it is compared against. You can find all available `CustomMetadataProperty` on the project.
+  """
+  customMetadataPropertyId: ID
+}
+
+
+"""The type of an `asset`."""
+enum AssetType {
+  AUDIO
+  DOCUMENT
+  FILE
+  IMAGE
+  VIDEO
+}
+
+
+type SimpleMarking implements Marking {
+  """
+  The `Marking` position in percent relative to the top left corner of the `Asset`.
+  """
+  position: MarkingPosition!
+
+  """The `Marking` dimensions in percent of `Asset` dimensions."""
+  dimensions: MarkingDimensions
+}
+
+
+type MultiPageMarking implements Marking {
+  """
+  The `Marking` position in percent relative to the top left corner of the `Asset`.
+  """
+  position: MarkingPosition!
+
+  """The `Marking` dimensions in percent of `Asset` dimensions."""
+  dimensions: MarkingDimensions
+
+  """The `Asset` page where the `Marking` is set."""
+  page: Int
+}
+
+
+type VideoMarking implements Marking {
+  """
+  The `Marking` position in percent relative to the top left corner of the `Asset`.
+  """
+  position: MarkingPosition!
+
+  """The `Marking` dimensions in percent of `Asset` dimensions."""
+  dimensions: MarkingDimensions
+
+  """
+  The timeframe of the `Marking`. Applicable to `Video` type `Asset` items only.
+  """
+  timeframe: MarkingTimeframe
+}
+
+
+type MarkingTimeframe {
+  """The start of the `Marking` area in percentage of total video length."""
+  start: Percent
+
+  """The end of the `Marking` area in percentage of total video length."""
+  end: Percent
+}
+
+
+type AssetPreviewProcessingJob {
+  """`Asset` Id."""
+  assetId: ID!
+}
+
+
+type AssetProcessingJob {
+  """`Asset` Id."""
+  assetId: ID!
+}
+
+
+input MarkingInput {
+  """
+  The `Marking` position in percentage, in relation to the top left corner of the `Asset`.
+  """
+  position: MarkingPositionInput
+
+  """
+  The `Marking` dimensions in percentage of the annotated subject dimensions.
+  """
+  dimensions: MarkingDimensionsInput
+
+  """
+  The timeframe of the `Marking` area in percentage of total video length. Applicable to `Video` type `Assets` only.
+  """
+  timeframe: MarkingTimeframeInput
+
+  """
+  The `Marking` page. Applicable to `Assets` with the type `Document` only.
+  """
+  page: Int
+}
+
+
+input MarkingPositionInput {
+  """
+  The horizontal position of the `Marking` in percentage, in relation to the `Asset` top left corner.
+  """
+  x: Percent!
+
+  """
+  The vertical position of the `Marking` in percentage, in relation to the `Asset` top left corner.
+  """
+  y: Percent!
+}
+
+
+input MarkingDimensionsInput {
+  """
+  The width of the `Marking` area in percentage of the annotated subject total width.
+  """
+  width: Percent!
+
+  """
+  The height of the `Marking` area in percentage of the annotated subject total height.
+  """
+  height: Percent!
+}
+
+
+input MarkingTimeframeInput {
+  """
+  The start of the `Marking` area in percentage of total video length. Defaults to video start (0) when the timeframe input property is set.
+  """
+  start: Percent
+
+  """
+  The end of the `Marking` area in percentage of total video length. Defaults to video end (1) when the timeframe input property is set.
+  """
+  end: Percent
+}
+
+
+type AttachmentProcessingJob {
+  """`Attachment` Id."""
+  attachmentId: ID!
+}
+
+
+input CreateExternalAssetInput {
+  """Destination `Project` Id."""
+  projectId: ID!
+
+  """External `Asset` `Url`."""
+  url: Url!
+
+  """External `Asset` title or display name."""
+  title: String!
+
+  """External `Asset` description."""
+  description: String = ""
+
+  """External `Asset` fixed width."""
+  width: Int
+
+  """External `Asset` fixed height."""
+  height: Int
+
+  """External `Asset` allow interactions."""
+  allowInteractions: Boolean = true
+
+  """External `Asset` external Id."""
+  externalId: ID
+
+  """External `Asset` copyright details."""
+  copyright: CreateCopyrightInput
+
+  """
+  External `Asset` destination folder. Folders will be created if they don't exist.
+  """
+  directory: [String] = []
+
+  """
+  Expiry Date. External `Asset` will expire once the defined date is reached.
+  """
+  expiresAt: DateTime
+
+  """Represents the Author of the External `Asset`."""
+  author: String = ""
+}
+
+
+type CreateExternalAsset {
+  """The newly created `Asset` processing job response."""
+  job: AssetProcessingJob!
+}
+

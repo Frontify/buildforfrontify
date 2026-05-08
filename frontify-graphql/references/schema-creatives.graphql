@@ -1,0 +1,1643 @@
+# Frontify GraphQL — Creatives & Guidelines
+# CreativeTemplate, CreativeExport, BrandEssentials (fonts, colours),
+# Guideline, GuidelinePage, LibraryPage, and related types.
+
+type BrandEssentialsAdobeFontStyle implements BrandEssentialsFontStyle {
+  """**BETA** The name of the font style."""
+  name: String!
+
+  """**BETA** The weight of the font style."""
+  weight: Int!
+
+  """**BETA** Whether the font style is italic."""
+  isItalic: Boolean!
+
+  """**BETA** The Adobe Typekit ID."""
+  kitId: String!
+}
+
+
+""""""
+interface BrandEssentialsFontStyle {
+  """**BETA** The name of the font style."""
+  name: String!
+
+  """**BETA** The weight of the font style."""
+  weight: Int!
+
+  """**BETA** Whether the font style is italic."""
+  isItalic: Boolean!
+}
+
+
+type BrandEssentialsGoogleFontStyle implements BrandEssentialsFontStyle {
+  """**BETA** The name of the font style."""
+  name: String!
+
+  """**BETA** The weight of the font style."""
+  weight: Int!
+
+  """**BETA** Whether the font style is italic."""
+  isItalic: Boolean!
+}
+
+
+type BrandEssentialsMonotypeFontStyle implements BrandEssentialsFontStyle {
+  """**BETA** The name of the font style."""
+  name: String!
+
+  """**BETA** The weight of the font style."""
+  weight: Int!
+
+  """**BETA** Whether the font style is italic."""
+  isItalic: Boolean!
+
+  """**BETA** The Monotype font ID."""
+  fontId: String!
+
+  """**BETA** The CSS URL for the Monotype font."""
+  cssUrl: String!
+}
+
+
+type BrandEssentialsSelfhostedFontStyle implements BrandEssentialsFontStyle {
+  """**BETA** The name of the font style."""
+  name: String!
+
+  """**BETA** The weight of the font style."""
+  weight: Int!
+
+  """**BETA** Whether the font style is italic."""
+  isItalic: Boolean!
+
+  """**BETA** The available formats for this font style."""
+  formats: [BrandEssentialsSelfhostedFontStyleFormat!]!
+}
+
+
+type BrandEssentialsSelfhostedFontStyleFormat {
+  """**BETA** The format of the font file."""
+  format: String!
+
+  """**BETA** The URL of the font file."""
+  url: String!
+}
+
+
+"""
+Language code based on the ISO 639-1 standard, represented as two-letter codes such as en (English), de (German), and es (Spanish).
+"""
+enum LanguageCode {
+  """Abkhazian"""
+  AB
+
+  """Afar"""
+  AA
+
+  """Afrikaans"""
+  AF
+
+  """Akan"""
+  AK
+
+  """Albanian"""
+  SQ
+
+  """Amharic"""
+  AM
+
+  """Arabic"""
+  AR
+
+  """Aragonese"""
+  AN
+
+  """Armenian"""
+  HY
+
+  """Assamese"""
+  AS
+
+  """Avaric"""
+  AV
+
+  """Avestan"""
+  AE
+
+  """Aymara"""
+  AY
+
+  """Azerbaijani"""
+  AZ
+
+  """Bambara"""
+  BM
+
+  """Bashkir"""
+  BA
+
+  """Basque"""
+  EU
+
+  """Belarusian"""
+  BE
+
+  """Bengali"""
+  BN
+
+  """Bihari languages"""
+  BH
+
+  """Bislama"""
+  BI
+
+  """Bosnian"""
+  BS
+
+  """Breton"""
+  BR
+
+  """Bulgarian"""
+  BG
+
+  """Burmese"""
+  MY
+
+  """Catalan, Valencian"""
+  CA
+
+  """Central Khmer"""
+  KM
+
+  """Chamorro"""
+  CH
+
+  """Chechen"""
+  CE
+
+  """Chichewa, Chewa, Nyanja"""
+  NY
+
+  """Chinese"""
+  ZH
+
+  """Church Slavonic, Old Bulgarian, Old Church Slavonic"""
+  CU
+
+  """Chuvash"""
+  CV
+
+  """Cornish"""
+  KW
+
+  """Corsican"""
+  CO
+
+  """Cree"""
+  CR
+
+  """Croatian"""
+  HR
+
+  """Czech"""
+  CS
+
+  """Danish"""
+  DA
+
+  """Divehi, Dhivehi, Maldivian"""
+  DV
+
+  """Dutch, Flemish"""
+  NL
+
+  """Dzongkha"""
+  DZ
+
+  """English"""
+  EN
+
+  """Esperanto"""
+  EO
+
+  """Estonian"""
+  ET
+
+  """Ewe"""
+  EE
+
+  """Faroese"""
+  FO
+
+  """Fijian"""
+  FJ
+
+  """Finnish"""
+  FI
+
+  """French"""
+  FR
+
+  """Fulah"""
+  FF
+
+  """Gaelic, Scottish Gaelic"""
+  GD
+
+  """Galician"""
+  GL
+
+  """Ganda"""
+  LG
+
+  """Georgian"""
+  KA
+
+  """German"""
+  DE
+
+  """Gikuyu, Kikuyu"""
+  KI
+
+  """Greek (Modern)"""
+  EL
+
+  """Greenlandic, Kalaallisut"""
+  KL
+
+  """Guarani"""
+  GN
+
+  """Gujarati"""
+  GU
+
+  """Haitian, Haitian Creole"""
+  HT
+
+  """Hausa"""
+  HA
+
+  """Hebrew"""
+  HE
+
+  """Herero"""
+  HZ
+
+  """Hindi"""
+  HI
+
+  """Hiri Motu"""
+  HO
+
+  """Hungarian"""
+  HU
+
+  """Icelandic"""
+  IS
+
+  """Ido"""
+  IO
+
+  """Igbo"""
+  IG
+
+  """Indonesian"""
+  ID
+
+  """Interlingua (International Auxiliary Language Association)"""
+  IA
+
+  """Interlingue"""
+  IE
+
+  """Inuktitut"""
+  IU
+
+  """Inupiaq"""
+  IK
+
+  """Irish"""
+  GA
+
+  """Italian"""
+  IT
+
+  """Japanese"""
+  JA
+
+  """Javanese"""
+  JV
+
+  """Kannada"""
+  KN
+
+  """Kanuri"""
+  KR
+
+  """Kashmiri"""
+  KS
+
+  """Kazakh"""
+  KK
+
+  """Kinyarwanda"""
+  RW
+
+  """Komi"""
+  KV
+
+  """Kongo"""
+  KG
+
+  """Korean"""
+  KO
+
+  """Kwanyama, Kuanyama"""
+  KJ
+
+  """Kurdish"""
+  KU
+
+  """Kyrgyz"""
+  KY
+
+  """Lao"""
+  LO
+
+  """Latin"""
+  LA
+
+  """Latvian"""
+  LV
+
+  """Letzeburgesch, Luxembourgish"""
+  LB
+
+  """Limburgish, Limburgan, Limburger"""
+  LI
+
+  """Lingala"""
+  LN
+
+  """Lithuanian"""
+  LT
+
+  """Luba-Katanga"""
+  LU
+
+  """Macedonian"""
+  MK
+
+  """Malagasy"""
+  MG
+
+  """Malay"""
+  MS
+
+  """Malayalam"""
+  ML
+
+  """Maltese"""
+  MT
+
+  """Manx"""
+  GV
+
+  """Maori"""
+  MI
+
+  """Marathi"""
+  MR
+
+  """Marshallese"""
+  MH
+
+  """Moldovan, Moldavian, Romanian"""
+  RO
+
+  """Mongolian"""
+  MN
+
+  """Nauru"""
+  NA
+
+  """Navajo, Navaho"""
+  NV
+
+  """Northern Ndebele"""
+  ND
+
+  """Ndonga"""
+  NG
+
+  """Nepali"""
+  NE
+
+  """Northern Sami"""
+  SE
+
+  """Norwegian"""
+  NO
+
+  """Norwegian Bokmål"""
+  NB
+
+  """Norwegian Nynorsk"""
+  NN
+
+  """Nuosu, Sichuan Yi"""
+  II
+
+  """Occitan (post 1500)"""
+  OC
+
+  """Ojibwa"""
+  OJ
+
+  """Oriya"""
+  OR
+
+  """Oromo"""
+  OM
+
+  """Ossetian, Ossetic"""
+  OS
+
+  """Pali"""
+  PI
+
+  """Panjabi, Punjabi"""
+  PA
+
+  """Pashto, Pushto"""
+  PS
+
+  """Persian"""
+  FA
+
+  """Polish"""
+  PL
+
+  """Portuguese"""
+  PT
+
+  """Quechua"""
+  QU
+
+  """Romansh"""
+  RM
+
+  """Rundi"""
+  RN
+
+  """Russian"""
+  RU
+
+  """Samoan"""
+  SM
+
+  """Sango"""
+  SG
+
+  """Sanskrit"""
+  SA
+
+  """Sardinian"""
+  SC
+
+  """Serbian"""
+  SR
+
+  """Shona"""
+  SN
+
+  """Sindhi"""
+  SD
+
+  """Sinhala, Sinhalese"""
+  SI
+
+  """Slovak"""
+  SK
+
+  """Slovenian"""
+  SL
+
+  """Somali"""
+  SO
+
+  """Sotho, Southern"""
+  ST
+
+  """South Ndebele"""
+  NR
+
+  """Spanish, Castilian"""
+  ES
+
+  """Sundanese"""
+  SU
+
+  """Swahili"""
+  SW
+
+  """Swati"""
+  SS
+
+  """Swedish"""
+  SV
+
+  """Tagalog"""
+  TL
+
+  """Tahitian"""
+  TY
+
+  """Tajik"""
+  TG
+
+  """Tamil"""
+  TA
+
+  """Tatar"""
+  TT
+
+  """Telugu"""
+  TE
+
+  """Thai"""
+  TH
+
+  """Tibetan"""
+  BO
+
+  """Tigrinya"""
+  TI
+
+  """Tonga (Tonga Islands)"""
+  TO
+
+  """Tsonga"""
+  TS
+
+  """Tswana"""
+  TN
+
+  """Turkish"""
+  TR
+
+  """Turkmen"""
+  TK
+
+  """Twi"""
+  TW
+
+  """Uighur, Uyghur"""
+  UG
+
+  """Ukrainian"""
+  UK
+
+  """Urdu"""
+  UR
+
+  """Uzbek"""
+  UZ
+
+  """Venda"""
+  VE
+
+  """Vietnamese"""
+  VI
+
+  """Volap_k"""
+  VO
+
+  """Walloon"""
+  WA
+
+  """Welsh"""
+  CY
+
+  """Western Frisian"""
+  FY
+
+  """Wolof"""
+  WO
+
+  """Xhosa"""
+  XH
+
+  """Yiddish"""
+  YI
+
+  """Yoruba"""
+  YO
+
+  """Zhuang, Chuang"""
+  ZA
+
+  """Zulu"""
+  ZU
+}
+
+
+type GuidelinePage {
+  """**BETA** The `GuidelinePage` id."""
+  id: ID!
+
+  """**BETA** The title of the `GuidelinePage`"""
+  title: String!
+
+  """
+  **BETA** The timestamp of the most recent modification to the `GuidelinePage` or its contents. If not modified, this represents the creation time.
+  """
+  modifiedAt: DateTime!
+
+  """**BETA** The url of the `GuidelinePage`"""
+  url: Url!
+
+  """
+  **BETA** A list of `GuidelinePageSection`s that belong to this `GuidelinePage`
+  """
+  sections(
+    """**BETA** How many `GuidelinePageSection` to show per query."""
+    limit: Int = 25
+
+    """**BETA** Current page number."""
+    page: Int = 1
+  ): GuidelinePageSectionItems
+}
+
+
+type CreativeTemplate {
+  """`CreativeTemplate` id."""
+  id: ID!
+
+  """
+  **DEPRECATED** Id of the `Brand` of the `CreativeTemplate`. This field will be removed. | Date: 2027-01-01
+  """
+  brandId: ID! @deprecated(reason: "This field will be removed. | Date: 2027-01-01")
+
+  """Name of the `CreativeTemplate`."""
+  name: String!
+
+  """Description of the `CreativeTemplate`."""
+  description: String
+
+  """**BETA** Mode of the `CreativeTemplate`."""
+  mode: CreativeTemplateMode
+
+  """
+  Retrieve list of all `CreativeTemplatePage` items belonging to `CreativeTemplate`.
+  """
+  pages: [CreativeTemplatePage!]!
+
+  """
+  Retrieve list of all `CreativeTemplateExportOption` items belonging to `CreativeTemplate`.
+  """
+  exportOptions: [CreativeTemplateExportOption!]!
+
+  """
+  Retrieve a `CreativeTemplateVariable` item by `CreativeTemplateVariable` key.
+  """
+  variable(
+    """`CreativeTemplateVariable` key."""
+    key: String!
+  ): CreativeTemplateVariable
+
+  """
+  Retrieve list of all `CreativeTemplateVariable` items belonging to `CreativeTemplate`.
+  """
+  variables: [CreativeTemplateVariable!]!
+
+  """
+  **DEPRECATED** Retrieve Asset ID. This field will be removed. | Date: 2027-01-01
+  """
+  assetId: ID @deprecated(reason: "This field will be removed. | Date: 2027-01-01")
+
+  """Tags of the `CreativeTemplate`."""
+  tags: [Tag]!
+}
+
+
+type CreativeExport {
+  """`CreativeJob` Id."""
+  id: ID!
+
+  """`CreativeJob` status."""
+  status: CreativeJobStatus!
+
+  """Generated Creative."""
+  result: CreativeResult
+}
+
+
+"""List of possible `Creative Job` statuses."""
+enum CreativeJobStatus {
+  """The job is currently being prepared and is awaiting rendering."""
+  PROCESSING
+
+  """The job is currently rendering."""
+  RENDERING
+
+  """The job has been canceled successfully."""
+  CANCELED
+
+  """The job has been completed successfully."""
+  FINISHED
+
+  """The processing of the job failed."""
+  FAILED
+}
+
+
+type CreativeResult {
+  """Signed `Url` to download the Creative."""
+  downloadUrl: Url!
+
+  """List of signed `Url`s to download each page of the Creative."""
+  pageDownloadUrls: [Url!]!
+
+  """`Asset` details of the stored asset when save-to has been used."""
+  asset: File
+}
+
+
+input ExportCreativeInput {
+  """`CreativeTemplateId` Id."""
+  templateId: ID!
+
+  """
+  `ExportCreativeDestinationInput` where the exported file will be uploaded.
+  """
+  destination: ExportCreativeDestinationInput
+
+  """List of `CreativeVariableInput` which will be applied to the template."""
+  variables: [CreativeVariableInput]
+
+  """`ExportCreativeOptionsInput` data."""
+  options: ExportCreativeOptionsInput
+}
+
+
+input ExportCreativeDestinationInput {
+  """`Project` Id destination for the exported Creative."""
+  destinationId: ID!
+
+  """`Title` of file."""
+  title: String!
+}
+
+
+input CreativeVariableInput {
+  """Template variable `Key`."""
+  key: String!
+
+  """`Value` of template variable."""
+  value: Any
+}
+
+
+input ExportCreativeOptionsInput {
+  """`Format` of exported file."""
+  format: CreativeExportFormat
+
+  """`Quality` of exported file. Supported only for `JPG` `Format`."""
+  quality: CreativeExportQuality
+
+  """
+  `TransparentBackground` export parameter. Supported only by `PNG` `Format`.
+  """
+  hasTransparentBackground: Boolean
+
+  """
+  List of pages to export. If provided, validates that all requested pages exist in a template before export. If not provided, all pages will be exported.
+  """
+  pages: [Int!]
+
+  """
+  **BETA** Frames per second for the exported file. Supported only for `GIF` (possible values: 10, 12, 15, 24, 30) and `MP4` (possible values: 15, 24, 40) `Format`.
+  """
+  fps: Int
+
+  """
+  **BETA** Scale percentage for the exported video. Accepts values between `50` and `200`. Supported only for `GIF` and `MP4` `Format`.
+  """
+  scale: Int
+
+  """
+  **BETA** If true, the exported GIF will not loop. Supported only for `GIF` `Format`.
+  """
+  noLoop: Boolean
+
+  """
+  **BETA** If true, a static fallback image will be generated along with the exported HTML. Supported only for `HTML` `Format`.
+  """
+  fallback: Boolean
+
+  """
+  **BETA** Specifies the ad network for which the HTML is being exported. Supported only for `HTML` `Format`.
+  """
+  adsNetwork: CreativeExportAdsNetwork
+
+  """
+  **BETA** If provided, a click-through URL will be embedded in the exported HTML. Supported only for `HTML` `Format`. Only secure HTTPS URLs are accepted.
+  """
+  clickTagUrl: String
+}
+
+
+"""
+Compression level, affecting quality and filesize of the exported Creative.
+"""
+enum CreativeExportQuality {
+  MAXIMUM
+  HIGH
+  MEDIUM
+  LOW
+}
+
+
+"""
+Specifies the ad network, affecting the structure of the exported HTML.
+"""
+enum CreativeExportAdsNetwork {
+  GOOGLE
+}
+
+
+type ExportCreative {
+  """The newly created `CreativeJob`."""
+  job: CreativeExport!
+}
+
+
+input CancelExportCreativesInput {
+  """List of `CreativeJob` Ids that should be canceled."""
+  ids: [ID]!
+}
+
+
+type CancelExportCreatives {
+  """A list of `CreativeJobs` that have been canceled successfully."""
+  canceledJobs: [CreativeExport]!
+}
+
+
+type GuidelineItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `Guideline` type projects."""
+  items: [Guideline]
+}
+
+
+type Language {
+  """**BETA** The ISO code of the language."""
+  code: LanguageCode!
+
+  """**BETA** The name of the language in English."""
+  name: String!
+}
+
+
+type LibraryPageItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `LibraryPage`."""
+  items: [LibraryPage]
+}
+
+
+type LibraryPageCollectionItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `LibraryPage` `Collection` items."""
+  items: [LibraryPageCollection]!
+}
+
+
+type LibraryPageCollection implements Node {
+  """`Collection` Id."""
+  id: ID!
+
+  """`Collection` name."""
+  name: String!
+
+  """`LibraryPageCollection`'s `Asset` items list."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetItems!
+
+  """`LibraryPageCollection`'s privacy state setting."""
+  isPrivate: Boolean!
+}
+
+
+input LibraryPageAssetQueryInput {
+  """Search term used to retrieve matched results."""
+  term: String
+}
+
+
+type LibraryPageAssetItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `Asset`."""
+  items: [Asset]
+}
+
+
+type GuidelinePageItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** List of `GuidelinePage` items."""
+  items: [GuidelinePage]
+}
+
+
+type GuidelinePageSectionItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** List of `GuidelinePageSection` items."""
+  items: [GuidelinePageSection]
+}
+
+
+type GuidelinePageSection {
+  """**BETA** `GuidelinePageSection` id."""
+  id: ID!
+
+  """
+  **BETA** `GuidelinePageSectionElement` that are located within this `GuidelinePageSection`.
+  """
+  elements(
+    """**BETA** Current page number."""
+    page: Int = 1
+
+    """**BETA** How many `GuidelinePageSectionElement` to show per query."""
+    limit: Int = 25
+  ): GuidelinePageSectionElementItems
+}
+
+
+type GuidelinePageSectionElementItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `GuidelinePageSectionElementUnion` items list."""
+  items: [GuidelinePageSectionElement]
+}
+
+
+union GuidelinePageSectionElement = GuidelinePageHeading | GuidelinePageBlock | GuidelinePageBlockReference
+
+
+type GuidelinePageHeading {
+  """**BETA** `GuidelinePageHeading` id."""
+  id: ID!
+
+  """**BETA** `GuidelinePageHeading` title."""
+  title: String!
+
+  """**BETA** `GuidelinePageHeading` url."""
+  url: Url!
+
+  """
+  **BETA** The timestamp of the most recent modification to the `GuidelinePageHeading`. If not modified, this represents the creation time.
+  """
+  modifiedAt: DateTime!
+}
+
+
+type GuidelinePageBlock {
+  """**BETA** The id of the `GuidelinePageBlock`."""
+  id: ID!
+
+  """**BETA** The type of this `GuidelinePageBlock`."""
+  type: GuidelinePageBlockType!
+
+  """
+  **BETA** The searchable content of the `GuidelinePageBlock`. When the block cannot be serialized, this field is `null`.
+  """
+  content: String
+
+  """**BETA** The url of the `GuidelinePageBlock`"""
+  url: Url!
+
+  """
+  **BETA** The timestamp of the most recent modification to the `GuidelinePageBlock`. If not modified, this represents the creation time.
+  """
+  modifiedAt: DateTime!
+
+  """**BETA** The settings of the `GuidelinePageBlock`."""
+  settings: JsonObject
+
+  """
+  **BETA** A list of `GuidelinePageBlockAssetSetting` used by this `GuidelinePageBlock`.
+  """
+  assetSettings(
+    """**BETA** Current page number."""
+    page: Int = 1
+
+    """**BETA** How many `GuidelinePageBlockAssetSetting` to show per query."""
+    limit: Int = 25
+  ): GuidelinePageBlockAssetSettingItems
+}
+
+
+type GuidelinePageBlockType {
+  """**BETA** The block type id the `GuidelinePageBlock`."""
+  id: ID!
+
+  """**BETA** The block type name of the `GuidelinePageBlock`."""
+  name: String!
+
+  """
+  **BETA** The JSON schema defining the expected settings structure for a `GuidelinePageBlock` of this type.
+  """
+  settingsSchema: JsonObject
+}
+
+
+type GuidelinePageBlockAssetSettingItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** List of `GuidelinePageBlockAssetSetting` items."""
+  items: [GuidelinePageBlockAssetSetting!]!
+}
+
+
+type GuidelinePageBlockAssetSetting {
+  """**BETA** The name of the `GuidelinePageBlockAssetSetting`."""
+  settingName: String!
+
+  """
+  **BETA** A list of `GuidelinePageBlockAsset` referenced by this `GuidelinePageBlockAssetSetting`.
+  """
+  assets(
+    """**BETA** Current page number."""
+    page: Int = 1
+
+    """**BETA** How many `GuidelinePageBlockAsset` to show per query."""
+    limit: Int = 25
+  ): GuidelinePageBlockAssetItems
+}
+
+
+type GuidelinePageBlockAssetItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** List of `GuidelinePageBlockAsset` items."""
+  items: [GuidelinePageBlockAsset]!
+}
+
+
+type GuidelinePageBlockAsset {
+  """
+  **BETA** Preview `Url` which has optional `width` and `height` arguments.
+  """
+  previewUrl(
+    """**BETA** `GuidelinePageBlockAsset` preview width value in pixels."""
+    width: Int
+
+    """**BETA** `GuidelinePageBlockAsset` preview height value in pixels."""
+    height: Int
+  ): Url!
+}
+
+
+type GuidelinePageBlockReference {
+  """**BETA** The id of the `GuidelinePageBlockReference`."""
+  id: ID!
+
+  """**BETA** The `GuidelinePageBlock` that this reference resolves to."""
+  block: GuidelinePageBlock!
+}
+
+
+input CreativeTemplateQueryInput {
+  """Sort order of the `CreativeTemplate` query result set."""
+  sortBy: CreativeTemplateQuerySort
+}
+
+
+"""Query sorting option. Defines how the search results should be sorted."""
+enum CreativeTemplateQuerySort {
+  """Sorts the results by the newest entry."""
+  NEWEST
+
+  """Sorts the results by the oldest entry`."""
+  OLDEST
+}
+
+
+type CreativeTemplateItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `CreativeTemplate`"""
+  items: [CreativeTemplate]!
+}
+
+
+"""List of possible `CreativeTemplate` modes."""
+enum CreativeTemplateMode {
+  """Represents a static template."""
+  STATIC
+
+  """Represents a motion template."""
+  MOTION
+}
+
+
+type CreativeTemplatePage {
+  """Preview URL of `CreativeTemplatePage`."""
+  previewUrl: Url!
+
+  """Width of the `CreativeTemplatePage`."""
+  width: Int!
+
+  """Height of the `CreativeTemplatePage`."""
+  height: Int!
+
+  """`CreativeTemplatePage` unique identifier."""
+  pageIndex: Int!
+
+  """Name of the `CreativeTemplatePage`."""
+  name: String
+}
+
+
+type CreativeTemplateExportOption {
+  """Allowed format for exporting an `CreativeTemplate`, e.g., JPG."""
+  format: CreativeExportFormat
+}
+
+
+"""List of possible `CreativeExportOptionsInput` formats."""
+enum CreativeExportFormat {
+  PNG
+  JPG
+  PDF
+  MP4
+  GIF
+  HTML
+}
+
+
+type CreativeTemplateVariable {
+  """Key of the `CreativeTemplateVariable`."""
+  key: String!
+
+  """Name of the `CreativeTemplateVariable`."""
+  name: String!
+
+  """Description of the `CreativeTemplateVariable`."""
+  description: String
+
+  """Type of the `CreativeTemplateVariable`."""
+  type: CreativeTemplateVariableType!
+
+  """
+  Value of the `CreativeTemplateVariable`. See `CreativeTemplateVariableType` for valid formats.
+  """
+  value: Any
+
+  """Allowed values for `CreativeTemplateVariable` value of type color."""
+  allowedColorValues: [CreativeColor!]!
+
+  """Number of template items connected to the `CreativeTemplateVariable`."""
+  connectionCount: Int!
+}
+
+
+"""List of possible `CreativeTemplateVariable` types."""
+enum CreativeTemplateVariableType {
+  """Boolean Variable Type, possible values are `true` or `false`"""
+  BOOL
+
+  """Number Variable Type, values must be integers"""
+  NUMBER
+
+  """Text content Variable Type"""
+  TEXT
+
+  """Image Variable Type, values are `AssetID`s for referencing"""
+  IMAGE
+
+  """
+  Color Variable Type, you can either pass an rgba object or a HEX value as string
+  """
+  COLOR
+
+  """Float Variable Type"""
+  FLOAT
+
+  """
+  Position Variable Type, you need to pass an object with `left: number` and `top: number` properties
+  """
+  POSITION
+}
+
+
+type CreativeColor {
+  """ID of the `Color`."""
+  id: Int!
+
+  """Name of the `Color`."""
+  name: String
+
+  """Name of the palette that the `Color` belongs to."""
+  paletteName: String
+
+  """RGBA color value of the `Color`."""
+  color: RgbaColor!
+}
+
+
+type BrandEssentials {
+  """**BETA** The color palettes of the brand essentials."""
+  colorPalettes(
+    """**BETA** Number of items to return per page (max 100)."""
+    limit: Int! = 100
+
+    """**BETA** Page number to return."""
+    page: Int! = 1
+  ): BrandEssentialsColorPaletteItems!
+
+  """**BETA** The font families of the brand essentials."""
+  fontFamilies(
+    """**BETA** Number of items to return per page (max 100)."""
+    limit: Int! = 100
+
+    """**BETA** Page number to return."""
+    page: Int! = 1
+  ): BrandEssentialsFontFamilyItems!
+}
+
+
+type BrandEssentialsColorPaletteItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `ColorPalette` items."""
+  items: [BrandEssentialsColorPalette!]!
+}
+
+
+type BrandEssentialsColorPalette {
+  """**BETA** The unique identifier of the color palette."""
+  id: ID!
+
+  """**BETA** The name of the color palette."""
+  name: String!
+
+  """**BETA** The description of the color palette."""
+  description: String
+
+  """**BETA** The colors included in the color palette."""
+  colors(
+    """**BETA** Number of items to return per page (max 100)."""
+    limit: Int! = 100
+
+    """**BETA** Page number to return."""
+    page: Int! = 1
+  ): BrandEssentialsColorItems!
+}
+
+
+type BrandEssentialsColorItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `Color` items."""
+  items: [BrandEssentialsColor!]!
+}
+
+
+type BrandEssentialsColor {
+  """**BETA** The unique identifier of the color."""
+  id: ID!
+
+  """**BETA** The name of the color."""
+  name: String!
+
+  """**BETA** The description of the color."""
+  description: String
+
+  """**BETA** The different color representations available for the color."""
+  representations: [BrandEssentialsColorRepresentation!]!
+}
+
+
+type BrandEssentialsColorRepresentation {
+  """**BETA** The key of the color representation."""
+  key: String!
+
+  """**BETA** The value of the color representation."""
+  value: BrandEssentialsColorRepresentationValue!
+}
+
+
+union BrandEssentialsColorRepresentationValue = BrandEssentialsCmykColorSpaceValue | BrandEssentialsHexColorSpaceValue | BrandEssentialsHslColorSpaceValue | BrandEssentialsLabColorSpaceValue | BrandEssentialsColorSystemValue | BrandEssentialsRgbaColorSpaceValue
+
+
+type BrandEssentialsCmykColorSpaceValue {
+  """**BETA** Cyan component of the CMYK color space."""
+  cyan: Float!
+
+  """**BETA** Magenta component of the CMYK color space."""
+  magenta: Float!
+
+  """**BETA** Yellow component of the CMYK color space."""
+  yellow: Float!
+
+  """**BETA** Black component of the CMYK color space."""
+  black: Float!
+}
+
+
+type BrandEssentialsHexColorSpaceValue {
+  """**BETA** Hex code of the HEX color space."""
+  hexCode: String!
+}
+
+
+type BrandEssentialsHslColorSpaceValue {
+  """**BETA** Hue component of the HSL color space."""
+  hue: Float!
+
+  """**BETA** Saturation component of the HSL color space."""
+  saturation: Float!
+
+  """**BETA** Lightness component of the HSL color space."""
+  lightness: Float!
+}
+
+
+type BrandEssentialsLabColorSpaceValue {
+  """**BETA** Lightness component of the LAB color space."""
+  lightness: Float!
+
+  """**BETA** A axis component of the LAB color space."""
+  aAxis: Float!
+
+  """**BETA** B axis component of the LAB color space."""
+  bAxis: Float!
+}
+
+
+type BrandEssentialsColorSystemValue {
+  """**BETA** Color value of the color system."""
+  colorValue: String!
+}
+
+
+type BrandEssentialsRgbaColorSpaceValue {
+  """**BETA** Red component of the RGBA color space."""
+  red: Int!
+
+  """**BETA** Green component of the RGBA color space."""
+  green: Int!
+
+  """**BETA** Blue component of the RGBA color space."""
+  blue: Int!
+
+  """**BETA** Alpha component of the RGBA color space."""
+  alpha: Float!
+}
+
+
+type BrandEssentialsFontFamilyItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `FontFamily` items."""
+  items: [BrandEssentialsFontFamily!]!
+}
+
+
+type BrandEssentialsFontFamily {
+  """**BETA** The unique identifier of the font family."""
+  id: ID!
+
+  """**BETA** The name of the font family."""
+  name: String!
+
+  """**BETA** The CSS name of the font family."""
+  cssName: String!
+
+  """**BETA** The font provider."""
+  provider: String!
+
+  """**BETA** The font styles available for this font family."""
+  fontStyles: [BrandEssentialsFontStyle!]!
+}
+
+
+type Guideline implements Node {
+  """`Guideline` Id."""
+  id: ID!
+
+  """`Guideline` name."""
+  name: String
+
+  """`Guideline` color."""
+  color: RgbaColor
+
+  """`Guideline` internal url."""
+  url: Url!
+
+  """
+  **BETA** The default language of the `Guideline`, or `null` if not set.
+  """
+  defaultLanguage: Language
+
+  """**BETA** Languages in which the `Guideline` is available."""
+  translationLanguages: [Language]!
+
+  """Paginated list of `LibraryPage` items for `Guideline`."""
+  libraryPages(
+    """How many `LibraryPageItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): LibraryPageItems!
+
+  """**BETA** A list of `GuidelinePage`s that belong to this `Guideline`"""
+  pages(
+    """**BETA** How many `GuidelinePage` to show per query."""
+    limit: Int = 25
+
+    """**BETA** Current page number."""
+    page: Int = 1
+  ): GuidelinePageItems
+}
+
+
+type LibraryPage implements Node {
+  """`LibraryPage` Id."""
+  id: ID!
+
+  """`LibraryPage` title."""
+  title: String!
+
+  """`LibraryPage` type."""
+  type: LibraryType!
+
+  """**BETA** `LibraryPage` `Collection` items list."""
+  collections(
+    """
+    How many `LibraryPageCollectionItems` to show per query. Min: 1, Max: 100.
+    """
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): LibraryPageCollectionItems!
+
+  """`LibraryPage` `Asset` items list."""
+  assets(
+    """How many `LibraryPageAssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in this `LibraryPage`."""
+    query: LibraryPageAssetQueryInput
+  ): LibraryPageAssetItems!
+}
+

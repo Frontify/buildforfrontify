@@ -1,0 +1,219 @@
+# Frontify GraphQL — Platform (Apps & Webhooks)
+# ServiceApp, MarketplaceApp, ProjectWebhook, SecurityScope,
+# and related input/mutation types.
+
+"""`WebhookInterface` for `Webhook` returnable types."""
+interface Webhook {
+  """`Workspace` Id."""
+  id: ID!
+
+  """The `creator` is the `User` who created the asset on Frontify."""
+  creator: User!
+
+  """`DateTime` of the `Asset` creation."""
+  createdAt: DateTime!
+
+  """The name of the current `Webhook`."""
+  name: String!
+
+  """The `Url` which will be called by the `Webhook`."""
+  notificationUrl: Url!
+
+  """The randomly generated secret of the current `Webhook`."""
+  secret: String!
+}
+
+
+type ServiceAppItems {
+  """**BETA** `ServiceApp` items."""
+  items: [ServiceApp]!
+
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+}
+
+
+type ServiceApp {
+  """**BETA** The ID of the ServiceApp"""
+  id: ID!
+
+  """**BETA** The description text of the ServiceApp"""
+  description: String
+
+  """**BETA** Describes if the ServiceApp is enabled or disabled"""
+  status: ServiceAppStatus!
+
+  """**BETA** The scopes that are accessible to the ServiceApp"""
+  scopes: [SecurityScope!]!
+
+  """**BETA** The title of the ServiceAPpp"""
+  title: String!
+}
+
+
+enum ServiceAppStatus {
+  ENABLED
+  DISABLED
+}
+
+
+enum SecurityScope {
+  BASIC_READ
+  BASIC_WRITE
+  ACCOUNT_READ
+  WEBHOOK_READ
+  WEBHOOK_WRITE
+}
+
+
+type WebhookItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `Webhook`."""
+  items: [Webhook]
+}
+
+
+input PublishMarketplaceAppInput {
+  """The marketplace app ID to publish."""
+  appId: String!
+
+  """Release notes for this version."""
+  releaseNotes: String!
+
+  """The marketplace app availability."""
+  availability: MarketplaceAppAvailability = null
+}
+
+
+"""Whether the marketplace app is available publicly or privately."""
+enum MarketplaceAppAvailability {
+  """Private Availability"""
+  PRIVATE
+
+  """Community Availability"""
+  COMMUNITY
+}
+
+
+type PublishMarketplaceApp {
+  """The ID of the published marketplace app."""
+  id: String!
+}
+
+
+input CreateServiceAppInput {
+  """**BETA** The title for the ServiceApp"""
+  title: String!
+
+  """**BETA** The scoped allowed for the ServiceApp"""
+  scopes: [SecurityScope!]!
+
+  """**BETA** The description for the ServiceApp"""
+  description: String = null
+}
+
+
+type CreateServiceApp {
+  """**BETA** The created ServiceApp"""
+  serviceApp: ServiceApp!
+
+  """**BETA** The secret tied to the ServiceApp"""
+  secret: String!
+
+  """**BETA** Disclaimer message"""
+  message: String!
+}
+
+
+input DeleteServiceAppInput {
+  """**BETA** The ID of the ServiceApp to be removed"""
+  serviceAppId: ID!
+}
+
+
+type DeleteServiceApp {
+  """**BETA** The ID of the removed ServiceApp"""
+  id: ID!
+}
+
+
+input InstallProjectWebhookInput {
+  """Destination `Project` Id."""
+  projectId: ID!
+
+  """`Url` to send the `ProjectWebhook` notification to."""
+  notificationUrl: Url!
+
+  """`ProjectWebhook` name."""
+  name: String!
+}
+
+
+type InstallProjectWebhook {
+  """`Webhook` details."""
+  webhook: Webhook!
+}
+
+
+input ConfigureProjectWebhookInput {
+  """**BETA** Project ID."""
+  projectId: ID!
+
+  """**BETA** Webhook notification URL."""
+  notificationUrl: String!
+
+  """**BETA** Webhook name."""
+  name: String!
+
+  """**BETA** Webhook payload version (1 or 2)."""
+  version: Int!
+
+  """
+  **BETA** Subscribe to specific webhook events. If not defined the webhook will subscribe to all events
+  """
+  subscribeTo: [AssetWebhookEvent!] = null
+}
+
+
+type ConfigureProjectWebhook {
+  """**BETA** The configured project webhook."""
+  webhook: ProjectWebhook!
+}
+
+
+input UninstallWebhookInput {
+  """Id of the `Webhook` to be uninstalled."""
+  id: ID!
+}
+
+
+type UninstallWebhook {
+  """
+  **DEPRECATED** `Webhook` details. This field will be removed. Use `id` instead. | Date: 2026-07-01
+  """
+  webhook: Webhook! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2026-07-01")
+
+  """The Id of the deleted `Webhook`."""
+  id: ID!
+}
+

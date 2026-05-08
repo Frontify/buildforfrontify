@@ -1,0 +1,1277 @@
+# Frontify GraphQL — Metadata & Workflow
+# Custom metadata properties and values, legacy MetadataField,
+# WorkflowStatus, WorkflowTask, and WorkflowChecklist types.
+
+type MetadataValue {
+  """
+  **DEPRECATED** `MetadataValue` Id. This field will be removed. | Date: 2026-07-01
+  """
+  id: ID! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `User` who created the `MetadataValue`. This field will be removed. | Date: 2026-07-01
+  """
+  creator: User! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `DateTime` of the `MetadataValue` creation. This field will be removed. | Date: 2026-07-01
+  """
+  createdAt: DateTime! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `User` who last modified the `MetadataValue`. This field will be removed. | Date: 2026-07-01
+  """
+  modifier: User @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `DateTime` of the `MetadataValue`'s last modification. This field will be removed. | Date: 2026-07-01
+  """
+  modifiedAt: DateTime @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `MetadataField` associated to `MetadataValue`. This field will be removed. | Date: 2026-07-01
+  """
+  metadataField: MetadataField! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `MetadataValue`'s value. This field will be removed. Use `CustomMetadataValueType.value` instead. | Date: 2026-07-01
+  """
+  value: String! @deprecated(reason: "This field will be removed. Use `CustomMetadataValueType.value` instead. | Date: 2026-07-01")
+}
+
+
+type MetadataField {
+  """
+  **DEPRECATED** `MetadataField` Id. This field will be removed. Use `CustomMetadataProperty.id` instead. | Date: 2026-07-01
+  """
+  id: ID! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.id` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `User` who created the `MetadataField`. This field will be removed. Use `CustomMetadataProperty.creator` instead. | Date: 2026-07-01
+  """
+  creator: User! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.creator` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `DateTime` of the `MetadataField` creation. This field will be removed. Use `CustomMetadataProperty.createdAt` instead. | Date: 2026-07-01
+  """
+  createdAt: DateTime! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.createdAt` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `User` who last modified `MetadataField`. This field will be removed. Use `CustomMetadataProperty.modifier` instead. | Date: 2026-07-01
+  """
+  modifier: User @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.modifier` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `DateTime` of the `MetadataField`'s last modification. This field will be removed. Use `CustomMetadataProperty.modifiedAt` instead. | Date: 2026-07-01
+  """
+  modifiedAt: DateTime @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.modifiedAt` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `MetadataField`'s name. This field will be removed. Use `CustomMetadataProperty.name` instead. | Date: 2026-07-01
+  """
+  label: String! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.name` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** `MetadataField`'s type. This field will be removed. Use `CustomMetadataProperty.type.name` instead. | Date: 2026-07-01
+  """
+  type: String! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.type.name` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Possible values for `SELECT` type `MetadataField`. This field will be removed. Use `CustomMetadataProperty.type.options` instead. | Date: 2026-07-01
+  """
+  values: [MetadataFieldValues] @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.type.options` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Optional default value of the `MetadataField`. This field will be removed. Use `CustomMetadataProperty.defaultValue` instead. | Date: 2026-07-01
+  """
+  defaultValue: String @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.defaultValue` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Allow multiple values in `SELECT` type `MetadataField`. This field will be removed. | Date: 2026-07-01
+  """
+  allowMultipleValues: Boolean! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Allow an empty value as a valid `SELECT` type `MetadataField` value. This field will be removed. | Date: 2026-07-01
+  """
+  allowEmptyValue: Boolean! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Allow users to search for `MetadataField` values. This field will be removed. Use `CustomMetadataProperty.isSearchable` instead. | Date: 2026-07-01
+  """
+  isSearchable: Boolean! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.isSearchable` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Allow users to edit `MetadataField` values. This field will be removed. | Date: 2026-07-01
+  """
+  isEditable: Boolean! @deprecated(reason: "This field will be removed. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Show/hide `MetadataField` values. This field will be removed. Use `CustomMetadataProperty.isViewable` instead. | Date: 2026-07-01
+  """
+  isVisible: Boolean! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.isViewable` instead. | Date: 2026-07-01")
+}
+
+
+type MetadataFieldValues {
+  """
+  **DEPRECATED** Value of `SELECT` type `Metadata Field`. This field will be removed. Use `CustomMetadataProperty.type.options.value` instead. | Date: 2026-07-01
+  """
+  value: String @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.type.options.value` instead. | Date: 2026-07-01")
+
+  """
+  **DEPRECATED** Default value for `SELECT` type `Metadata Field`. This field will be removed. Use `CustomMetadataProperty.type.options.isDefault` instead. | Date: 2026-07-01
+  """
+  default: Boolean @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.type.options.isDefault` instead. | Date: 2026-07-01")
+}
+
+
+"""`CustomMetadataInterface` for `CustomMetadata` returnable types."""
+interface CustomMetadata {
+  """`CustomMetadataProperty` details."""
+  property: CustomMetadataProperty!
+}
+
+
+"""
+`CustomMetadataPropertyTypeInterface` for `CustomMetadataPropertyType` returnable types.
+"""
+interface CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+}
+
+
+"""
+`CustomMetadataPropertyDependencyInterface` for `CustomMetadataPropertyDependency` returnable types.
+"""
+interface CustomMetadataPropertyDependency {
+  """The `CustomMetadataPropertyDependency` type."""
+  type: String!
+
+  """The dependee `CustomMetadataProperty` Id."""
+  propertyId: ID!
+}
+
+
+type CustomMetadataPropertyPermissions {
+  """
+  **BETA** List of basic permissions defined for the custom metadata property.
+  """
+  basic: [CustomMetadataPropertyBasicPermission]
+
+  """
+  **BETA** List of custom permissions defined for the custom metadata property.
+  """
+  custom: [CustomMetadataPropertyCustomPermission]
+}
+
+
+type CustomMetadataPropertyBasicPermission {
+  """**BETA** Subject granted with the permission."""
+  subject: CustomMetadataPropertyBasicPermissionSubject!
+
+  """**BETA** Permission level granted to the subject."""
+  permissionLevel: CustomMetadataPropertyPermissionLevel!
+}
+
+
+"""Subjects defined for basic custom metadata property permissions."""
+enum CustomMetadataPropertyBasicPermissionSubject {
+  """Everyone."""
+  EVERYONE
+
+  """Only authenticated users."""
+  INTERNAL
+
+  """
+  Those with `edit` permissions in the scope where the property is defined.
+  """
+  EDITOR
+
+  """
+  Those with folder-level `edit` permissions in the project where the property is defined.
+  """
+  CONTENT_EDITOR
+
+  """
+  Those with `admin` permissions in the scope where the property is defined.
+  """
+  ADMIN
+}
+
+
+"""Permission levels allowed for a custom metadata property."""
+enum CustomMetadataPropertyPermissionLevel {
+  """Allows updating and deleting `CustomMetadataProperty` items"""
+  ADMIN
+
+  """
+  Allows assigning, updating or removing `CustomMetadataProperty` values.
+  """
+  EDIT
+
+  """
+  Allows viewing the custom metadata property and its custom metadata values.
+  """
+  VIEW
+}
+
+
+type CustomMetadataPropertyCustomPermission {
+  """
+  **BETA** Subject representing the specific user or group granted with the permission.
+  """
+  subject: AccountCollaborator!
+
+  """**BETA** Permission level granted to the subject."""
+  permissionLevel: CustomMetadataPropertyPermissionLevel!
+}
+
+
+type WorkflowTask {
+  """**BETA** `WorkflowTask` Id."""
+  id: ID!
+
+  """**BETA** A list of `User` assigned to the `WorkflowTask`."""
+  assignedUsers: [User]!
+
+  """**BETA** The `Asset` linked to the `WorkflowTask`."""
+  asset: Asset
+
+  """**BETA** `WorkflowTask` title."""
+  title: String
+
+  """**BETA** `WorkflowTask` description."""
+  description: String
+
+  """**BETA** The `WorkflowStatus` of the `WorkflowTask`."""
+  status: WorkflowStatus!
+
+  """**BETA** A list of the `WorkflowChecklistItem` in the `WorkflowTask`."""
+  checklistItem(
+    """
+    How many `WorkflowChecklistItem` items to show per query. Min: 1, Max: 100.
+    """
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): WorkflowChecklistItems!
+}
+
+
+type WorkflowStatus {
+  """**BETA** `WorkflowStatus` id."""
+  id: ID!
+
+  """**BETA** The name of the `WorkflowStatus`."""
+  name: String!
+
+  """**BETA** The color of the `WorkflowStatus`."""
+  color: RgbaColor!
+
+  """**BETA** List of `User` assigned to this `WorkflowStatus`."""
+  assignedUsers: [User]!
+
+  """
+  **BETA** A list of `WorkflowPreset` that is used to create one or more `WorkflowChecklistItem`, which are appended to a `WorkflowTask` on entering this `WorkflowState`.
+  """
+  checklistPresets: [WorkflowChecklistPreset]!
+
+  """**BETA** A list of the `WorkflowTask` in the `WorkflowStatus`."""
+  tasks(
+    """How many `WorkflowTask` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): WorkflowStatusTaskItems!
+
+  """
+  **BETA** A list of `WorkflowStatusEnterRule` which needs to be satisfied before a `WorkflowTask` can enter this `WorkflowStatus`.
+  """
+  enterRules: [WorkflowStatusEnterRule]!
+}
+
+
+type WorkflowChecklistPreset {
+  """**BETA** `WorkflowChecklistPreset` Id."""
+  id: ID!
+
+  """**BETA** The content of the `WorkflowChecklistPreset`."""
+  content: String!
+
+  """**BETA** The default assignee of the `WorkflowChecklistPreset`."""
+  assignedUser: User
+}
+
+
+type WorkflowStatusTaskItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `WorkflowTask`."""
+  items: [WorkflowTask]
+}
+
+
+"""
+A rule which needs to be satisfied for a `WorkflowTask` to enter a given `WorkflowStatus`.
+"""
+enum WorkflowStatusEnterRule {
+  TASK_REQUIRES_ASSIGNEE
+  TASK_REQUIRES_MESSAGE
+}
+
+
+type WorkflowChecklistItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `WorkflowChecklistItem`."""
+  items: [WorkflowChecklistItem]
+}
+
+
+type WorkflowChecklistItem {
+  """**BETA** `WorkflowChecklistItem` Id."""
+  id: ID!
+
+  """**BETA** The content of the `WorkflowChecklistItem`."""
+  content: String!
+
+  """**BETA** The state of the `WorkflowChecklistItem`."""
+  isCompleted: Boolean!
+
+  """**BETA** The default assignee of the `WorkflowChecklistItem`."""
+  assignedUser: User
+}
+
+
+type CustomMetadataValue implements CustomMetadata {
+  """`CustomMetadataProperty` details."""
+  property: CustomMetadataProperty!
+
+  """
+  `CustomMetadataProperty` value. For `SELECT`, returns an object with `optionId` and `text`. For `CATALOG`, returns the opaque `CatalogSelection` ID string — resolve the entry tree via `Catalog.selection(id: ID!)` using the `catalogId` on `CustomMetadataPropertyTypeCatalog`. For other single-value property types, returns the stored value as `String`/`Float`/`Int`/`DateTime`.
+  """
+  value: Any
+}
+
+
+type CustomMetadataValues implements CustomMetadata {
+  """`CustomMetadataProperty` details."""
+  property: CustomMetadataProperty!
+
+  """
+  `CustomMetadataProperty` values. Returns an empty list or a list of objects with `optionId` and `text` property values (for `MULTISELECT` type only).
+  """
+  values: [Any]!
+}
+
+
+type CustomMetadataPropertySelectValueTypeDependencyTypeEquals implements CustomMetadataPropertyDependency {
+  """`CustomMetadataPropertyDependency` type."""
+  type: String!
+
+  """The dependee `CustomMetadataProperty` Id."""
+  propertyId: ID!
+
+  """`CustomMetadataPropertyOption` Id."""
+  propertyOptionId: ID!
+}
+
+
+type CustomMetadataPropertySelectValueTypeDependencyTypeOneOf implements CustomMetadataPropertyDependency {
+  """`CustomMetadataPropertyDependency` type."""
+  type: String!
+
+  """The dependee `CustomMetadataProperty` Id."""
+  propertyId: ID!
+
+  """`CustomMetadataPropertyOption` property option ids."""
+  propertyOptionIds: [ID]!
+}
+
+
+type CustomMetadataPropertyValueTypeDependencyTypeFilled implements CustomMetadataPropertyDependency {
+  """`CustomMetadataPropertyDependency` type."""
+  type: String!
+
+  """The dependee `CustomMetadataProperty` Id."""
+  propertyId: ID!
+}
+
+
+type CustomMetadataPropertyTypeDate implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+}
+
+
+type CustomMetadataPropertyTypeLongText implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+}
+
+
+type CustomMetadataPropertyTypeMultiSelect implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+
+  """`MULTISELECT` type `CustomMetadataProperty` options."""
+  options: [CustomMetadataPropertyOption]!
+}
+
+
+input AddCustomMetadataInput {
+  """Set of parent Ids to which `CustomMetadata` should be added."""
+  parentIds: [ID!]!
+
+  """
+  `CustomMetadata` property and respective values to add to the given set of parents.
+  """
+  customMetadata: [CustomMetadataInput!]!
+}
+
+
+type AddCustomMetadata {
+  """
+  List of the parent Ids where the new `CustomMetadata` values were added.
+  """
+  parentIds: [ID!]!
+}
+
+
+input AddCustomMetadataPropertyOptionsInput {
+  """`CustomMetadataProperty` Id."""
+  propertyId: ID!
+
+  """
+  List of `CustomMetadataPropertyOption` items to add to existing `CustomMetadataProperty`.
+  """
+  options: [AddCustomMetadataPropertyOptionInput!]!
+}
+
+
+type AddCustomMetadataPropertyOptions {
+  """`CustomMetadataProperty` details."""
+  customMetadataProperty: CustomMetadataProperty!
+}
+
+
+input AddWorkflowChecklistItemInput {
+  """
+  **BETA** `WorkflowTask` Id where the `WorkflowChecklistItem` should be created.
+  """
+  id: ID!
+
+  """**BETA** Content of the `WorkflowChecklistItem`."""
+  content: String!
+
+  """**BETA** State of the `WorkflowChecklistItem`."""
+  isCompleted: Boolean
+
+  """**BETA** `User` Id of `WorkflowChecklistItem` assignee."""
+  assigneeUserId: ID
+}
+
+
+type AddWorkflowChecklistItem {
+  """**BETA** The created `WorkflowChecklistItem`."""
+  checklistItem: WorkflowChecklistItem
+}
+
+
+input AddWorkflowChecklistPresetInput {
+  """
+  **BETA** `WorkflowStatus` Id where the `WorkflowChecklistPreset` should be created.
+  """
+  id: ID!
+
+  """**BETA** Content of the `WorkflowChecklistPreset`."""
+  content: String!
+
+  """**BETA** `User` Id of `WorkflowChecklistPreset` assignee."""
+  assigneeUserId: ID
+}
+
+
+type AddWorkflowChecklistPreset {
+  """**BETA** The created `WorkflowChecklistPreset`."""
+  checklistPreset: WorkflowChecklistPreset
+}
+
+
+input AddWorkflowStatusAssigneesInput {
+  """**BETA** `WorkflowStatus` Id."""
+  id: ID!
+
+  """**BETA** List of `User` Ids to be assigned to `WorkflowStatus`."""
+  userIds: [ID!]!
+}
+
+
+type AddWorkflowStatusAssignees {
+  """**BETA** The updated `WorkflowStatus`."""
+  workflowStatus: WorkflowStatus
+}
+
+
+input AddWorkflowTaskAssigneesInput {
+  """**BETA** `WorkflowTask` Id."""
+  id: ID!
+
+  """**BETA** List of `User` Ids to assign to the `WorkflowTask`."""
+  userIds: [ID!]!
+}
+
+
+type AddWorkflowTaskAssignees {
+  """**BETA** The updated `WorkflowTask`."""
+  workflowTask: WorkflowTask
+}
+
+
+input CreateCustomMetadataPropertyInput {
+  """`CustomMetadataProperty` parent Id."""
+  parentId: ID!
+
+  """`CustomMetadataProperty` display name."""
+  name: String!
+
+  """`CustomMetadataProperty` type."""
+  type: CreateCustomMetadataPropertyTypeInput!
+
+  """`CustomMetadataProperty` help text."""
+  helpText: String = ""
+
+  """Define if `CustomMetadataProperty` is required."""
+  isRequired: Boolean = false
+
+  """**BETA** Define if `CustomMetadataProperty` is viewable."""
+  isViewable: Boolean! = true
+
+  """**BETA** Define if `CustomMetadataProperty` is searchable."""
+  isSearchable: Boolean! = true
+
+  """
+  Set a `CustomMetadataProperty` default value. This setting will be ignored for properties that are not of `SELECT` or `MULTISELECT` type  (use options for these cases instead). Applies to newly uploaded `Assets` only.
+  """
+  defaultValue: String
+
+  """Position in the list of newly created `CustomMetadataProperty`."""
+  position: CustomMetadataPropertyPositionInput
+
+  """**BETA** Set a dependency to another `CustomMetadataProperty`."""
+  dependency: CustomMetadataPropertyDependencyInput
+
+  """**BETA** Permissions defined for this property."""
+  permissions: [CustomMetadataPropertyPermissionInput!]
+}
+
+
+type CreateCustomMetadataProperty {
+  """The newly created `CustomMetadataProperty`."""
+  property: CustomMetadataProperty!
+}
+
+
+input CreateMetadataFieldInput {
+  """`Project`/`Library` Id where metadata field should be created."""
+  projectId: ID!
+
+  """Create custom metadata field label."""
+  label: String!
+
+  """Create custom metadata field type."""
+  type: MetadataFieldType! = TEXT
+
+  """
+  Create custom metadata field allowed values. Only valid for `SELECT` type fields.
+  """
+  values: [MetadataFieldValuesInput]
+
+  """
+  New custom metadata default value option. This value will be set to all new assets.
+  """
+  defaultValue: String
+
+  """Allow multiple values in `SELECT` type `Metadata Field`."""
+  allowMultipleValues: Boolean = false
+
+  """Allow an empty value as a valid `SELECT` type `Metadata Field` value."""
+  allowEmptyValue: Boolean = false
+
+  """Allow users to search for `Metadata Field` values in the Frontify UI."""
+  isSearchable: Boolean = true
+
+  """Allow users to edit `Metadata Field` values in the Frontify UI."""
+  isEditable: Boolean = true
+
+  """Show/hide `Metadata Field` values in the Frontify UI."""
+  isVisible: Boolean = true
+}
+
+
+type CreateMetadataField {
+  """Created `MetadataField`."""
+  metadataField: MetadataField!
+}
+
+
+input CreateWorkflowStatusInput {
+  """**BETA** `Workflow` Id where `WorkflowStatus` should be created."""
+  workflowId: ID!
+
+  """**BETA** Title of the `WorkflowStatus`."""
+  title: String!
+
+  """**BETA** Color of the `WorkflowStatus`."""
+  color: RgbaColorInput
+}
+
+
+type CreateWorkflowStatus {
+  """**BETA** The newly created `WorkflowStatus`."""
+  workflowStatus: WorkflowStatus
+}
+
+
+input DeleteCustomMetadataPropertyInput {
+  """`CustomMetadataProperty` Id."""
+  id: ID!
+}
+
+
+type DeleteCustomMetadataProperty {
+  """The Id of the deleted `CustomMetadataProperty`."""
+  id: ID!
+}
+
+
+input DeleteMetadataFieldInput {
+  """Id of the `MetadataField` to delete."""
+  id: ID!
+}
+
+
+type DeleteMetadataField {
+  """The Id of the deleted `MetadataField`."""
+  id: ID!
+
+  """
+  **DEPRECATED** Deleted `MetadataField`. This field will be removed. Use `id` instead. | Date: 2024-01-01
+  """
+  metadataField: MetadataField! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
+}
+
+
+input DeleteWorkflowStatusInput {
+  """**BETA** Id of the `WorkflowStatus` to be deleted."""
+  id: ID!
+}
+
+
+type DeleteWorkflowStatus {
+  """The Id of the deleted `WorkflowStatus`."""
+  id: ID!
+}
+
+
+input DeleteWorkflowTaskInput {
+  """**BETA** Id of the `WorkflowTask` to be deleted."""
+  id: ID!
+}
+
+
+type DeleteWorkflowTask {
+  """The Id of the deleted `WorkflowTask`."""
+  id: ID!
+}
+
+
+input MoveWorkflowTaskInput {
+  """**BETA** The Id of the destination `WorkflowStatus`."""
+  workflowStatusId: ID!
+
+  """**BETA** List of `WorkflowTask` Ids to move. Limited to 100 Ids."""
+  workflowTaskIds: [ID!]!
+
+  """
+  **BETA** `WorkflowTask` enter message. Optionally required by a `EnterRule` of the given `WorkflowStatus`.
+  """
+  statusEnterMessage: String
+}
+
+
+type MoveWorkflowTask {
+  """**BETA** The `WorkflowStatus` with the moved tasks."""
+  workflowStatus: WorkflowStatus
+}
+
+
+input RemoveCustomMetadataInput {
+  """List of parent Ids where `CustomMetadata` should be removed from."""
+  parentIds: [ID!]!
+
+  """`CustomMetadata` to be removed from the list of parent Ids."""
+  customMetadata: [CustomMetadataInput!]!
+}
+
+
+type RemoveCustomMetadata {
+  """List of parentIds with removed `CustomMetadata` values."""
+  parentIds: [ID!]!
+}
+
+
+input RemoveCustomMetadataPropertyOptionsInput {
+  """`CustomMetadataProperty` Id."""
+  propertyId: ID!
+
+  """`CustomMetadataPropertyOption` Ids."""
+  optionIds: [ID!]!
+}
+
+
+type RemoveCustomMetadataPropertyOptions {
+  """`CustomMetadataProperty` details."""
+  customMetadataProperty: CustomMetadataProperty!
+}
+
+
+input RemoveMetadataValueInput {
+  """`MetadataValue` Id."""
+  id: ID!
+}
+
+
+type RemoveMetadataValue {
+  """`MetadataValue` Id."""
+  id: ID!
+
+  """`User` who created the `MetadataValue`."""
+  creator: User!
+
+  """`DateTime` of the `MetadataValue` creation."""
+  createdAt: DateTime!
+
+  """`User` who last modified the `MetadataValue`."""
+  modifier: User
+
+  """`DateTime` of the `MetadataValue` last modification."""
+  modifiedAt: DateTime
+
+  """`MetadataField` related to the `MetadataValue`."""
+  metadataField: MetadataField!
+
+  """`MetadataValue` value."""
+  value: String!
+}
+
+
+input RemoveWorkflowChecklistItemInput {
+  """**BETA** The Id of the `WorkflowChecklistItem` to remove."""
+  id: ID!
+}
+
+
+type RemoveWorkflowChecklistItem {
+  """**BETA** The deleted `WorkflowChecklistItem`."""
+  checklistItem: WorkflowChecklistItem
+}
+
+
+input RemoveWorkflowChecklistPresetInput {
+  """**BETA** The Id of the `WorkflowChecklistPreset` to remove."""
+  id: ID!
+}
+
+
+type RemoveWorkflowChecklistPreset {
+  """**BETA** The deleted `WorkflowChecklistPreset`."""
+  checklistPreset: WorkflowChecklistPreset
+}
+
+
+input RemoveWorkflowStatusAssigneesInput {
+  """**BETA** `WorkflowStatus` Id."""
+  id: ID!
+
+  """**BETA** List of `User` Ids to be unassigned from `WorkflowStatus`."""
+  userIds: [ID!]!
+}
+
+
+type RemoveWorkflowStatusAssignees {
+  """**BETA** The updated `WorkflowStatus`."""
+  workflowStatus: WorkflowStatus
+}
+
+
+input RemoveWorkflowTaskAssigneesInput {
+  """**BETA** `WorkflowTask` Id."""
+  id: ID!
+
+  """**BETA** List of `User` Ids to unassign from the `WorkflowTask`."""
+  userIds: [ID!]!
+}
+
+
+type RemoveWorkflowTaskAssignees {
+  """**BETA** The updated `WorkflowTask`."""
+  workflowTask: WorkflowTask
+}
+
+
+input SetCustomMetadataInput {
+  """List of `parentIds` where `CustomMetadata` should be set."""
+  parentIds: [ID!]!
+
+  """`CustomMetadata` to be set to the list of `parentIds`."""
+  customMetadata: [CustomMetadataInput!]!
+}
+
+
+type SetCustomMetadata {
+  """List of parentIds with newly `CustomMetadata` values set."""
+  parentIds: [ID!]!
+}
+
+
+input UpdateCustomMetadataPropertyInput {
+  """`CustomMetadataProperty` Id."""
+  id: ID!
+
+  """`CustomMetadataProperty` data."""
+  data: UpdateCustomMetadataPropertyDataInput!
+}
+
+
+input UpdateCustomMetadataPropertyDataInput {
+  """`CustomMetadataProperty` display name."""
+  name: String
+
+  """`CustomMetadataProperty` type details."""
+  type: UpdateCustomMetadataPropertyTypeInput
+
+  """`CustomMetadataProperty` help text."""
+  helpText: String
+
+  """Define if `CustomMetadataProperty` is required."""
+  isRequired: Boolean
+
+  """**BETA** Define if `CustomMetadataProperty` is searchable."""
+  isSearchable: Boolean
+
+  """**BETA** Define if `CustomMetadataProperty` is viewable."""
+  isViewable: Boolean
+
+  """
+  Set a `CustomMetadataProperty` default value. This setting will be ignored for properties that are not of `SELECT` or `MULTISELECT` type  (use options for these cases instead). Applies to newly uploaded `Assets` only.
+  """
+  defaultValue: String
+
+  """**BETA** Set a dependency to another `CustomMetadataProperty`."""
+  dependency: CustomMetadataPropertyDependencyInput
+
+  """**BETA** `CustomMetadataProperty` permissions."""
+  permissions: [CustomMetadataPropertyPermissionInput!]
+}
+
+
+input UpdateCustomMetadataPropertyTypeInput {
+  """
+  Define CustomMetadataProperty` options for `SELECT` or `MULTISELECT` type properties.
+  """
+  options: [UpdateCustomMetadataPropertyTypeOptionInput!]
+}
+
+
+input UpdateCustomMetadataPropertyTypeOptionInput {
+  """
+  `CustomMetadataPropertyOption` Id. This is an optional field only consider for editing purposes.
+  """
+  id: ID
+
+  """`CustomMetadataPropertyOption` value."""
+  value: String!
+
+  """
+  Define `CustomMetadataPropertyOption` as default. Applies to newly created `Assets` only.
+  """
+  isDefault: Boolean = false
+}
+
+
+type UpdateCustomMetadataProperty {
+  """Name of the updated `CustomMetadataProperty`."""
+  property: CustomMetadataProperty!
+}
+
+
+input UpdateWorkflowChecklistItemInput {
+  """**BETA** `WorkflowChecklistItem` Id."""
+  id: ID!
+
+  """`WorkflowChecklistItem` data."""
+  data: UpdateWorkflowChecklistItemDataInput!
+}
+
+
+input UpdateWorkflowChecklistItemDataInput {
+  """**BETA** Content of the `WorkflowChecklistItem`."""
+  content: String
+
+  """**BETA** State of the `WorkflowChecklistItem`."""
+  isCompleted: Boolean
+
+  """**BETA** `User` Id of `WorkflowChecklistItem` assignee."""
+  assigneeUserId: ID
+}
+
+
+type UpdateWorkflowChecklistItem {
+  """**BETA** The updated `WorkflowChecklistItem`."""
+  checklistItem: WorkflowChecklistItem
+}
+
+
+input UpdateWorkflowChecklistPresetInput {
+  """**BETA** `WorkflowChecklistPreset` Id."""
+  id: ID!
+
+  """`WorkflowChecklistPreset` data."""
+  data: UpdateWorkflowChecklistPresetDataInput!
+}
+
+
+input UpdateWorkflowChecklistPresetDataInput {
+  """**BETA** Content of the `WorkflowChecklistPreset`."""
+  content: String
+
+  """**BETA** `User` Id of `WorkflowChecklistPreset` assignee."""
+  assigneeUserId: ID
+}
+
+
+type UpdateWorkflowChecklistPreset {
+  """**BETA** The updated `ChecklistPreset`."""
+  checklistPreset: WorkflowChecklistPreset
+}
+
+
+input UpdateWorkflowStatusInput {
+  """**BETA** `WorkflowStatus` Id."""
+  id: ID!
+
+  """**BETA** `WorkflowStatus` data."""
+  data: UpdateWorkflowStatusDataInput!
+}
+
+
+input UpdateWorkflowStatusDataInput {
+  """**BETA** `WorkflowStatus` title."""
+  title: String
+
+  """**BETA** `WorkflowStatus` color."""
+  color: RgbaColorInput
+}
+
+
+type UpdateWorkflowStatus {
+  """**BETA** The updated `WorkflowStatus`."""
+  workflowStatus: WorkflowStatus
+}
+
+
+input UpdateWorkflowTaskInput {
+  """**BETA** `WorkflowTask` Id."""
+  id: ID!
+
+  """`WorkflowTask` data."""
+  data: UpdateWorkflowTaskDataInput!
+}
+
+
+input UpdateWorkflowTaskDataInput {
+  """**BETA** `WorkflowTask` title."""
+  title: String
+
+  """**BETA** `WorkflowTask` description."""
+  description: String
+}
+
+
+type UpdateWorkflowTask {
+  """**BETA** The updated `WorkflowTask`."""
+  workflowTask: WorkflowTask
+}
+
+
+type CustomMetadataPropertyOption {
+  """`CustomMetadataPropertyOption` Id."""
+  id: ID!
+
+  """`CustomMetadataPropertyOption` value."""
+  value: String!
+
+  """
+  Indicates if a `CustomMetadataPropertyOption` value is set to newly updated `Assets` by default.
+  """
+  isDefault: Boolean!
+}
+
+
+type CustomMetadataPropertyTypeNumber implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+}
+
+
+type CustomMetadataPropertyTypeSelect implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+
+  """`SELECT` type `CustomMetadataProperty` options."""
+  options: [CustomMetadataPropertyOption]!
+}
+
+
+type CustomMetadataPropertyTypeText implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+}
+
+
+type CustomMetadataPropertyTypeUrl implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+}
+
+
+type Workflow {
+  """**BETA** `Workflow` Id."""
+  id: ID!
+
+  """
+  **BETA** Multiple statuses define a `Workflow`. They represent a line/row in the Kanban board of the current `Workflow`.
+  """
+  statuses: [WorkflowStatus]!
+}
+
+
+type CustomMetadataProperty implements Node {
+  """`CustomMetadataProperty` Id."""
+  id: ID!
+
+  """`User` who created the `CustomMetadataProperty`."""
+  creator: User!
+
+  """`DateTime` of the `CustomMetadataProperty` creation."""
+  createdAt: DateTime!
+
+  """`User` who last modified the `CustomMetadataProperty`."""
+  modifier: User
+
+  """`DateTime` of the `CustomMetadataProperty`'s last modification."""
+  modifiedAt: DateTime
+
+  """`CustomMetadataProperty` name."""
+  name: String!
+
+  """`CustomMetadataProperty` type details."""
+  type: CustomMetadataPropertyType!
+
+  """`CustomMetadataProperty` help text."""
+  helpText: String
+
+  """Indicates if a `CustomMetadataProperty` is required to be defined."""
+  isRequired: Boolean!
+
+  """**BETA** Indicates if a `CustomMetadataProperty` is searchable."""
+  isSearchable: Boolean!
+
+  """**BETA** Indicates if a `CustomMetadataProperty` is viewable."""
+  isViewable: Boolean!
+
+  """
+  `CustomMetadataProperty` value set to newly update `Assets` by default.
+  """
+  defaultValue: Any
+
+  """**BETA** `CustomMetadataPropertyDependency` details."""
+  dependency: CustomMetadataPropertyDependency
+
+  """
+  **BETA** `CustomMetadataProperty` Ids that cannot be used as dependee properties.
+  """
+  forbiddenDependeePropertyIds: [ID!]
+
+  """**BETA** `CustomMetadataProperty` permissions."""
+  permissions: CustomMetadataPropertyPermissions
+}
+
+
+input CustomMetadataInput {
+  """`CustomMetadataProperty` Id."""
+  propertyId: ID!
+
+  """
+  `CustomMetadataProperty` value. Polymorphic per property type: scalar (`String`/`Float`/`Int`/`DateTime`) for single-value types; list of `Int` option IDs for `MULTISELECT`; for `CATALOG`, a non-empty list of entry objects of the shape `[{"primaryKey": "SKU-001"}, …]` — the server creates a `CatalogSelection` and persists its ID transparently.
+  """
+  value: Any
+}
+
+
+input AddCustomMetadataPropertyOptionInput {
+  """`CustomMetadataPropertyOption` value."""
+  value: String!
+
+  """
+  Define `CustomMetadataPropertyOption` as default. Applies to newly created `Assets` only.
+  """
+  isDefault: Boolean = false
+}
+
+
+input CreateCustomMetadataPropertyTypeInput {
+  """`CustomMetadataProperty` type name."""
+  name: CustomMetadataPropertyTypeName!
+
+  """
+  Define CustomMetadataProperty` options for `SELECT` or `MULTISELECT` type properties.
+  """
+  options: [CreateCustomMetadataPropertyTypeOptionInput!]
+}
+
+
+"""List of possible `CustomMetadataProperty` type names."""
+enum CustomMetadataPropertyTypeName {
+  SELECT
+  MULTISELECT
+  TEXT
+  LONGTEXT
+  DATE
+  NUMBER
+  URL
+  CATALOG
+}
+
+
+input CreateCustomMetadataPropertyTypeOptionInput {
+  """`CustomMetadataPropertyOption` value."""
+  value: String!
+
+  """
+  Define `CustomMetadataPropertyOption` as default. Applies to newly created `Assets` only.
+  """
+  isDefault: Boolean = false
+}
+
+
+input CustomMetadataPropertyPositionInput {
+  """
+  `CustomMetadataProperty` Id used as positional reference for `BEFORE` and `AFTER` placements.
+  """
+  targetId: ID
+
+  """`CustomMetadataProperty` position placement."""
+  placement: CustomMetadataPropertyPositionPlacement!
+}
+
+
+"""List of possible `CustomMetadataProperty` position placement options."""
+enum CustomMetadataPropertyPositionPlacement {
+  FIRST
+  LAST
+  BEFORE
+  AFTER
+}
+
+
+input CustomMetadataPropertyDependencyInput {
+  """`CustomMetadataPropertyDependency` type."""
+  type: CustomMetadataPropertyDependencyType!
+
+  """**BETA** Dependee property details."""
+  property: CustomMetadataPropertyDependencyPropertyInput!
+}
+
+
+"""List of possible `CustomMetadataPropertyDependency` types."""
+enum CustomMetadataPropertyDependencyType {
+  FILLED
+  SELECT_EQUALS
+  SELECT_ONE_OF
+}
+
+
+input CustomMetadataPropertyDependencyPropertyInput {
+  """The dependee `CustomMetadataProperty` Id."""
+  id: ID!
+
+  """
+  `CustomMetadataPropertyOption` Id for the dependency type `SELECT_EQUALS`.
+  """
+  optionId: ID
+
+  """
+  `CustomMetadataPropertyOption` Ids for the dependency type `SELECT_ONE_OF`.
+  """
+  optionIds: [ID!]
+}
+
+
+input CustomMetadataPropertyPermissionInput {
+  """
+  **BETA** Subject representing one specific user, a user group, or a role granted with the permission
+                  e.g.: "user:123", "group:88", "admin", "editor", "internal", "everyone".
+  """
+  subject: String!
+
+  """**BETA** Permission level granted to the subject."""
+  permissionLevel: CustomMetadataPropertyPermissionLevel!
+}
+
+
+"""List of possible custom `MetadataField` types."""
+enum MetadataFieldType {
+  SELECT
+  TEXT
+  LONGTEXT
+  DATE
+  NUMBER
+}
+
+
+input MetadataFieldValuesInput {
+  """Possible value of `SELECT` type `Metadata Field`."""
+  value: String!
+
+  """
+  Optional setting to define current `SELECT` type `Metadata Field` value as default.
+  """
+  default: Boolean = false
+}
+

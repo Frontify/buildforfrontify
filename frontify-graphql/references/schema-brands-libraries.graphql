@@ -1,0 +1,1759 @@
+# Frontify GraphQL — Brands, Libraries & Workspace
+# Brand, Library, WorkspaceProject, Collection, Folder, Account,
+# user/collaborator types, and related query/mutation types.
+
+union AccountCollaborator = AccountUser | UserGroup
+
+
+type UserItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """`User` items list."""
+  items: [User]
+}
+
+
+"""`FolderInterface` for `Folder` returnable types."""
+interface Folder {
+  """`Folder` Id."""
+  id: ID!
+
+  """`Folder` name."""
+  name: String!
+
+  """The `User` who created the `Folder`."""
+  creator: User!
+
+  """`DateTime` of the `Folder` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `Folder`."""
+  modifier: User
+
+  """`DateTime` of the last `Folder` modification."""
+  modifiedAt: DateTime
+
+  """
+  A list of `Breadcrumb` items representing the parent folders structure for the current `SubFolder`.
+  """
+  breadcrumbs: [Breadcrumb!]!
+
+  """
+  **DEPRECATED** The `SubFolderItems` of the current `Library`/`Workspace`/`SubFolder`. This field will be removed. Use `folders` instead. | Date: 2025-07-01
+  """
+  subFolders(
+    """How many `SubFolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `SubFolderItems` listing page number."""
+    page: Int = 1
+  ): SubFolderItems! @deprecated(reason: "This field will be removed. Use `folders` instead. | Date: 2025-07-01")
+
+  """The `FolderItems` of the current `Library`/`Workspace`/`Folder`."""
+  folders(
+    """How many `FolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `FolderItems` listing page number."""
+    page: Int = 1
+  ): FolderItems!
+
+  """The `AssetItems` in the current `Library`/`Workspace`/`Folder`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `AssetItems` listing page number."""
+    page: Int = 1
+
+    """
+    **BETA** Define search criteria for the `AssetItems` in the `Library`/`Workspace` or `Folder`.
+    """
+    query: FolderAssetQueryInput
+  ): AssetItems!
+}
+
+
+"""`LibraryInterface` for `Library` returnable types."""
+interface Library {
+  """`Library` Id."""
+  id: ID!
+
+  """`Library` name."""
+  name: String!
+
+  """`Library` color."""
+  color: RgbaColor
+
+  """
+  **DEPRECATED** Amount of `Assets` contained in this `Library`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  """
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+
+  """
+  **DEPRECATED** Retrieve list of all `MetadataFields` belonging to this `Library`. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
+  """
+  metadataFields: [MetadataField] @deprecated(reason: "This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01")
+
+  """Search or list `Assets` in this `Library`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in this `Library`."""
+    query: AssetQueryInput
+  ): AssetItems!
+
+  """Retrieve list of all `Licenses` belonging to this `Library`."""
+  licenses: [License]
+
+  """List `Collection` type items within a `Library`."""
+  collections(
+    """How many `CollectionItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): CollectionItems!
+
+  """Browse the `Library`'s `SubFolderItems` and `AssetItems`."""
+  browse: LibraryRootFolder!
+
+  """`Library` collaborators."""
+  collaborators: LibraryCollaborators
+
+  """Check current `User` permissions in a specific `Library`."""
+  currentUserPermissions: LibraryUserPermissions!
+
+  """**BETA** The `Workflow` belonging to the given `Library`."""
+  workflow: Workflow!
+
+  """List of `CustomMetadataProperty` items belonging to a `Library`."""
+  customMetadataProperties: [CustomMetadataProperty!]!
+}
+
+
+type Account implements Node {
+  """`Account` Id."""
+  id: ID!
+
+  """List and search `UserItems`."""
+  users(
+    """How many `UserItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): UserItems
+
+  """List and search `UserGroupItems`."""
+  userGroups(
+    """How many `UserGroupItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): UserGroupItems
+
+  """**BETA** List and search `AccountSearch` item(s)."""
+  search(
+    """How many `AccountSearch` item(s) to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for the `AccountSearch` item(s)."""
+    query: AccountQueryInput
+  ): AccountSearchItems
+
+  """**BETA** List and search `TargetItems`."""
+  targets(
+    """**BETA** How many `TargetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """**BETA** Current page number."""
+    page: Int = 1
+  ): TargetItems
+}
+
+
+type AccountUser implements Node & User {
+  """`AccountUser` Id."""
+  id: ID!
+
+  """`AccountUser` email."""
+  email: Email!
+
+  """`AccountUser` name."""
+  name: String
+
+  """`AccountUser` avatar."""
+  avatar: Url
+}
+
+
+type Brand implements Node {
+  """`Brand` Id."""
+  id: ID!
+
+  """`Brand` name."""
+  name: String!
+
+  """`Brand` color."""
+  rgbaColor: RgbaColor
+
+  """`Brand` avatar."""
+  avatar: Url
+
+  """`Brand` slug."""
+  slug: String
+
+  """
+  **DEPRECATED** Retrieve all `Projects`. This field will be removed. Use `libraries` or `workspaceProjects` instead. | Date: 2023-01-01
+  """
+  projects(
+    """`Project` types."""
+    types: [ProjectType]
+  ): [Project] @deprecated(reason: "This field will be removed. Use `libraries` or `workspaceProjects` instead. | Date: 2023-01-01")
+
+  """Retrieve all `Library` items."""
+  libraries(
+    """How many items to show in the search result field. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """**BETA** Define search criteria for `Library` items in a `Brand`."""
+    query: LibraryQueryInput
+  ): LibraryItems
+
+  """Retrieve all `Workspace` items."""
+  workspaceProjects(
+    """How many items to show in the search result field. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """
+    **BETA** Define search criteria for `WorkspaceProject` items in a `Brand`.
+    """
+    query: WorkspaceProjectQueryInput
+  ): WorkspaceItems
+
+  """**BETA** Paginated list of `Guideline` items for `Brand`."""
+  guidelines(
+    """
+    **BETA** Specifies the language in which the Guidelines should be delivered. This field must be set at the highest level in the GraphQL hierarchy. If the requested language is unavailable, the default language will be used as a fallback.
+    """
+    language: LanguageCode
+
+    """
+    **BETA** How many `GuidelineItems` to show per query. Min: 1, Max: 100.
+    """
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): GuidelineItems
+
+  """`Brand` `CustomMetadataProperty` items list."""
+  customMetadataProperties: [CustomMetadataProperty!]!
+
+  """Retrieve all `CreativeTemplate` items."""
+  creativeTemplates(
+    """How many items to show in the search result field. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `CreativeTemplate` items in a `Brand`."""
+    query: CreativeTemplateQueryInput
+  ): CreativeTemplateItems!
+
+  """**BETA** The brand essentials."""
+  essentials: BrandEssentials!
+
+  """**BETA** Search for the assets on the brand level."""
+  search(
+    """How many items to show in the search result field. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Query search options."""
+    query: BrandQueryInput
+  ): BrandSearchItems
+
+  """
+  **BETA** Enhanced search for the assets on the brand level. Includes natural search and exact term search
+  """
+  enhancedSearch(
+    """How many items to show in the search result field. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Query search options."""
+    query: BrandQueryInput
+  ): BrandEnhancedSearchItems
+}
+
+
+union Project = MediaLibrary | IconLibrary | LogoLibrary | DocumentLibrary | Workspace
+
+
+type Collection implements Node {
+  """`Collection` Id."""
+  id: ID!
+
+  """`Collection` name."""
+  name: String!
+
+  """`Collection`'s `Asset` items list."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for the returned `Assets`."""
+    query: LibraryCollectionQueryInput
+  ): AssetItems!
+
+  """
+  **DEPRECATED** `Collection`'s privacy state setting. This field will be removed. | Date: 2024-01-01
+  """
+  isPrivate: Boolean @deprecated(reason: "This field will be removed. | Date: 2024-01-01")
+
+  """`Collection`'s permissions of the current `User`."""
+  currentUserPermissions: CollectionUserPermissions!
+}
+
+
+type UserGroup implements Node {
+  """`UserGroup` Id."""
+  id: ID!
+
+  """`UserGroup` name."""
+  name: String
+
+  """`UserGroup`'s `UserItems`."""
+  users(
+    """How many `UserItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): UserItems
+}
+
+
+type Workspace implements Node {
+  """`Library`/`Workspace` Id."""
+  id: ID!
+
+  """`Library`/`Workspace` name."""
+  name: String!
+
+  """`Library`/`Workspace` color."""
+  color: RgbaColor
+
+  """
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  """
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+
+  """Search or list `Assets` in the `Library`/`Workspace`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in the `Library`/`Workspace`."""
+    query: AssetQueryInput
+  ): AssetItems!
+
+  """`Library`/`Workspace` `License` items list."""
+  licenses: [License]
+
+  """
+  **DEPRECATED** `Library`/`Workspace` `MetadataField` items list. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
+  """
+  metadataFields: [MetadataField] @deprecated(reason: "This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01")
+
+  """**BETA** The `Workflow` belonging to the given `Library`/`Workspace`."""
+  workflow: Workflow!
+
+  """Browse the `Workspace`'s `SubFolderItems` and `AssetItems`."""
+  browse: WorkspaceRootFolder!
+
+  """`Workspace` collaborators."""
+  collaborators: WorkspaceCollaborators
+
+  """`Workspace` permissions of the current `User`."""
+  currentUserPermissions: WorkspaceUserPermissions!
+
+  """**BETA** `Workspace` state."""
+  isArchived: Boolean!
+
+  """
+  List of `CustomMetadataProperty` items and values associated to `Workspace`.
+  """
+  customMetadata: [CustomMetadata!]!
+}
+
+
+input AddCollectionAssetsInput {
+  """`Collection` Id."""
+  collectionId: ID!
+
+  """
+  Ids of the `Assets` to add to the `Collection`. Must be in the same `Library` as the `Collection`.
+  """
+  assetIds: [ID!]!
+}
+
+
+type AddCollectionAssets {
+  """`Collection` details."""
+  collection: Collection
+}
+
+
+input CreateCollectionInput {
+  """
+  Id of the parent where you wish to create a new `Collection`. Currently supported for `Library` type parent entities only.
+  """
+  parentId: ID!
+
+  """Name of the `Collection`."""
+  name: String!
+}
+
+
+type CreateCollection {
+  """The newly created `Collection` details."""
+  collection: Collection!
+}
+
+
+input CreateFolderInput {
+  """
+  The parent Id of the `Folder` creation destination. Possible identifiers are `Library`/`Workspace` or `Folder`.
+  """
+  parentId: ID!
+
+  """`Folder` name."""
+  name: String!
+
+  """`Folder` description."""
+  description: String
+}
+
+
+type CreateFolder {
+  """The newly created `Folder`."""
+  folder: Folder
+}
+
+
+input CreateLicenseInput {
+  """`Library` Id."""
+  projectId: ID!
+
+  """`License` title."""
+  title: String!
+
+  """`License` terms."""
+  license: String!
+
+  """Apply `License` to new assets by default."""
+  addByDefault: Boolean = false
+
+  """Require user to accept `License` terms before download."""
+  requireConsensus: Boolean = false
+}
+
+
+type CreateLicense {
+  """`License` details."""
+  license: License!
+}
+
+
+input CreateWorkspaceProjectInput {
+  """Id of the `Brand` where `Project` should be inserted."""
+  brandId: ID!
+
+  """`Workspace` type `Project` name."""
+  name: String!
+}
+
+
+type CreateWorkspaceProject {
+  """`WorkspaceProject` details."""
+  project: Workspace!
+}
+
+
+input DeleteCollectionInput {
+  """`Collection` Id."""
+  collectionId: ID!
+}
+
+
+type DeleteCollection {
+  """The Id of the deleted `Collection`."""
+  id: ID!
+
+  """
+  **DEPRECATED** `Collection` details. This field will be removed. Use `id` instead. | Date: 2024-01-01
+  """
+  collection: Collection! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
+}
+
+
+input DeleteFoldersInput {
+  """Ids of the `Folders` to delete."""
+  ids: [ID!]!
+}
+
+
+type DeleteFolders {
+  """List of the deleted `Folder` ids."""
+  ids: [ID!]
+}
+
+
+input DeleteLicenseInput {
+  """Id of the `License` to delete."""
+  id: ID!
+}
+
+
+type DeleteLicense {
+  """The Id of the deleted `License`."""
+  id: ID!
+}
+
+
+input InviteProjectUserInput {
+  """Id of the `Project` you want to invite `User` to."""
+  projectId: ID!
+
+  """Email address of the `User` you would like to invite."""
+  email: Email!
+
+  """`Project` permission level of the `User` you are inviting."""
+  permission: ProjectPermission! = VIEW
+
+  """Start `Date` for `User` access permission validity."""
+  validFrom: DateTime
+
+  """End `Date` for `User` access permission validity."""
+  validTo: DateTime
+}
+
+
+"""List of possible `Project` permission levels."""
+enum ProjectPermission {
+  EDIT
+  COMMENT
+  VIEW
+  ADMIN
+  TRANSLATE
+}
+
+
+type InviteProjectUser {
+  """`Project` where `User` was invited to."""
+  project: Project
+}
+
+
+input MoveFoldersInput {
+  """Ids of the `Folder` items to be moved."""
+  folderIds: [ID!]!
+
+  """
+  Id of the destination entity where `Folder` items should be moved to. Allows `Library`/`Workspace`/`Folder` Ids only.
+  """
+  destinationId: ID!
+}
+
+
+type MoveFolders {
+  """List of moved `Folder` ids."""
+  ids: [ID!]
+}
+
+
+input RemoveCollectionAssetsInput {
+  """`Collection` Id."""
+  collectionId: ID!
+
+  """Ids of the `Assets` to remove from the `Collection`."""
+  assetIds: [ID!]!
+}
+
+
+type RemoveCollectionAssets {
+  """`Collection` details."""
+  collection: Collection
+}
+
+
+input SetCollectionAssetsInput {
+  """`Collection` Id."""
+  collectionId: ID!
+
+  """
+  Ids of the `Assets` to replace existing `Assets` in the `Collection`. Must be in the same `Library` as the `Collection`.
+  """
+  assetIds: [ID!]!
+}
+
+
+type SetCollectionAssets {
+  """`Collection` details."""
+  collection: Collection
+}
+
+
+input UpdateCollectionInput {
+  """`Collection` Id."""
+  collectionId: ID!
+
+  """`Collection` data."""
+  data: UpdateCollectionDataInput!
+}
+
+
+input UpdateCollectionDataInput {
+  """Name of the `Collection`."""
+  name: String!
+}
+
+
+type UpdateCollection {
+  """`Collection` details."""
+  collection: Collection!
+}
+
+
+input UpdateFolderInput {
+  """`Folder` Id."""
+  id: ID!
+
+  """`Folder` data."""
+  data: UpdateFolderDataInput!
+}
+
+
+input UpdateFolderDataInput {
+  """`Folder` name or display name."""
+  name: String
+
+  """`Folder` description."""
+  description: String
+}
+
+
+type UpdateFolder {
+  """`Folder` details."""
+  folder: Folder
+}
+
+
+input CreateBrandInput {
+  """`Brand` name."""
+  name: String!
+
+  """`Brand` color. When not provided, a default color will be used."""
+  color: RgbaColorInput
+}
+
+
+type CreateBrand {
+  """The newly created `Brand`."""
+  brand: Brand!
+}
+
+
+input DeleteBrandInput {
+  """`Brand` id."""
+  id: ID!
+}
+
+
+type DeleteBrand {
+  """The deleted `Brand` id."""
+  id: ID!
+}
+
+
+input UpdateBrandInput {
+  """`Brand` id."""
+  id: ID!
+
+  """`Brand` data."""
+  data: UpdateBrandDataInput!
+}
+
+
+input UpdateBrandDataInput {
+  """`Brand` name."""
+  name: String
+
+  """`Brand` color. When not provided, the color will not be updated."""
+  color: RgbaColorInput
+}
+
+
+type UpdateBrand {
+  """The updated `Brand`."""
+  brand: Brand!
+}
+
+
+input AddLibraryAssetTargetsInput {
+  """
+  **BETA** `Asset` Id. Limited to 100 Ids per request. Assets must belong to the same library.
+  """
+  assetIds: [ID!]!
+
+  """**BETA** `Target` Id. Limited to 100 Ids per request."""
+  targetIds: [ID!]!
+}
+
+
+type AddLibraryAssetTargets {
+  """**BETA** The assets affected by the mutation."""
+  assets: [Asset!]!
+}
+
+
+input RemoveLibraryAssetTargetsInput {
+  """
+  **BETA** `Asset` Id. Limited to 100 Ids per request. Assets must belong to the same library.
+  """
+  assetIds: [ID!]!
+
+  """**BETA** `Target` Id. Limited to 100 Ids per request."""
+  targetIds: [ID!]!
+}
+
+
+type RemoveLibraryAssetTargets {
+  """**BETA** The assets affected by the mutation."""
+  assets: [Asset!]!
+}
+
+
+input SetLibraryAssetTargetsInput {
+  """
+  **BETA** `Asset` Id. Limited to 100 Ids per request. Assets must belong to the same library.
+  """
+  assetIds: [ID!]!
+
+  """**BETA** `Target` Id. Limited to 100 Ids per request."""
+  targetIds: [ID!]!
+}
+
+
+type SetLibraryAssetTargets {
+  """**BETA** The assets affected by the mutation."""
+  assets: [Asset!]!
+}
+
+
+type SubFolder implements Node & Folder {
+  """`SubFolder` Id."""
+  id: ID!
+
+  """`SubFolder` name."""
+  name: String!
+
+  """The `User` who created the `SubFolder`."""
+  creator: User!
+
+  """`DateTime` of the `SubFolder` creation."""
+  createdAt: DateTime!
+
+  """The `User` who last modified the `SubFolder`."""
+  modifier: User
+
+  """`DateTime` of the last `SubFolder` modification."""
+  modifiedAt: DateTime
+
+  """
+  A list of `Breadcrumb` items representing the parent folders structure for the current `SubFolder`.
+  """
+  breadcrumbs: [Breadcrumb!]!
+
+  """
+  **DEPRECATED** The `SubFolderItems` of the current `SubFolder`. This field will be removed. Use `folders` instead. | Date: 2025-07-01
+  """
+  subFolders(
+    """How many `SubFolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `SubFolderItems` listing page number."""
+    page: Int = 1
+  ): SubFolderItems! @deprecated(reason: "This field will be removed. Use `folders` instead. | Date: 2025-07-01")
+
+  """The `FolderItems` of the current `Folder`."""
+  folders(
+    """How many `FolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `FolderItems` listing page number."""
+    page: Int = 1
+  ): FolderItems!
+
+  """The `AssetItems` in the current `SubFolder`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `AssetItems` listing page number."""
+    page: Int = 1
+
+    """
+    **BETA** Define search criteria for the `AssetItems` in the `SubFolder`.
+    """
+    query: FolderAssetQueryInput
+  ): AssetItems!
+}
+
+
+type SubFolderItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `SubFolder`"""
+  items: [SubFolder]
+}
+
+
+type FolderItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `Folder`"""
+  items: [Folder]
+}
+
+
+input FolderAssetQueryInput {
+  """**BETA** Sort order of matched results."""
+  sortBy: AssetQueryFilterSortType
+}
+
+
+type MediaLibrary implements Node & Library {
+  """`Library`/`Workspace` Id."""
+  id: ID!
+
+  """`Library`/`Workspace` name."""
+  name: String!
+
+  """`Library`/`Workspace` color."""
+  color: RgbaColor
+
+  """
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  """
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+
+  """Search or list `Assets` in the `Library`/`Workspace`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in the `Library`/`Workspace`."""
+    query: AssetQueryInput
+  ): AssetItems!
+
+  """`Library`/`Workspace` `License` items list."""
+  licenses: [License]
+
+  """
+  **DEPRECATED** `Library`/`Workspace` `MetadataField` items list. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
+  """
+  metadataFields: [MetadataField] @deprecated(reason: "This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01")
+
+  """**BETA** The `Workflow` belonging to the given `Library`/`Workspace`."""
+  workflow: Workflow!
+
+  """Browse the `Library` `SubFolderItems` and `AssetItems`."""
+  browse: LibraryRootFolder!
+
+  """`Library` collaborators."""
+  collaborators: LibraryCollaborators
+
+  """`Library` permissions of the current `User`."""
+  currentUserPermissions: LibraryUserPermissions!
+
+  """
+  Retrieve list of all `CustomMetadataProperty` items belonging to `Library`.
+  """
+  customMetadataProperties: [CustomMetadataProperty!]!
+
+  """`Library` `Collection` items list."""
+  collections(
+    """How many `CollectionItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): CollectionItems!
+}
+
+
+input AssetQueryInFolderInput {
+  """`Folder` Id."""
+  id: ID!
+}
+
+
+type CollectionItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `Collection` items."""
+  items: [Collection]
+}
+
+
+input LibraryCollectionQueryInput {
+  """Limit the result set by the search term."""
+  term: String
+}
+
+
+type CollectionUserPermissions {
+  """Check if the current user can add `Assets` in this `Collection`."""
+  canAddAssets: Boolean!
+
+  """Check if the current user can remove `Assets` from this `Collection`."""
+  canRemoveAssets: Boolean!
+}
+
+
+type LibraryRootFolder {
+  """
+  **DEPRECATED** The `SubFolderItems` of the current `Library`/`Workspace`. This field will be removed. Use `folders` instead. | Date: 2025-07-01
+  """
+  subFolders(
+    """How many `SubFolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `SubFolderItems` listing page number."""
+    page: Int = 1
+  ): SubFolderItems! @deprecated(reason: "This field will be removed. Use `folders` instead. | Date: 2025-07-01")
+
+  """The `FolderItems` of the current `Library`/`Workspace`."""
+  folders(
+    """How many `FolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `FolderItems` listing page number."""
+    page: Int = 1
+  ): FolderItems!
+
+  """`Library`/`Workspace`'s `AssetItems` list."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `AssetItems` listing page number."""
+    page: Int = 1
+
+    """
+    **BETA** Define search criteria for the `AssetItems` in the `Library`/`Workspace`.
+    """
+    query: FolderAssetQueryInput
+  ): AssetItems!
+}
+
+
+type LibraryCollaborators {
+  """`LibraryCollaboratorUserItems` list."""
+  users(
+    """
+    How many `LibraryCollaboratorUserItems` to show per query. Min: 1, Max: 100.
+    """
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): LibraryCollaboratorUserItems!
+}
+
+
+type LibraryCollaboratorUserItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """
+  List of `User` items that have lowest required permissions to collaborate on a `Library`.
+  """
+  items: [User]!
+
+  """**BETA** List of `LibraryCollaboratorUserEdge` edges."""
+  edges: [LibraryCollaboratorUserEdge!]!
+}
+
+
+type LibraryCollaboratorUserEdge {
+  """
+  `User` that has the least required permissions to collaborate on a `Library`.
+  """
+  node: User!
+
+  """`User` role in the `Library`."""
+  role: String!
+}
+
+
+type LibraryUserPermissions {
+  """
+  Check if current `User` has `Asset` creation permissions in a specific `Library`.
+  """
+  canCreateAssets: Boolean!
+
+  """
+  Check if current `User` has `Collaborator` view permissions in a specific `Library`.
+  """
+  canViewCollaborators: Boolean!
+
+  """
+  Check if current `User` has `Collection` creation permissions in a specific `Library`.
+  """
+  canCreateCollections: Boolean!
+}
+
+
+type IconLibrary implements Node & Library {
+  """`Library`/`Workspace` Id."""
+  id: ID!
+
+  """`Library`/`Workspace` name."""
+  name: String!
+
+  """`Library`/`Workspace` color."""
+  color: RgbaColor
+
+  """
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  """
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+
+  """Search or list `Assets` in the `Library`/`Workspace`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in the `Library`/`Workspace`."""
+    query: AssetQueryInput
+  ): AssetItems!
+
+  """`Library`/`Workspace` `License` items list."""
+  licenses: [License]
+
+  """
+  **DEPRECATED** `Library`/`Workspace` `MetadataField` items list. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
+  """
+  metadataFields: [MetadataField] @deprecated(reason: "This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01")
+
+  """**BETA** The `Workflow` belonging to the given `Library`/`Workspace`."""
+  workflow: Workflow!
+
+  """Browse the `Library` `SubFolderItems` and `AssetItems`."""
+  browse: LibraryRootFolder!
+
+  """`Library` collaborators."""
+  collaborators: LibraryCollaborators
+
+  """`Library` permissions of the current `User`."""
+  currentUserPermissions: LibraryUserPermissions!
+
+  """
+  Retrieve list of all `CustomMetadataProperty` items belonging to `Library`.
+  """
+  customMetadataProperties: [CustomMetadataProperty!]!
+
+  """`Library` `Collection` items list."""
+  collections(
+    """How many `CollectionItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): CollectionItems!
+}
+
+
+type LogoLibrary implements Node & Library {
+  """`Library`/`Workspace` Id."""
+  id: ID!
+
+  """`Library`/`Workspace` name."""
+  name: String!
+
+  """`Library`/`Workspace` color."""
+  color: RgbaColor
+
+  """
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  """
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+
+  """Search or list `Assets` in the `Library`/`Workspace`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in the `Library`/`Workspace`."""
+    query: AssetQueryInput
+  ): AssetItems!
+
+  """`Library`/`Workspace` `License` items list."""
+  licenses: [License]
+
+  """
+  **DEPRECATED** `Library`/`Workspace` `MetadataField` items list. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
+  """
+  metadataFields: [MetadataField] @deprecated(reason: "This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01")
+
+  """**BETA** The `Workflow` belonging to the given `Library`/`Workspace`."""
+  workflow: Workflow!
+
+  """Browse the `Library` `SubFolderItems` and `AssetItems`."""
+  browse: LibraryRootFolder!
+
+  """`Library` collaborators."""
+  collaborators: LibraryCollaborators
+
+  """`Library` permissions of the current `User`."""
+  currentUserPermissions: LibraryUserPermissions!
+
+  """
+  Retrieve list of all `CustomMetadataProperty` items belonging to `Library`.
+  """
+  customMetadataProperties: [CustomMetadataProperty!]!
+
+  """`Library` `Collection` items list."""
+  collections(
+    """How many `CollectionItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): CollectionItems!
+}
+
+
+type DocumentLibrary implements Node & Library {
+  """`Library`/`Workspace` Id."""
+  id: ID!
+
+  """`Library`/`Workspace` name."""
+  name: String!
+
+  """`Library`/`Workspace` color."""
+  color: RgbaColor
+
+  """
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  """
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+
+  """Search or list `Assets` in the `Library`/`Workspace`."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+
+    """Define search criteria for `Assets` in the `Library`/`Workspace`."""
+    query: AssetQueryInput
+  ): AssetItems!
+
+  """`Library`/`Workspace` `License` items list."""
+  licenses: [License]
+
+  """
+  **DEPRECATED** `Library`/`Workspace` `MetadataField` items list. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
+  """
+  metadataFields: [MetadataField] @deprecated(reason: "This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01")
+
+  """**BETA** The `Workflow` belonging to the given `Library`/`Workspace`."""
+  workflow: Workflow!
+
+  """Browse the `Library` `SubFolderItems` and `AssetItems`."""
+  browse: LibraryRootFolder!
+
+  """`Library` collaborators."""
+  collaborators: LibraryCollaborators
+
+  """`Library` permissions of the current `User`."""
+  currentUserPermissions: LibraryUserPermissions!
+
+  """
+  Retrieve list of all `CustomMetadataProperty` items belonging to `Library`.
+  """
+  customMetadataProperties: [CustomMetadataProperty!]!
+
+  """`Library` `Collection` items list."""
+  collections(
+    """How many `CollectionItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): CollectionItems!
+}
+
+
+type UserGroupItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `UserGroup`."""
+  items: [UserGroup]
+}
+
+
+input AccountQueryInput {
+  """Search term used to retrieve matched results."""
+  term: String
+
+  """Sort order of matched results."""
+  sortBy: AccountQuerySortByInput = RELEVANCE
+
+  """Use filters to reduce the set of matched results."""
+  filter: AccountQueryFilterInput
+}
+
+
+"""
+Search sorting option. Defines how the search results should be sorted.
+"""
+enum AccountQuerySortByInput {
+  """Sort the results by relevance."""
+  RELEVANCE
+
+  """Sort the results by newest."""
+  NEWEST
+
+  """Sort the results by oldest."""
+  OLDEST
+}
+
+
+input AccountQueryFilterInput {
+  """Specify the sources to search in."""
+  sources: [AccountQuerySourceInput!]
+}
+
+
+input AccountQuerySourceInput {
+  """Specify the source type to search in."""
+  type: AccountQuerySourceTypeInput!
+
+  """
+  Specify the Ids of the source type you want to search in. If no Ids are specified, a search will be performed on all accessible Ids of the type.
+  """
+  ids: [ID!]
+}
+
+
+"""Search sources option. Defines the location of the search results."""
+enum AccountQuerySourceTypeInput {
+  """Search for the results in `Libraries`."""
+  LIBRARIES
+
+  """Search for the results in the `WorkspaceProjects`."""
+  WORKSPACE_PROJECTS
+
+  """Search for the results in the `LibraryPages`."""
+  LIBRARY_PAGES
+}
+
+
+type AccountSearchItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `AccountSearchResult` items."""
+  items: [AccountSearchResult]
+}
+
+
+union AccountSearchResult = Audio | Document | EmbeddedContent | File | Image | Video
+
+
+type TargetItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `Target`."""
+  items: [Target]
+}
+
+
+"""Different `Project` types"""
+enum ProjectType {
+  DOCUMENT_LIBRARY
+  ICON_LIBRARY
+  LOGO_LIBRARY
+  MEDIA_LIBRARY
+  WORKSPACE
+}
+
+
+type WorkspaceRootFolder {
+  """
+  **DEPRECATED** The `SubFolderItems` of the current `Library`/`Workspace`. This field will be removed. Use `folders` instead. | Date: 2025-07-01
+  """
+  subFolders(
+    """How many `SubFolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `SubFolderItems` listing page number."""
+    page: Int = 1
+  ): SubFolderItems! @deprecated(reason: "This field will be removed. Use `folders` instead. | Date: 2025-07-01")
+
+  """The `FolderItems` of the current `Library`/`Workspace`."""
+  folders(
+    """How many `FolderItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `FolderItems` listing page number."""
+    page: Int = 1
+  ): FolderItems!
+
+  """`Library`/`Workspace`'s `AssetItems` list."""
+  assets(
+    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current `AssetItems` listing page number."""
+    page: Int = 1
+
+    """
+    **BETA** Define search criteria for the `AssetItems` in the `Library`/`Workspace`.
+    """
+    query: FolderAssetQueryInput
+  ): AssetItems!
+}
+
+
+type WorkspaceCollaborators {
+  """`WorkspaceCollaboratorUserItems` list."""
+  users(
+    """
+    How many `WorkspaceCollaboratorUserItems` to show per query. Min: 1, Max: 100.
+    """
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): WorkspaceCollaboratorUserItems!
+}
+
+
+type WorkspaceCollaboratorUserItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """
+  List of `User` items that have lowest required permissions to collaborate on a `Workspace`.
+  """
+  items: [User]
+
+  """**BETA** List of `WorkspaceProjectCollaboratorUserEdgeType` edges."""
+  edges: [WorkspaceProjectCollaboratorUserEdge!]!
+}
+
+
+type WorkspaceProjectCollaboratorUserEdge {
+  """
+  `User` that has the least required permissions to collaborate on a `WorkspaceProject`.
+  """
+  node: User!
+
+  """`User` role in the `WorkspaceProject`."""
+  role: String!
+}
+
+
+type WorkspaceUserPermissions {
+  """
+  Check if current `User` has `Asset` creation permissions in a specific `Workspace`.
+  """
+  canCreateAssets: Boolean!
+
+  """
+  Check if current `User` has `Collaborator` view permissions in a specific `Workspace`.
+  """
+  canViewCollaborators: Boolean!
+}
+
+
+input LibraryQueryInput {
+  """**BETA** Sort order of the `Library` query result set."""
+  sortBy: LibraryQuerySort
+}
+
+
+"""Query sorting option. Defines how the search results should be sorted."""
+enum LibraryQuerySort {
+  """Sorts the results by the newest entry."""
+  NEWEST
+
+  """Sorts the results by the oldest entry`."""
+  OLDEST
+}
+
+
+type LibraryItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `Library`"""
+  items: [Library]
+}
+
+
+input WorkspaceProjectQueryInput {
+  """**BETA** Limit the result set based on `WorkspaceProject` state."""
+  state: WorkspaceProjectStateFilter = ALL
+
+  """**BETA** Sort order of the `WorkspaceProject` query result set."""
+  sortBy: WorkspaceProjectQuerySort
+}
+
+
+"""`WorkspaceProject` state filter."""
+enum WorkspaceProjectStateFilter {
+  ALL
+  ACTIVE
+  ARCHIVED
+}
+
+
+"""Query sorting option. Defines how the search results should be sorted."""
+enum WorkspaceProjectQuerySort {
+  """Sorts the results by the newest entry."""
+  NEWEST
+
+  """Sorts the results by the oldest entry`."""
+  OLDEST
+
+  """Sorts the results by the newest activity entry."""
+  NEWEST_ACTIVITY
+
+  """Sorts the results by the oldest activity entry."""
+  OLDEST_ACTIVITY
+}
+
+
+type WorkspaceItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of type `Workspace`."""
+  items: [Workspace]
+}
+
+
+"""List of possible `Library` types."""
+enum LibraryType {
+  ICON_LIBRARY
+  MEDIA_LIBRARY
+  LOGO_LIBRARY
+  DOCUMENT_LIBRARY
+}
+
+
+input BrandQueryInput {
+  """Search term used to retrieve matched results."""
+  term: String
+
+  """Sort order of matched results."""
+  sortBy: BrandQuerySortByInput = RELEVANCE
+
+  """Use filters to reduce the set of matched results."""
+  filter: BrandQueryFilterInput
+}
+
+
+"""
+Search sorting option. Defines how the search results should be sorted.
+"""
+enum BrandQuerySortByInput {
+  """Sort the results by relevance."""
+  RELEVANCE
+
+  """Sort the results by newest."""
+  NEWEST
+
+  """Sort the results by oldest."""
+  OLDEST
+}
+
+
+"""Search sources option. Defines the location of the search results."""
+enum BrandSearchQuerySource {
+  """Search for the results in `Libraries`."""
+  LIBRARIES
+
+  """Search for the results in the `WorkspaceProjects`."""
+  WORKSPACE_PROJECTS
+
+  """Search for the results in the whole `Brand`."""
+  EVERYWHERE
+
+  """Search for the results in the `LibraryPages`."""
+  LIBRARY_VIEWS
+}
+
+
+input BrandQueryFilterInput {
+  """Filter set of the matched results by single tag or list of tags."""
+  hasTags: [String]
+
+  """**BETA** Specify the sources to search in."""
+  sources: [BrandQuerySourceInput!]
+
+  """**BETA** Filter set of the matched results by the externalId."""
+  externalId: ID
+}
+
+
+input BrandQuerySourceInput {
+  """Specify the source type to search in."""
+  type: BrandQuerySourceTypeInput!
+
+  """
+  Specify the Ids of the source type you want to search in. If no Ids are specified, a search will be performed on all accessible Ids of the type.
+  """
+  ids: [ID!]
+}
+
+
+"""Search sources option. Defines the location of the search results."""
+enum BrandQuerySourceTypeInput {
+  """Search for the results in `Libraries`."""
+  LIBRARIES
+
+  """Search for the results in the `WorkspaceProjects`."""
+  WORKSPACE_PROJECTS
+
+  """Search for the results in the `LibraryPages`."""
+  LIBRARY_PAGES
+}
+
+
+type BrandSearchItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `BrandSearchResult` items."""
+  items: [BrandSearchResult]
+
+  """List of `BrandSearchResult` edges."""
+  edges: [BrandSearchResultEdge]
+}
+
+
+union BrandSearchResult = Audio | Document | EmbeddedContent | File | Image | Video
+
+
+type BrandSearchResultEdge {
+  """`BrandSearchResult` title."""
+  title: String!
+
+  """`BrandSearchResult` node."""
+  node: BrandSearchResult
+}
+
+
+type BrandEnhancedSearchItems {
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `BrandSearchResult` items."""
+  items: [BrandSearchResult]
+
+  """List of `BrandSearchResult` edges."""
+  edges: [BrandSearchResultEdge]
+}
+
+
+type ProjectWebhook implements Node & Webhook {
+  """`Webhook` Id."""
+  id: ID!
+
+  """The `creator` is the `User` who created the `Webhook`."""
+  creator: User!
+
+  """DateTime of the `Webhook` creation."""
+  createdAt: DateTime!
+
+  """`Webhook` name."""
+  name: String!
+
+  """The randomly generated secret of the current `Webhook`."""
+  secret: String!
+
+  """The `Url` which will be called by the `Webhook`"""
+  notificationUrl: Url!
+
+  """Returns the associated `Project`."""
+  project: Project!
+
+  """**BETA** Version number of the `Webhook`."""
+  version: Int!
+}
+

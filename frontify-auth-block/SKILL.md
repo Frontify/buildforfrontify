@@ -4,12 +4,17 @@ description: >
   Authentication for Frontify **Custom Blocks** — guideline components built
   with the Brand SDK that render inside a Brand Guideline page. Like Apps,
   Custom Blocks run inside the Frontify Platform and inherit the user's
-  session through the AppBridge — they never handle raw tokens. This skill
-  covers the block AppBridge package, how a block reads context (brand,
-  project, guideline, asset selections) and calls Frontify GraphQL via the
-  host, how external HTTP calls work from a block iframe, and the scope /
-  permission model that applies to in-guideline rendering. Load when the
-  user is building or debugging a Custom Block.
+  session through the AppBridge — they never handle raw tokens. Covers the
+  block AppBridge package, how a block reads context (brand, project,
+  guideline, asset selections) and calls Frontify GraphQL via the host, how
+  external HTTP calls work from a block iframe, and the scope / permission
+  model that applies to in-guideline rendering. Use when reading or
+  mutating Frontify data from a block, accessing the current user / brand /
+  asset references, calling third-party APIs from a block iframe, debugging
+  401 / 403 / silent-empty responses in a block, reasoning about
+  editor-vs-viewer permission differences, or asking how settings, assets,
+  and color tokens flow into a block. Do **not** load for Apps, Themes, or
+  external integrations.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -41,22 +46,6 @@ workspace, …), stop and load `../frontify-auth-app/SKILL.md` — Apps have a
 richer auth surface (`executeSecureRequest`, manifest scopes/secrets). If
 the work is **outside** the platform entirely, load
 `../frontify-auth-integration/SKILL.md`.
-
----
-
-## When to use this skill
-
-Load this skill when the user is building a Custom Block and:
-
-- Wants to read or mutate Frontify data from inside the block
-- Needs the current user's identity, the surrounding brand, or the asset
-  references the editor placed
-- Is calling a third-party API from a block iframe
-- Encounters a 401 / 403 / silent empty response in a block
-- Is wondering why a block can do X for an editor but not for a viewer
-- Asks how settings, assets, and color tokens flow into a block
-
-Do **not** load this skill for Apps, Themes, or external integrations.
 
 ---
 

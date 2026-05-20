@@ -4,15 +4,18 @@ description: >
   Frontify's URL-based Media Processing API for transforming images,
   videos, and PDFs on Frontify's CDN — chained `?mod=v1/<transform>/...`
   modifiers on `previewUrl` (versioned) or `dynamicPreviewUrl` (latest,
-  beta) returned from GraphQL. Covers the modifier syntax, the full
-  transformation list (resize, cover, focus, crop, zoom, blur,
+  beta) returned from GraphQL. Covers the modifier syntax,
+  transformations (resize, cover, focus, crop, zoom, blur,
   background-removal, color-blindness corrections, format negotiation,
-  PDF rendering, etc.), parameter formats (anchors, sizes, ratios,
-  colors, lengths, paddings), CDN architecture and caching, and best
-  practices for responsive `srcset` / `<picture>` markup. Load this
-  skill whenever the user wants to render, resize, crop, focus,
-  recolor, or otherwise transform a Frontify-hosted asset for
-  delivery.
+  PDF rendering), parameter formats (anchors, sizes, ratios, colors,
+  lengths, paddings), CDN caching, and responsive `srcset` / `<picture>`
+  markup. Use when rendering Frontify-hosted images / videos / PDFs in
+  any surface (extension, website, app, email, document); building
+  responsive `srcset` or `<picture>` markup; resizing, cropping,
+  focusing, zooming, rotating, recoloring, blurring, or background-
+  removing an asset; rendering a PDF page as an image or forcing inline
+  / download; debugging WebP / AVIF format negotiation or expired CDN
+  URLs; or working with `previewUrl` / `dynamicPreviewUrl` from GraphQL.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -42,26 +45,6 @@ unreachable, and `previewUrl`s continue to serve their original
 revision even if the underlying asset is deleted.
 
 ---
-
-## When to use this skill
-
-Load this skill the moment any of these come up:
-
-- The user wants to **render Frontify-hosted images, videos, or PDFs**
-  in an extension, website, app, email, or document.
-- The user is building a **responsive `srcset`** or **art-directed
-  `<picture>`** that adapts to viewport size, pixel density, or aspect
-  ratio.
-- The user wants to **resize, crop, focus, zoom, rotate, recolor,
-  blur, or remove the background** of a Frontify asset for delivery.
-- The user needs to **render a PDF page as an image** or force a PDF
-  to display inline / download.
-- The user asks about **WebP / AVIF / format negotiation** or how
-  Next-Gen formats are served automatically.
-- The user is debugging **broken or expired CDN URLs**, or asks
-  whether a URL is stable.
-- The user is fetching `previewUrl` / `dynamicPreviewUrl` from GraphQL
-  and wants to know what they can do with it.
 
 For the data side (fetching the URL itself), load
 [`../frontify-graphql/SKILL.md`](../frontify-graphql/SKILL.md). This

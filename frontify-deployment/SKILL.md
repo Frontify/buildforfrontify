@@ -1,15 +1,20 @@
 ---
 name: frontify-deployment
 description: >
-  Hub for deploying Frontify extensions (Apps, Custom Blocks, Themes) via the
-  `frontify-cli`. Owns the cross-type deploy mechanics — personal access token
-  setup, `FRONTIFY_INSTANCE` / `FRONTIFY_TOKEN` env vars, the four
-  build-pipeline gates, network-egress requirements, the angle-bracket
-  placeholder convention, token-leak hygiene and redaction. Routes per-type
-  Marketplace specifics (App version-pinning, install flow, dry-run
-  validation) to the matching extension skill. Load when the user asks about
-  publishing, releasing, CI / agent-driven deploy, environment configuration,
-  versioning, build-gate failures, or token rotation.
+  Hub for deploying Frontify extensions (Apps, Custom Blocks, Themes) via
+  the `frontify-cli`. Owns the cross-type deploy mechanics — personal
+  access token setup, `FRONTIFY_INSTANCE` / `FRONTIFY_TOKEN` env vars, the
+  four build-pipeline gates, network-egress requirements, the angle-bracket
+  placeholder convention, and token-leak hygiene / redaction. Routes
+  per-type Marketplace specifics (App version-pinning, install flow,
+  dry-run validation) to the matching extension skill. Use when publishing
+  or releasing any extension (App, Custom Block, Theme); setting up a
+  personal access token for the CLI; configuring CI or agent-driven deploy;
+  diagnosing build-pipeline gate failures (`policy '<name>' not fulfilled`,
+  missing `eslint.config`, `terser not found`, etc.); rotating tokens or
+  suspecting a token leak; or troubleshooting "deploy succeeded but my
+  changes don't show up" (usually the App install version-pinning
+  behavior).
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -27,19 +32,6 @@ flow, post-deploy install behavior — stay in the type skills and are linked
 from each per-type section below.
 
 ---
-
-## When to use this skill
-
-Load this skill the moment any of these come up:
-
-- Publishing or releasing any extension (App / Custom Block / Theme)
-- Setting up a personal access token for the CLI
-- CI / agent-driven deploy
-- Diagnosing a build-pipeline gate failure (`policy '<name>' not fulfilled`,
-  `eslint.config` missing, `terser not found`, etc.)
-- Token leak suspicion / token rotation
-- "Deploy succeeded but my changes don't show up" (almost always the
-  install version-pinning behavior — see "Deploying an App" below)
 
 For a hands-off discovery flow that routes between this skill and the type
 skills, see `../build-for-frontify/SKILL.md`.

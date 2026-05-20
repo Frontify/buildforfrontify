@@ -5,11 +5,16 @@ description: >
   look and feel of Brand Guidelines and can also expose actions on the
   Guidelines surface. Themes run inside the Frontify Platform and inherit
   the user's session through the AppBridge — they never handle raw tokens.
-  This skill covers the theme AppBridge package, the Guideline / Portal /
-  Project / Brand context delivered to a theme at runtime, the
-  `themeAction` (Alpha) surface, calling Frontify GraphQL via the host, and
-  the implicit scope / permission model for theme-time rendering. Load when
-  the user is building or debugging a Theme.
+  Covers the theme AppBridge package, the Guideline / Portal / Project /
+  Brand context delivered to a theme at runtime, the `themeAction` (Alpha)
+  surface, calling Frontify GraphQL via the host, and the implicit scope /
+  permission model for theme-time rendering. Use when reading or mutating
+  Frontify data from a theme, accessing the current user / Portal / Project
+  / Brand / asset / page context, building a `themeAction` surface, calling
+  third-party APIs from a theme iframe, debugging 401 / 403 / silent-empty
+  responses in a theme, or reasoning about editor-vs-viewer permission
+  differences. Do **not** load for Apps, Custom Blocks, or external
+  integrations.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -40,23 +45,6 @@ workspace, page action, …), stop and load `../frontify-auth-app/SKILL.md`
 — Apps have a richer auth surface (manifest scopes/secrets,
 `executeSecureRequest`). For external integrations, load
 `../frontify-auth-integration/SKILL.md`.
-
----
-
-## When to use this skill
-
-Load this skill when the user is building a Theme and:
-
-- Wants to read or mutate Frontify data from inside the theme
-- Needs the current user's identity, the surrounding Portal/Project/Brand,
-  or the asset/page references the theme is rendering
-- Is building a `themeAction` (Alpha) surface that needs context or auth
-- Calling a third-party API from a theme iframe
-- Encounters a 401 / 403 / silent empty response in a theme
-- Is wondering why a theme can do X for an editor but not for a viewer
-
-Do **not** load this skill for Apps, Custom Blocks, or external
-integrations.
 
 ---
 

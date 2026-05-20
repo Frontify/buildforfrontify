@@ -1,15 +1,18 @@
 ---
 name: frontify-prd
 description: >
-  Produces a tight, build-ready Product Requirements Document for a Frontify
-  extension (App, Custom Block, or Theme). Two modes — **Lite** (5 lines for
-  exploratory / single-surface / single-feature builds) and **Standard** (10
-  sections, ~1 page, for multi-surface Apps, multi-feature scopes, third-party
-  integrations, and team builds). The PRD is for **alignment with the agent
-  before scaffolding** — not for stakeholder communication. Optimized to
-  surface decisions that change *how the build runs* (extension type +
-  surfaces, scopes, secrets, settings shape) and to feed directly into
-  `frontify-tasks` for breakdown into ordered work.
+  Produce a Product Requirements Document (Lite or Standard) for a
+  Frontify extension before scaffolding. ALWAYS apply this skill when
+  the build will span more than a single afternoon, has multiple features
+  or surfaces, involves a credentialed third-party API or marketplace
+  publish, will be touched by more than one developer, or the user
+  expresses scope uncertainty or asks for planning — even if the user
+  just asked to start coding. Do not start scaffolding a non-trivial
+  Frontify extension without first producing a PRD (Lite for
+  single-surface / single-feature, Standard for multi-surface / team /
+  marketplace). Skip this skill for single-line changes, single-component
+  edits, exploratory spike code, or when the user already supplied a
+  written brief.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -30,22 +33,6 @@ stakeholder and the agent IS the team — the document captures alignment,
 not communication.
 
 ---
-
-## When to use this skill
-
-Run this skill when:
-
-- The build will span more than a single afternoon
-- The extension has multiple features or surfaces
-- The user expresses uncertainty about scope ("I think we want…")
-- A third-party API with credentials is in scope
-- More than one developer will touch the project
-
-Skip this skill when:
-
-- The user wants to start coding immediately and the request is unambiguous
-- The build is a single-line change or a single component
-- The user already has a written brief — read that instead
 
 When in doubt, propose **Lite** mode. It's faster than asking permission.
 

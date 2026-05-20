@@ -1,18 +1,16 @@
 ---
 name: frontify-auth-app
 description: >
-  Authentication for Frontify **Apps** built with `@frontify/platform-app`
-  and `@frontify/app-bridge-app`. Apps run **inside** the Frontify Platform
-  on one or more surfaces (asset action, asset creation, asset bulk action,
-  asset viewer, page action, theme action) and inherit the user's session
-  through AppBridge — there is no token to handle directly. This skill
-  covers AppBridge auth methods (`executeGraphql`, `executeSecureRequest`,
-  `getCurrentUser`, `getAccountId`), declaring scopes in `manifest.json`
-  under `permissions.scopes`, declaring third-party API secrets via
-  `manifest.json` `secrets[]` and the `%%KEY%%` / `$$dynamic$$` placeholder
-  substitution patterns, the local-dev `.secret.json` shim, the App Settings
-  `credentials` section, App User State, and the marketplace authorization
-  dialog. Load when the user is building or debugging an App.
+  Authenticate Frontify App code through the AppBridge — no raw tokens.
+  ALWAYS apply this skill when calling Frontify GraphQL (`executeGraphql`)
+  or third-party APIs (`executeSecureRequest`) from an App, editing
+  `manifest.json` scopes / `secrets[]` / `network.endpoints[]`, or
+  debugging 401 / 403 or the Authorize-permissions install dialog — even
+  if the user does not name AppBridge, scopes, or secrets explicitly. Do
+  not write App code that calls Frontify or external APIs directly
+  without going through the App AppBridge and declared scopes. Skip this
+  skill for in-guideline component authentication, theme rendering
+  authentication, or backend / CI / OAuth integration authentication.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -41,28 +39,6 @@ If the user is building something that runs **outside** the Frontify
 Platform — a backend script, CI job, OAuth client, or anything talking
 directly to `https://<domain>/graphql` with a bearer token — stop and load
 `../frontify-auth-integration/SKILL.md` instead.
-
----
-
-## When to use this skill
-
-Load this skill the moment any of these come up while the user is building
-an App:
-
-- Calling Frontify GraphQL from an App (`executeGraphql`)
-- Calling a third-party API from an App with secrets (`executeSecureRequest`)
-- Adding/changing entries under `manifest.json` `permissions.scopes`
-- Adding/changing entries under `manifest.json` `secrets[]` or
-  `network.endpoints[]`
-- Configuring `.secret.json` for local development
-- Adding inputs to App Settings, especially the `credentials` section
-- Reading or writing per-user state (`appUserState`)
-- Debugging the **Authorize permissions** dialog at install time
-- 401 / 403 responses from `executeGraphql` or `executeSecureRequest`
-- Migrating an App between scope sets / secret sets
-
-Do **not** load this skill for Custom Blocks, Themes, or external
-integrations — those have their own auth skills.
 
 ---
 

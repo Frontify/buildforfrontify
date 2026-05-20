@@ -1,11 +1,17 @@
 ---
 name: frontify-fondue
 description: >
-  Guides Frontify extension UI toward Fondue, Frontify's component and
-  token system. Load this skill when building or reviewing visible UI for
-  Apps, Content Blocks, theme settings UI, platform-adjacent theme controls,
-  settings panels, forms, overlays, tables, empty/loading/error states, or
-  any extension surface that should visually match Frontify.
+  Build Frontify extension UI with Fondue components and design tokens.
+  ALWAYS apply this skill when authoring visible UI for a Frontify App or
+  Content Block (settings panels, forms, buttons, menus, dialogs,
+  flyouts, tables, tabs, notices, loading / empty / error states),
+  building theme settings UI or platform-adjacent theme controls, or
+  asking how to match Frontify's visual style or about tokens,
+  accessibility, dark mode, or responsive layout — even if the user does
+  not name Fondue explicitly. Do not introduce a new UI library or
+  hand-roll components without first checking whether Fondue covers the
+  need. Skip this skill for theme-specific guideline presentation
+  (custom brand UI), non-UI extension logic, or non-Frontify projects.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -19,27 +25,6 @@ it for Apps, Content Blocks, settings panels, and theme controls that should
 feel native to Frontify. Do not use this skill for extension scaffolding,
 AppBridge usage, theme architecture, publishing, authentication, or data
 fetching; load the matching Frontify skill for those concerns.
-
----
-
-## When to use this skill
-
-Load this skill when:
-
-- The user starts building visible UI for a Frontify App or Content Block
-- The user asks how to make an extension match Frontify's visual style
-- The user asks which UI component library to use
-- The user creates or edits settings UI
-- The user adds forms, buttons, menus, dialogs, flyouts, tables, tabs,
-  notices, loading states, or icon-only actions
-- The user works on theme settings UI or other platform-like theme controls
-- The user asks about accessibility, tokens, dark mode, or responsive layout
-  for a Frontify extension UI
-
-For Frontify Themes, use this skill only for Fondue-relevant surfaces:
-settings UI, editor-facing controls, and platform-like controls. Theme-specific
-guideline presentation may be custom brand UI and belongs in
-`../frontify-theme/SKILL.md`.
 
 ---
 

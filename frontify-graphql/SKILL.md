@@ -1,13 +1,15 @@
 ---
 name: frontify-graphql
 description: >
-  Frontify Public GraphQL API reference for extension developers — endpoint,
-  authentication, the global ID format, scopes, the most common queries
-  (currentUser, brands, library, asset, node) and mutations (createAsset,
-  updateAsset, addAssetTags, uploadFile…), pagination, beta-feature opt-in,
-  and error handling. Load this skill before writing any query or mutation,
-  before calling `executeGraphQl` from an App, or whenever the user asks
-  what data Frontify exposes.
+  Query and mutate Frontify data through the Public GraphQL API at
+  `POST https://<domain>/graphql`. ALWAYS apply this skill when writing
+  any Frontify query or mutation, when calling `executeGraphql` from an
+  App, when asking what data Frontify exposes, or when a Frontify query
+  returns errors / null / unexpected shapes — even if the user does not
+  name GraphQL explicitly. Do not invent GraphQL fields, input names,
+  enums, scopes, or global IDs without first checking the Frontify
+  schema. Skip this skill for media transformation (CDN URL modifiers),
+  authentication / token handling, or non-Frontify GraphQL APIs.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -32,20 +34,6 @@ backend integrations, and Service Apps you call the endpoint directly
 with a bearer token.
 
 ---
-
-## When to use this skill
-
-Load this skill the moment any of these come up:
-
-- The user asks **what data they can read or write** from Frontify
-- The user wants to **query** assets, brands, libraries, collections,
-  guidelines, custom metadata, workflows, comments, or users
-- The user needs to implement a **mutation** (create, update, delete,
-  upload, tag, move, replace, publish)
-- A query returns **errors**, `null` data, or unexpected shapes
-- The user is building a **Service App** or webhook integration
-- The user asks about **pagination**, **search/filter inputs**,
-  **beta features**, or how Frontify **IDs** are encoded
 
 For full type signatures, load the SDL split files in
 [`references/`](references/) (see "Full reference" below).

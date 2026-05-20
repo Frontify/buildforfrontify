@@ -1,21 +1,17 @@
 ---
 name: frontify-media-processing
 description: >
-  Frontify's URL-based Media Processing API for transforming images,
-  videos, and PDFs on Frontify's CDN — chained `?mod=v1/<transform>/...`
-  modifiers on `previewUrl` (versioned) or `dynamicPreviewUrl` (latest,
-  beta) returned from GraphQL. Covers the modifier syntax,
-  transformations (resize, cover, focus, crop, zoom, blur,
-  background-removal, color-blindness corrections, format negotiation,
-  PDF rendering), parameter formats (anchors, sizes, ratios, colors,
-  lengths, paddings), CDN caching, and responsive `srcset` / `<picture>`
-  markup. Use when rendering Frontify-hosted images / videos / PDFs in
-  any surface (extension, website, app, email, document); building
-  responsive `srcset` or `<picture>` markup; resizing, cropping,
-  focusing, zooming, rotating, recoloring, blurring, or background-
-  removing an asset; rendering a PDF page as an image or forcing inline
-  / download; debugging WebP / AVIF format negotiation or expired CDN
-  URLs; or working with `previewUrl` / `dynamicPreviewUrl` from GraphQL.
+  Transform Frontify-hosted images, videos, and PDFs via
+  `?mod=v1/<transform>/...` URL modifiers on `previewUrl` /
+  `dynamicPreviewUrl` returned from GraphQL. ALWAYS apply this skill when
+  rendering Frontify-hosted media in any surface, transforming an asset
+  (resize, cover, focus, crop, zoom, rotate, recolor, blur,
+  background-remove, PDF render), or building responsive `srcset` /
+  `<picture>` markup against Frontify URLs — even if the user does not
+  name the CDN or modifiers explicitly. Do not reach for external
+  image-processing libraries before first checking whether a CDN URL
+  modifier covers the case. Skip this skill for non-Frontify media,
+  GraphQL schema work, or authentication / token handling.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

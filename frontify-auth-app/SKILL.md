@@ -1,21 +1,16 @@
 ---
 name: frontify-auth-app
 description: >
-  Authentication for Frontify **Apps** (`@frontify/platform-app`,
-  `@frontify/app-bridge-app`). Apps run inside the Frontify Platform on
-  multiple surfaces and inherit the user's session through AppBridge —
-  no raw tokens. Covers AppBridge auth (`executeGraphql`,
-  `executeSecureRequest`, `getCurrentUser`, `getAccountId`),
-  `manifest.json` scopes / `secrets[]` / `network.endpoints[]`, the
-  `%%KEY%%` / `$$dynamic$$` placeholder patterns, the local-dev
-  `.secret.json` shim, App Settings `credentials`, App User State, and
-  the marketplace authorization dialog. Use when calling Frontify
-  GraphQL or third-party APIs from an App, editing manifest scopes /
-  secrets / endpoints, configuring `.secret.json`, adding credential
-  inputs, reading or writing per-user state, debugging the
-  Authorize-permissions install dialog, or hitting 401 / 403 from
-  `executeGraphql` / `executeSecureRequest`. Do **not** load for Custom
-  Blocks, Themes, or external integrations.
+  Authenticate Frontify App code through the AppBridge — no raw tokens.
+  ALWAYS apply this skill when calling Frontify GraphQL (`executeGraphql`)
+  or third-party APIs (`executeSecureRequest`) from an App, editing
+  `manifest.json` scopes / `secrets[]` / `network.endpoints[]`, or
+  debugging 401 / 403 or the Authorize-permissions install dialog — even
+  if the user does not name AppBridge, scopes, or secrets explicitly. Do
+  not write App code that calls Frontify or external APIs directly
+  without going through the App AppBridge and declared scopes. Skip this
+  skill for in-guideline component authentication, theme rendering
+  authentication, or backend / CI / OAuth integration authentication.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

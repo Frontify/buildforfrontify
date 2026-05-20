@@ -1,19 +1,17 @@
 ---
 name: frontify-fondue
 description: >
-  Guides Frontify extension UI toward Fondue, Frontify's component and
-  token system. Covers component selection, design tokens, accessibility
-  patterns, dark mode, and responsive layout for surfaces that should feel
-  native to Frontify. Use when building or reviewing visible UI for Apps
-  or Content Blocks; building settings panels, forms, buttons, menus,
-  dialogs, flyouts, tables, tabs, notices, loading / empty / error states,
-  or icon-only actions; building theme **settings UI** or platform-adjacent
-  theme controls; asking how to match Frontify's visual style; asking
-  which UI component library to use; or asking about Fondue tokens,
-  accessibility, dark mode, or responsive layout. For Frontify Themes,
-  use only for Fondue-relevant surfaces (settings UI, editor-facing
-  controls, platform-like controls) — theme-specific guideline
-  presentation may be custom brand UI and belongs in `frontify-theme`.
+  Build Frontify extension UI with Fondue components and design tokens.
+  ALWAYS apply this skill when authoring visible UI for a Frontify App or
+  Content Block (settings panels, forms, buttons, menus, dialogs,
+  flyouts, tables, tabs, notices, loading / empty / error states),
+  building theme settings UI or platform-adjacent theme controls, or
+  asking how to match Frontify's visual style or about tokens,
+  accessibility, dark mode, or responsive layout — even if the user does
+  not name Fondue explicitly. Do not introduce a new UI library or
+  hand-roll components without first checking whether Fondue covers the
+  need. Skip this skill for theme-specific guideline presentation
+  (custom brand UI), non-UI extension logic, or non-Frontify projects.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

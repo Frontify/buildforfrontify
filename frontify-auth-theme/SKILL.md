@@ -1,20 +1,15 @@
 ---
 name: frontify-auth-theme
 description: >
-  Authentication for Frontify **Themes** — extensions that customize the
-  look and feel of Brand Guidelines and can also expose actions on the
-  Guidelines surface. Themes run inside the Frontify Platform and inherit
-  the user's session through the AppBridge — they never handle raw tokens.
-  Covers the theme AppBridge package, the Guideline / Portal / Project /
-  Brand context delivered to a theme at runtime, the `themeAction` (Alpha)
-  surface, calling Frontify GraphQL via the host, and the implicit scope /
-  permission model for theme-time rendering. Use when reading or mutating
-  Frontify data from a theme, accessing the current user / Portal / Project
-  / Brand / asset / page context, building a `themeAction` surface, calling
-  third-party APIs from a theme iframe, debugging 401 / 403 / silent-empty
-  responses in a theme, or reasoning about editor-vs-viewer permission
-  differences. Do **not** load for Apps, Custom Blocks, or external
-  integrations.
+  Authenticate Frontify Theme code through the AppBridge — no raw tokens.
+  ALWAYS apply this skill when calling Frontify GraphQL from a theme,
+  reading the Portal / Project / Brand / asset / page context inside a
+  theme, or debugging 401 / 403 / silent-empty responses in a theme —
+  even if the user does not name AppBridge or scopes explicitly. Do not
+  write theme code that calls Frontify or external APIs directly without
+  going through the theme AppBridge. Skip this skill for in-guideline
+  component authentication, App-surface authentication, or backend / CI /
+  OAuth integration authentication.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

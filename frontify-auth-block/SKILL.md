@@ -1,20 +1,16 @@
 ---
 name: frontify-auth-block
 description: >
-  Authentication for Frontify **Custom Blocks** — guideline components built
-  with the Brand SDK that render inside a Brand Guideline page. Like Apps,
-  Custom Blocks run inside the Frontify Platform and inherit the user's
-  session through the AppBridge — they never handle raw tokens. Covers the
-  block AppBridge package, how a block reads context (brand, project,
-  guideline, asset selections) and calls Frontify GraphQL via the host, how
-  external HTTP calls work from a block iframe, and the scope / permission
-  model that applies to in-guideline rendering. Use when reading or
-  mutating Frontify data from a block, accessing the current user / brand /
-  asset references, calling third-party APIs from a block iframe, debugging
-  401 / 403 / silent-empty responses in a block, reasoning about
-  editor-vs-viewer permission differences, or asking how settings, assets,
-  and color tokens flow into a block. Do **not** load for Apps, Themes, or
-  external integrations.
+  Authenticate Frontify Custom Block code through the AppBridge — no raw
+  tokens. ALWAYS apply this skill when calling Frontify GraphQL from a
+  block, reading current user / brand / project / guideline /
+  asset-selection context inside a block, or debugging 401 / 403 /
+  silent-empty responses or third-party iframe calls in a block — even
+  if the user does not name AppBridge or scopes explicitly. Do not write
+  block code that calls Frontify or external APIs directly without going
+  through the block AppBridge. Skip this skill for App-surface
+  authentication, theme rendering authentication, or backend / CI /
+  OAuth integration authentication.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

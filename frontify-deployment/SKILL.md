@@ -1,20 +1,17 @@
 ---
 name: frontify-deployment
 description: >
-  Hub for deploying Frontify extensions (Apps, Custom Blocks, Themes) via
-  the `frontify-cli`. Owns the cross-type deploy mechanics — personal
-  access token setup, `FRONTIFY_INSTANCE` / `FRONTIFY_TOKEN` env vars, the
-  four build-pipeline gates, network-egress requirements, the angle-bracket
-  placeholder convention, and token-leak hygiene / redaction. Routes
-  per-type Marketplace specifics (App version-pinning, install flow,
-  dry-run validation) to the matching extension skill. Use when publishing
-  or releasing any extension (App, Custom Block, Theme); setting up a
-  personal access token for the CLI; configuring CI or agent-driven deploy;
-  diagnosing build-pipeline gate failures (`policy '<name>' not fulfilled`,
-  missing `eslint.config`, `terser not found`, etc.); rotating tokens or
-  suspecting a token leak; or troubleshooting "deploy succeeded but my
-  changes don't show up" (usually the App install version-pinning
-  behavior).
+  Deploy Frontify extensions (Apps, Custom Blocks, Themes) via the
+  `frontify-cli`. ALWAYS apply this skill when publishing or releasing any
+  Frontify extension, setting up a personal access token /
+  `FRONTIFY_INSTANCE` / `FRONTIFY_TOKEN` for the CLI or CI, or diagnosing
+  build-pipeline gate failures (`policy '<name>' not fulfilled`, missing
+  `eslint.config`, `terser not found`, version-pinning surprises after
+  install) — even if the user does not name the CLI or build gates
+  explicitly. Do not publish Frontify extension code without first running
+  `frontify-cli verify` and the four build-pipeline gates. Skip this skill
+  for local development setup, source-code authoring, or end-user
+  installation flows.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

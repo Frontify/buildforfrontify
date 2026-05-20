@@ -1,21 +1,17 @@
 ---
 name: frontify-auth-integration
 description: >
-  Authentication for **external** Frontify integrations — backend scripts,
-  CI/CD jobs, Service Apps (machine-to-machine), OAuth 2.0 client apps
-  (user-delegated), and personal developer tokens. Covers
-  `https://<domain>/api/oauth/*` endpoints, the `Authorization: Bearer`
-  header, the `createServiceApp` GraphQL mutation, the OAuth 2
-  code-with-PKCE flow, refresh / revoke, the five scopes, the
-  scopes-vs-user-permissions distinction, and the 2500-req/5-min rate
-  limit. Use when calling Frontify GraphQL from a backend, script, or CLI
-  (Node, Python, Go, GitHub Action, Lambda, Cloud Run); working with a
-  Service App / OAuth 2 Client / client credentials / bearer token /
-  personal developer token / service user token; debugging 401 / 403 from
-  a non-extension caller; asking how to authenticate or obtain a token
-  outside the platform; rotating / refreshing / revoking an integration
-  token; hitting HTTP 429 rate limits; or setting up a Developer Sandbox.
-  Do **not** load for in-platform extensions (Apps, Blocks, Themes).
+  Authenticate external Frontify integrations against
+  `https://<domain>/api/oauth/*` with the `Authorization: Bearer` header.
+  ALWAYS apply this skill when calling Frontify GraphQL from a backend,
+  script, or CLI (Node, Python, Go, GitHub Action, Lambda, Cloud Run);
+  setting up a Service App, OAuth 2 client, or personal developer token;
+  or debugging 401 / 403 / HTTP 429 from a non-extension caller — even
+  if the user does not name OAuth, scopes, or bearer tokens explicitly.
+  Do not call `/graphql` from a backend without first acquiring a token
+  through one of the OAuth flows. Skip this skill for in-platform
+  extension authentication, GraphQL schema questions, or media
+  transformation.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

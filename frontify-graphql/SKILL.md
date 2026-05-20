@@ -1,19 +1,15 @@
 ---
 name: frontify-graphql
 description: >
-  Frontify Public GraphQL API reference for extension developers — endpoint,
-  authentication, the global ID format, scopes, the most common queries
-  (currentUser, brands, library, asset, node) and mutations (createAsset,
-  updateAsset, addAssetTags, uploadFile, …), pagination, beta-feature
-  opt-in, and error handling. Use before writing any query or mutation,
-  before calling `executeGraphQl` from an App, when asking what data
-  Frontify exposes or what can be read or written, when querying assets /
-  brands / libraries / collections / guidelines / custom metadata /
-  workflows / comments / users, when implementing a mutation (create,
-  update, delete, upload, tag, move, replace, publish), when a query
-  returns errors / null data / unexpected shapes, when building a Service
-  App or webhook integration, or when asking about pagination, search /
-  filter inputs, beta features, or how Frontify IDs are encoded.
+  Query and mutate Frontify data through the Public GraphQL API at
+  `POST https://<domain>/graphql`. ALWAYS apply this skill when writing
+  any Frontify query or mutation, when calling `executeGraphql` from an
+  App, when asking what data Frontify exposes, or when a Frontify query
+  returns errors / null / unexpected shapes — even if the user does not
+  name GraphQL explicitly. Do not invent GraphQL fields, input names,
+  enums, scopes, or global IDs without first checking the Frontify
+  schema. Skip this skill for media transformation (CDN URL modifiers),
+  authentication / token handling, or non-Frontify GraphQL APIs.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

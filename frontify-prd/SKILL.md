@@ -1,22 +1,18 @@
 ---
 name: frontify-prd
 description: >
-  Produces a tight, build-ready Product Requirements Document for a
-  Frontify extension (App, Custom Block, or Theme). Two modes — **Lite**
-  (5 lines, for exploratory / single-surface / single-feature builds) and
-  **Standard** (10 sections, ~1 page, for multi-surface Apps,
-  multi-feature scopes, third-party integrations, team builds). The PRD
-  is for **alignment with the agent before scaffolding** — not for
-  stakeholder communication. Surfaces decisions that change *how the
-  build runs* (extension type + surfaces, scopes, secrets, settings
-  shape) and feeds directly into `frontify-tasks` for ordered work
-  breakdown. Use when the build will span more than a single afternoon,
-  has multiple features or surfaces, involves a credentialed third-party
-  API, will be touched by more than one developer, or the user expresses
-  uncertainty about scope ("I think we want…"). Skip when the user wants
-  to start coding immediately on an unambiguous single-line or
-  single-component change, or already has a written brief — read that
-  instead.
+  Produce a Product Requirements Document (Lite or Standard) for a
+  Frontify extension before scaffolding. ALWAYS apply this skill when
+  the build will span more than a single afternoon, has multiple features
+  or surfaces, involves a credentialed third-party API or marketplace
+  publish, will be touched by more than one developer, or the user
+  expresses scope uncertainty or asks for planning — even if the user
+  just asked to start coding. Do not start scaffolding a non-trivial
+  Frontify extension without first producing a PRD (Lite for
+  single-surface / single-feature, Standard for multi-surface / team /
+  marketplace). Skip this skill for single-line changes, single-component
+  edits, exploratory spike code, or when the user already supplied a
+  written brief.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

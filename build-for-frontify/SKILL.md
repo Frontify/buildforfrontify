@@ -4,8 +4,7 @@ description: Use when the user invokes /build-for-frontify or expresses intent t
   an extension for the Frontify platform. Runs a short discovery dialogue to
   identify the extension type (custom block, theme, or app) and the user's
   immediate goal, then routes to the appropriate type-specific skill. Also
-  surfaces shared resource skills (auth, GraphQL, deployment, design system)
-  and an optional planning layer for complex projects.
+  surfaces shared resource skills (auth, GraphQL, deployment, design system).
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify
@@ -196,36 +195,6 @@ Fondue design system (installation, tokens, components)
 
 ---
 
-## Step 4 — Optional planning layer
-
-A short PRD before coding catches scope drift cheaply. The PRD skill itself
-chooses one of two depths — **Lite** (5 lines) or **Standard** (10 sections,
-~1 page) — based on signals from Step 1:
-
-- **Lite** is the right default for: single-surface builds, single-feature
-  scopes, no third-party API, solo / spike work.
-- **Standard** when **any** of these are true: multi-surface App,
-  multi-feature scope, credentialed third-party API, team build, marketplace
-  publish, or the user expressed scope uncertainty.
-
-At least offer Lite for any non-trivial build — five lines now beats
-rebuilding misaligned code later.
-
-If the user wants planning, load in this order:
-
-```
-1. ../frontify-prd/SKILL.md     →  produce the PRD (Lite or Standard)
-2. ../frontify-tasks/SKILL.md   →  break the PRD into an ordered task list
-```
-
-Then proceed with the type skill using the PRD (and task list, if produced)
-as a guide.
-
-If the user wants to start coding immediately, skip this layer entirely and
-note that they can invoke it later if needed.
-
----
-
 ## Behavioural principles
 
 - **Be a guide, not a gatekeeper.** Discovery should take one short exchange,
@@ -239,3 +208,7 @@ note that they can invoke it later if needed.
   For general TypeScript, React, or tooling questions that aren't
   Frontify-specific, answer from your own knowledge without loading
   additional skills.
+- **Plan before non-trivial builds.** For multi-surface, multi-feature, or
+  team builds, briefly align with the user on scope, surfaces, scopes,
+  secrets, and settings shape before scaffolding — use your own planning
+  capabilities; there is no dedicated planning skill.

@@ -70,9 +70,6 @@ upstream concerns this skill assumes are handled:
 - **Frontify CLI install** — install with `npm install -g @frontify/frontify-cli`.
 - **Build validation** — run `npx tsc --noEmit` and `npx eslint src` during
   iteration and before deployment.
-- **Optional PRD / tasks planning layer** — `frontify-prd` + `frontify-tasks`
-  for any non-trivial theme (multi-template variants, custom navigation, team
-  build).
 - **Shared resource map** — when to load `frontify-auth-theme`,
   `frontify-graphql`, `frontify-deployment`. (Note: `frontify-fondue` is **not**
   used inside themes — see Rule B3 in `references/platform-rules.md`.)

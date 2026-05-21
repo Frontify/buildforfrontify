@@ -55,9 +55,6 @@ upstream concerns this skill assumes are handled:
   iteration and before deployment.
 - **UI framework choice** — Fondue (recommended default) vs. another library;
   the answer is carried into this skill.
-- **Optional PRD / tasks planning layer** — `frontify-prd` + `frontify-tasks`
-  are strongly recommended for multi-surface Apps, multi-feature scopes,
-  third-party-API integrations, or team builds.
 - **Shared resource map** — when to load `frontify-auth-app`,
   `frontify-graphql`, `frontify-deployment`, `frontify-fondue`.
 

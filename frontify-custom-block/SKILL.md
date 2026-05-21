@@ -40,8 +40,6 @@ upstream concerns this skill assumes are handled:
 - **Frontify CLI install** — install with `npm install -g @frontify/frontify-cli`.
 - **Build validation** — run `npx tsc --noEmit` and `npx eslint src` during
   iteration and before deployment.
-- **Optional PRD / tasks planning layer** — `frontify-prd` + `frontify-tasks`
-  for any non-trivial block (multi-feature scope, third-party API, team build).
 - **Shared resource map** — when to load `frontify-auth-block`, `frontify-graphql`,
   `frontify-deployment`, `frontify-fondue`.
 

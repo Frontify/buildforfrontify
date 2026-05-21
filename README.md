@@ -61,13 +61,6 @@ If you already know what you're building, you can also load a type skill directl
 | [`frontify-fondue/`](frontify-fondue/SKILL.md) | Fondue — Frontify's component and design-token system. |
 | [`frontify-deployment/`](frontify-deployment/SKILL.md) | Deploy mechanics — `FRONTIFY_INSTANCE` / `FRONTIFY_TOKEN`, build gates, Marketplace publishing. |
 
-### Planning (optional)
-
-| Skill | Use when... |
-|---|---|
-| [`frontify-prd/`](frontify-prd/SKILL.md) | Producing a tight Lite (5 lines) or Standard (~1 page) PRD before scaffolding. |
-| [`frontify-tasks/`](frontify-tasks/SKILL.md) | Breaking a PRD into an ordered, actionable task list. |
-
 ---
 
 ## How skills are loaded
@@ -79,7 +72,6 @@ The orchestrator pattern in this repo is:
 1. `build-for-frontify` runs discovery and selects an extension type.
 2. It loads the matching type skill (`frontify-app`, `frontify-custom-block`, or `frontify-theme`).
 3. As the build progresses, the agent **lazily** loads shared skills — auth, GraphQL, media processing, deployment, Fondue — only when the relevant topic comes up.
-4. For non-trivial builds, `frontify-prd` and `frontify-tasks` can be invoked first to align on scope.
 
 Skills are intentionally narrow and load on demand to keep the agent's context window focused on the work at hand.
 

@@ -267,7 +267,7 @@ matching shared-resource skill:
   `dynamicPreviewUrl` can be transformed via the Media Processing CDN.
 - **Deployment, OAuth tokens, CI/CD pipelines, Marketplace publishing
   workflow** → [`../frontify-deployment/SKILL.md`](../frontify-deployment/SKILL.md).
-  Mike's [`references/scaffolding.md`](references/scaffolding.md) covers the
+  [`references/scaffolding.md`](references/scaffolding.md) covers the
   `frontify-cli deploy` / token-based deploy basics; the deployment skill
   covers the broader pipeline story.
 - **Auth questions specific to Themes** (the AppBridge sandbox model, what

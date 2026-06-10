@@ -1,6 +1,21 @@
 ---
-name: fondue
-description: Queries the locally installed `@frontify/fondue/sdk` to surface accurate Fondue component metadata. ALWAYS use when picking a Fondue component (button, dialog, dropdown, tabs, …), finding a design token or utility class, or setting up the `@frontify/fondue` package.
+name: frontify-fondue
+description: >
+  Build Frontify extension UI with Fondue components and design tokens.
+  ALWAYS apply this skill when authoring visible UI for a Frontify App or
+  Content Block (settings panels, forms, buttons, menus, dialogs,
+  flyouts, tables, tabs, notices, loading / empty / error states),
+  building theme settings UI or platform-adjacent theme controls, or
+  asking how to match Frontify's visual style or about tokens,
+  accessibility, dark mode, or responsive layout — even if the user does
+  not name Fondue explicitly. Do not introduce a new UI library or
+  hand-roll components without first checking whether Fondue covers the
+  need. Skip this skill for theme-specific guideline presentation
+  (custom brand UI), non-UI extension logic, or non-Frontify projects.
+compatibility: Designed for Claude Code and similar agentic development tools.
+metadata:
+  author: Frontify
+  version: "1.0"
 allowed-tools: Bash(node *)
 ---
 

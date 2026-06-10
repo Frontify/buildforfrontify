@@ -1,225 +1,207 @@
 ---
-name: frontify-fondue
-description: >
-  Build Frontify extension UI with Fondue components and design tokens.
-  ALWAYS apply this skill when authoring visible UI for a Frontify App or
-  Content Block (settings panels, forms, buttons, menus, dialogs,
-  flyouts, tables, tabs, notices, loading / empty / error states),
-  building theme settings UI or platform-adjacent theme controls, or
-  asking how to match Frontify's visual style or about tokens,
-  accessibility, dark mode, or responsive layout — even if the user does
-  not name Fondue explicitly. Do not introduce a new UI library or
-  hand-roll components without first checking whether Fondue covers the
-  need. Skip this skill for theme-specific guideline presentation
-  (custom brand UI), non-UI extension logic, or non-Frontify projects.
-compatibility: Designed for Claude Code and similar agentic development tools.
-metadata:
-  author: Frontify
-  version: "1.0"
+name: fondue
+description: Queries the locally installed `@frontify/fondue/sdk` to surface accurate Fondue component metadata. ALWAYS use when picking a Fondue component (button, dialog, dropdown, tabs, …), finding a design token or utility class, or setting up the `@frontify/fondue` package.
+allowed-tools: Bash(node *)
 ---
 
-# Frontify Fondue
+# Fondue
 
-Fondue is the default UI system for Frontify-like extension surfaces. Use
-it for Apps, Content Blocks, settings panels, and theme controls that should
-feel native to Frontify. Do not use this skill for extension scaffolding,
-AppBridge usage, theme architecture, publishing, authentication, or data
-fetching; load the matching Frontify skill for those concerns.
+Use `@frontify/fondue/sdk` as the source of truth for every Fondue question. Never invent component names, props, token ids, or imports from memory — query the SDK.
 
----
+**Runs against the project's locally installed Fondue.** Invoke `node` from the project root (or a subdirectory) so `@frontify/fondue` resolves from `node_modules` — results reflect the exact version this project depends on, not the version the skill was authored against.
 
-## Non-negotiable rules
-
-1. **Never import modern components from bare `@frontify/fondue`.** That path
-   resolves to **legacy** components (marked `[legacy]` in Storybook) and is
-   the most common cause of "the UI looks old / wrong version" bugs. For new
-   work, always import from `@frontify/fondue/components`.
-
-   ```ts
-   // Correct (modern)
-   import { Button } from '@frontify/fondue/components';
-
-   // Legacy — only use when working in a codebase already on the legacy set
-   // and migration is out of scope. Surface this to the user.
-   import { Button } from '@frontify/fondue';
-   ```
-
-2. **Required side-effect imports must live at the app root** (e.g. `main.tsx`,
-   `App.tsx`, or the extension entry). Without these, components render
-   unstyled. Order matters: tokens first, then component styles, then any
-   add-ons (charts, RTE, legacy).
-
-   ```ts
-   import '@frontify/fondue/tokens/base';
-   import '@frontify/fondue/components/styles';
-   // Optional, only if used:
-   import '@frontify/fondue/charts/styles';
-   import '@frontify/fondue/rte/styles';
-   import '@frontify/fondue/styles'; // legacy components only
-   ```
-
-3. **Never invent components, subcomponents, props, or icon names.** Verify
-   against the Storybook (<https://fondue-components.frontify.com>), the
-   `fondue_components` MCP, or installed package types. The Storybook is the
-   canonical visual + prop reference, including lifecycle badges
-   (`[stable]`, `[experimental]`, `[legacy]`).
-4. **Wrap Fondue UI in `ThemeProvider`** unless the host app already provides
-   one. Nesting providers is supported and is how children scope a different
-   theme.
-5. **Use Fondue props and tokens before custom CSS.** Custom CSS is acceptable
-   for product-specific composition, but not for reimplementing Fondue
-   primitives.
-6. **For Content Blocks, scope custom CSS to the block root.** Unscoped styles
-   leak into other blocks and the surrounding Guideline page.
-
----
-
-## Setup
-
-Use this checklist when starting a new project or auditing an existing one.
-
-### 1. Install
-
-Fondue ships as a single package with sub-path exports. Adding the meta-package
-covers components, icons, tokens, charts, RTE, and the Tailwind preset.
+## Verify the SDK is available
 
 ```bash
-pnpm add @frontify/fondue
-# or: npm install @frontify/fondue
+node -e "import('@frontify/fondue/sdk').then((m) => console.log(JSON.stringify({ components: m.components.size, tokens: m.tokens.size, guides: m.guides.size })))"
 ```
 
-The Fondue monorepo also publishes the individual sub-packages
-(`@frontify/fondue-components`, `@frontify/fondue-icons`,
-`@frontify/fondue-charts`, `@frontify/fondue-rte`, `@frontify/fondue-tokens`).
-Most projects only need `@frontify/fondue`; only install a sub-package
-directly when the project explicitly opts out of the meta-package.
+If that errors with `Cannot find package`, the project hasn't installed Fondue yet:
 
-### 2. Import styles + tokens at the app root
+```bash
+pnpm add @frontify/fondue   # or npm i / yarn add
+```
 
-These are **side-effect imports**. They must run once before any Fondue
-component renders. Put them in your entry file.
+## How to query
+
+The SDK is a synchronous, zero-I/O ES module that resolves from the user's project. Three singletons share the same query surface:
 
 ```ts
-import '@frontify/fondue/tokens/base';
-import '@frontify/fondue/components/styles';
+import { components, tokens, guides } from '@frontify/fondue/sdk';
+
+// Same shape on each domain:
+components.list();
+components.get('Button');             // ComponentNode | undefined (never throws)
+components.has('Button');             // boolean
+components.where({ text: 'dropdown' });
+components.size;                      // number
 ```
 
-Add only if you actually use them:
+`where(filter)` clauses AND-combine; array-valued clauses OR within the clause. `get` and `where` never throw; missing ids return `undefined` / `[]`.
 
-| Import | When |
-| --- | --- |
-| `@frontify/fondue/charts/styles` | Using Fondue charts |
-| `@frontify/fondue/rte/styles` | Using the rich text editor |
-| `@frontify/fondue/styles` | Using legacy components from `@frontify/fondue` |
-
-### 3. Wrap the tree in `ThemeProvider`
-
-```tsx
-import { ThemeProvider } from '@frontify/fondue/components';
-
-export const App = () => (
-  <ThemeProvider theme="light">
-    {/* extension UI */}
-  </ThemeProvider>
-);
-```
-
-`ThemeProvider` can be nested. A child `ThemeProvider` overrides the parent
-theme for its subtree, which is useful for scoped dark sections inside a
-light app shell.
-
-If the app uses Fondue `Link` for SPA navigation, wrap with `RouterProvider`
-inside `ThemeProvider` and pass the host router's adapters.
-
-### 4. (Optional) Tailwind preset
-
-If the project uses Tailwind, extend its config with the Fondue preset so
-Fondue's `tw-` utility classes are available alongside the design tokens.
+Nodes have **scalar fields** (read as properties) and **graph edges** (call as methods):
 
 ```ts
-// tailwind.config.ts
-import fondueTailwindPreset from '@frontify/fondue/tokens/tailwind';
-
-export default {
-  presets: [fondueTailwindPreset],
-  content: ['./src/**/*.{ts,tsx}'],
-};
+const button = components.get('Button');
+button?.importStatement;              // scalar
+button?.props;                        // scalar (array)
+button?.category();                   // edge → ComponentFacetNode { name, list, where, … }
+button?.related();                    // edge → ComponentNode[]
 ```
 
-### 5. (Optional) Fonts
+### Running queries from Claude
 
-Frontify UI uses **Diatype** as the default UI typeface and **Geist Mono** for
-code. Fondue does not bundle the font files. If the host environment does not
-already provide them (the Frontify platform does), declare `@font-face` rules
-or load the fonts from your CDN before mounting Fondue components — otherwise
-typography falls back to system fonts and visually drifts from Frontify.
+For one-liners, use `node -e`:
+
+```bash
+node -e "import('@frontify/fondue/sdk').then(({components}) => console.log(JSON.stringify(components.where({text:'dropdown'}).map((c)=>({name:c.name,import:c.importStatement,canonical:c.examples.find((e)=>e.isCanonical)?.code})))))"
+```
+
+For anything multi-line, pipe a module via stdin to avoid quoting hell:
+
+```bash
+node --input-type=module <<'EOF'
+import { components } from '@frontify/fondue/sdk';
+const candidates = components.where({ text: 'dropdown', status: 'released' }).slice(0, 5);
+console.log(JSON.stringify(candidates.map((c) => ({
+    name: c.name,
+    category: c.category().name,
+    tags: c.tags().map((t) => t.name),
+    import: c.importStatement,
+    canonical: c.examples.find((e) => e.isCanonical)?.code ?? c.examples[0]?.code ?? null,
+})), null, 2));
+EOF
+```
+
+Always emit `JSON.stringify(...)` so the response is parseable. Never `console.log(node)` directly — facet methods serialize as `[Function]`.
+
+For the formal contract (every filter clause, node shape, facet method), see [`fondue.md`](./reference/fondue.md).
 
 ---
 
-## Quick reference
+## Workflow 1 — Setting up Fondue
 
-### Canonical sources (in priority order)
+Read the canonical setup prose from the SDK rather than paraphrasing — the steps change between releases (font URLs, package layout, theme provider API).
 
-1. **Installed package types** in the target repo — the source of truth for
-   compilable props.
-2. **Storybook**: <https://fondue-components.frontify.com> — the canonical
-   visual + prop reference. Each component story shows a **lifecycle badge**:
-   - `[stable]` — production-ready, follows semver
-   - `[experimental]` — usable but API may change
-   - `[legacy]` — only for projects still on the old set; flag to user
-3. **`fondue_components` MCP** for prose docs, prop tables, and story
-   examples. Tools:
-   - `list_all_documentation`
-   - `get_documentation` with ids like `components-button`,
-     `layout-flex`, `components-select`, `components-dialog`,
-     `utilities-themeprovider`
-   - `get_documentation_for_story` for variants
-4. **[`references/fondue.md`](references/fondue.md)** in this skill, plus the
-   Custom extensions PDFs already in the repo, as the offline fallback.
-
-If the MCP is not configured, recommend it but **do not silently edit MCP
-configuration**. The MCP server URL `https://fondue-components.frontify.com/mcp`
-should be confirmed against current Frontify docs before relying on it.
-
-If the installed package types and MCP examples disagree, prefer the installed
-package for compilable code and the MCP for composition intent.
-
-### Imports for new work
-
-```ts
-import { Button, Flex, TextInput, ThemeProvider } from '@frontify/fondue/components';
-import { IconPen } from '@frontify/fondue-icons';
+```bash
+node -e "import('@frontify/fondue/sdk').then(({guides}) => console.log(guides.get('getting-started')?.content))"
 ```
 
-For an existing repo, follow its established import convention before changing
-it. If it imports from bare `@frontify/fondue`, that's legacy — call it out
-explicitly before producing code (see Non-negotiable rule #1).
+For upgrades:
 
-Most common component choices:
+```bash
+node -e "import('@frontify/fondue/sdk').then(({guides}) => console.log(guides.get('upgrading')?.content))"
+```
 
-| Need | Use |
-| --- | --- |
-| Layout | `Box`, `Flex`, `Grid`, `Section`, `Divider`, `ScrollArea` |
-| Typography | `Heading`, `Text`, `Label`, `Link` |
-| Actions | `Button`, `SplitButton`, `Dropdown` |
-| Forms | `TextInput`, `Textarea`, `Select`, `Checkbox`, `RadioList`, `Switch`, `SegmentedControl`, `Slider` |
-| Feedback | `Notice`, `Badge`, `Tag`, `LoadingBar`, `LoadingCircle` |
-| Overlays | `Dialog`, `Flyout`, `Tooltip` |
-| Data | `Table`, `OrderableList`, `Accordion`, `Tabs` |
+To discover other bundled guides:
 
-Accessibility defaults:
+```bash
+node -e "import('@frontify/fondue/sdk').then(({guides}) => console.log(JSON.stringify(guides.list().map((g)=>({id:g.id,title:g.title})))))"
+```
 
-- Icon-only actions need `aria-label` or `title`.
-- Inputs need a visible `Label` linked with `htmlFor`, or an accessible
-  name via `aria-label`/`aria-labelledby`.
-- `Dialog.Content` needs `Dialog.Title`; use `screenReaderOnly` if needed.
-- `Table.Root` needs `aria-label` or `Table.Caption`.
-- `LoadingBar` needs `aria-label` or `aria-labelledby`.
+The output is the same markdown the Storybook docs render. Use it as the source for token imports, component-style imports, font face definitions, the Tailwind preset, `ThemeProvider`.
+
+## Workflow 2 — Finding a component
+
+Start with intent-based search:
+
+```bash
+node --input-type=module <<'EOF'
+import { components } from '@frontify/fondue/sdk';
+console.log(JSON.stringify(components.where({ text: 'dropdown' }).map((c) => ({
+    name: c.name,
+    category: c.category().name,
+    status: c.status,
+    description: c.description,
+})), null, 2));
+EOF
+```
+
+Narrow by category or tag when the use case maps cleanly:
+
+```ts
+components.where({ category: 'overlay', status: 'released' });
+components.where({ tag: 'cta' });
+components.where({ category: 'input', tag: 'cta' });
+```
+
+Once you have a candidate, pull the recommendation shape:
+
+```bash
+node --input-type=module <<'EOF'
+import { components } from '@frontify/fondue/sdk';
+const c = components.get('Button');
+console.log(JSON.stringify({
+    name: c.name,
+    description: c.description,
+    importStatement: c.importStatement,
+    canonical: c.examples.find((e) => e.isCanonical)?.code ?? c.examples[0]?.code,
+    requiredProps: c.props.filter((p) => p.required).map((p) => p.name),
+    subComponents: c.subComponents.map((sc) => sc.name),
+    related: c.related().map((r) => r.name),
+    instructions: c.instructions,
+}, null, 2));
+EOF
+```
+
+**Recommendation shape** — when you suggest a component, output: the name, what it's for, the import statement, and the canonical example. If the use case isn't a clean match, list 2–3 candidates with their categories and let the user pick.
+
+**Icons** live in the components graph under `category: 'icon'`. They have empty `status`, empty `props`, empty `related()` — don't probe those fields. Find them with:
+
+```ts
+components.where({ category: 'icon', tag: 'arrow' });
+components.get('IconAdobeCreativeCloud')?.importStatement;
+```
+
+When nothing matches:
+- Try a related tag — `components.tags().map((t) => t.name)` lists every tag.
+- Look at the closest hit's `related()`.
+- If there truly is no component for the use case, say so. Don't recommend hand-rolling something Fondue already provides, but don't invent a component name either.
+
+## Workflow 3 — Picking tokens for a custom component
+
+Two layers exist:
+
+- `tokens` — atomic design tokens (colors, sizes, shadows, strings). Each has a CSS variable and a Tailwind class.
+- `tokens.utilities` — composed Tailwind utilities (typography classes like `tw-body-large-strong`) bundling multiple token references.
+
+```ts
+tokens.where({ text: 'primary' });
+tokens.where({ category: 'colors', themeable: true });
+tokens.where({ keyPathStartsWith: 'colors.text' });
+tokens.type('color')?.where({ themeable: true });
+
+const t = tokens.get('color-text-weak');
+t?.value;              // 'var(--color-text-weak)'
+t?.cssVariable;        // '--color-text-weak'
+t?.tailwindClass;      // 'tw-text-weak'
+t?.themeable;          // true
+
+// Typography: always use the utility class, not raw font tokens
+tokens.utilities.where({ keyPathStartsWith: 'utilities.text' });
+```
+
+Rules:
+- Prefer `themeable: true` tokens for any user-facing surface so dark mode and theming work out of the box.
+- Prefer the Tailwind class when the project uses `@frontify/fondue/tokens/tailwind`; prefer the CSS variable otherwise.
+- For typography, recommend the **utility class** — not raw font-size / line-height / weight tokens.
+- Never invent token ids. If `tokens.get(id)` returns `undefined`, search again.
+- If the design calls for a value with no matching token, surface that explicitly — don't silently hardcode. The right answer is usually a token the user didn't know existed.
 
 ---
 
-## Full reference
+## Common pitfalls
 
-See [references/fondue.md](references/fondue.md) for component selection,
-tokens, icons, accessibility, theme boundaries, and the verification notes
-from the Custom extensions documentation.
+| Mistake | Fix |
+| ------- | --- |
+| Calling `.where()` / `.get()` on the array returned by `list()` / `where()` | Arrays are arrays. Use native `.filter` / `.find`, or navigate back to a facet to query. |
+| Assuming a component exists ("there must be a `Combobox`") | `components.has('Combobox')` first, or `components.where({ text: 'combobox' })` |
+| Hardcoding a hex / px value in custom code | `tokens.where({ text: '<intent>' })` — most "obvious" values have a token |
+| Treating icons like normal components, reading `status` / `props` | Detect with `node.category().name === 'icon'`. Icons have empty `status`, `props`, `related`. |
+| Importing `Button` from the wrong path | `components.get('Button')?.importStatement` is authoritative |
+| Suggesting setup steps from memory | `guides.get('getting-started')?.content` — always the live text |
+| `console.log(node)` instead of `JSON.stringify` | Facet methods serialize as `[Function]`; always stringify before logging |
+
+## Going deeper
+
+[`fondue.md`](./reference/fondue.md) is the formal contract: every export, every filter clause per domain, every node and facet type, error semantics. Load it when you need to verify a filter clause is valid (`ComponentFilter`, `TokenFilter`, `GuideFilter`) or that a method exists. Prefer it over web lookups or upstream GitHub.

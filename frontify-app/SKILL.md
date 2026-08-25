@@ -477,14 +477,22 @@ Before the agent attempts any deploy command, verify:
 - [ ] `tsc --noEmit` (i.e. `npm run lint`) is clean.
 - [ ] `.gitignore` excludes `.secret.json`.
 
-### CLI mechanics, build gates, and token hygiene → deployment skill
+### CLI mechanics and credentials → deployment skill
 
-The cross-type deploy mechanics — personal access token setup,
-`FRONTIFY_INSTANCE` / `FRONTIFY_TOKEN` env vars, the four build-pipeline
-gates, network-egress requirements, the angle-bracket placeholder
-convention, and token-leak hygiene / redaction — live in
-`../frontify-deployment/SKILL.md`. Read that first; the App-specific
-sections below assume it.
+The cross-type deploy mechanics — authenticating the CLI, the build
+gates, the angle-bracket placeholder convention, and token hygiene —
+live in `../frontify-deployment/SKILL.md`. Read that first; the
+App-specific sections below assume it.
+
+The CLI authenticates one of two ways — it does **not** read
+`FRONTIFY_*` environment variables:
+
+- **Interactive:** `frontify-cli login` runs a browser OAuth flow and
+  stores the session, so subsequent `deploy` / `publish` /
+  `verify-manifest` commands need no credentials on the command line.
+- **Non-interactive (CI / agent):** pass `--instance <url>` and
+  `--token <token>` explicitly on each `deploy` / `publish` /
+  `verify-manifest` invocation.
 
 ### `package.json` scripts (App scaffold defaults)
 
@@ -499,13 +507,19 @@ default `src/index.ts` does not match a TSX entry):
     "deploy:dry": "frontify-cli deploy --entryPath src/index.tsx --dry-run --no-verify",
     "publish": "frontify-cli publish",
     "verify-manifest": "frontify-cli verify-manifest",
+    "login": "frontify-cli login",
+    "logout": "frontify-cli logout",
     "lint": "tsc --noEmit"
   }
 }
 ```
 
-With `FRONTIFY_INSTANCE` and `FRONTIFY_TOKEN` exported per the deployment
-skill:
+`--no-verify` skips the CLI's own `tsc --noEmit` and `eslint src` gates,
+so run `npm run lint` yourself before deploying (as below). Manifest
+validation still runs on every `deploy`, regardless of `--no-verify`.
+
+Authenticate the CLI first — `npm run login` (interactive), or pass
+`--instance <url> --token <token>` on each command in CI — then:
 
 ```bash
 npm run lint

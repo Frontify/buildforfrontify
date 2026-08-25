@@ -24,7 +24,7 @@ export default function App() {
                 <p>
                     Replace this body with the app's first feature.
                     Use <code>appBridge.api(&#123;...&#125;)</code> to call
-                    <code>createAsset</code>, <code>executeGraphql</code>, etc.
+                    <code>createAsset</code>, <code>executeGraphQl</code>, etc.
                 </p>
             </div>
         );

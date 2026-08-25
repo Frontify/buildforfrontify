@@ -6,7 +6,7 @@ Demonstrates integrating with an external social media service (Bluesky) to shar
 
 ## Key Concepts
 
-- `guidelineGuideline` surface with `assetViewer` for viewing/acting on individual assets
+- `assetViewer` surface (under the `guideline` project type) for viewing/acting on individual assets
 - `appBridge.api({ name: 'getAssetResourceInformation', payload: { assetId } })` to get asset details
 - User state for persisting authentication tokens across sessions
 - `@atproto/api` (AT Protocol) for Bluesky API integration
@@ -34,19 +34,22 @@ Same as Hello World but with additional dependencies `zustand` and `@atproto/api
 ```json
 {
   "appId": "",
-  "appVersion": "1.0.0",
-  "type": "platform-app",
-  "scopes": ["basic:read", "basic:write"],
+  "appType": "platform-app",
+  "name": "asset-viewer-social-media",
+  "metadata": {
+    "version": 1
+  },
+  "permissions": {
+    "scopes": ["basic:read", "basic:write"]
+  },
   "surfaces": {
-    "guidelineGuideline": [
-      {
-        "id": "bluesky-surface",
-        "label": "Publish to Bluesky",
-        "assetViewer": {
-          "fileTypes": ["jpeg", "jpg", "png", "svg"]
-        }
+    "guideline": {
+      "assetViewer": {
+        "title": "Publish to Bluesky",
+        "type": ["image"],
+        "filenameExtension": ["jpeg", "jpg", "png", "svg"]
       }
-    ]
+    }
   }
 }
 ```
@@ -536,7 +539,7 @@ export const createPostWithImage = async (text: string) => {
 
 ## Integration Notes
 
-- The `guidelineGuideline` surface with `assetViewer` shows the app when viewing individual assets in guidelines
+- The `assetViewer` surface (under the `guideline` project type) shows the app when viewing individual assets in guidelines
 - Authentication tokens are persisted via `appBridge.state('userState')` (same pattern as the app-with-state template)
 - The Router pattern here is a simple state machine - for more complex routing, consider a proper router library
 - `getAssetResourceInformation` provides `previewUrl` and `title` for the current asset

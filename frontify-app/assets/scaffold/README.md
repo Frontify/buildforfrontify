@@ -73,5 +73,5 @@ document: `eslint.config.js`, `index.html`, and `terser` in devDeps.
 | Full App skill (scaffold flow, dev loop, deploy) | [`../../SKILL.md`](../../SKILL.md) |
 | Manifest scopes, `secrets[]`, `network.endpoints[]` | [`../../../frontify-auth-app/references/manifest-permissions.md`](../../../frontify-auth-app/references/manifest-permissions.md) |
 | `executeSecureRequest` for credentialed third-party calls | [`../../../frontify-auth-app/references/secure-requests.md`](../../../frontify-auth-app/references/secure-requests.md) |
-| AppBridge auth methods (`executeGraphql`, `getCurrentUser`, …) | [`../../../frontify-auth-app/references/app-bridge-auth.md`](../../../frontify-auth-app/references/app-bridge-auth.md) |
+| AppBridge auth methods (`executeGraphQl`, `getCurrentUser`, …) | [`../../../frontify-auth-app/references/app-bridge-auth.md`](../../../frontify-auth-app/references/app-bridge-auth.md) |
 | Deploy build-pipeline gates + `--no-verify` caveat | [`../../SKILL.md`](../../SKILL.md) § Marketplace deployment |

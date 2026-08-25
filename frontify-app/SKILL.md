@@ -81,17 +81,19 @@ referencing the options below.
 
 | Surface | Where it appears | Context provided |
 |---------|------------------|------------------|
-| **`assetViewer`** | App icon in the top right of the Asset Viewer in a Guideline | `assetId`, `brandId`, `domain` |
+| **`assetViewer`** | App icon in the top right of the Asset Viewer in a Guideline | `assetId` + base props |
 | **`pageAction`** | App icon in the top right of a Guideline page | base props |
-| **`themeAction`** *(Alpha)* | Triggered from a Guideline | `portalId`, `projectId` |
+| **`assetChooser`** | Asset Chooser inside a Guideline | base props |
 
-All surfaces share `AppBaseProps`: `brandId`, `domain`, `parentId`,
-`rootId`. **Note:** `parentId` is on most surfaces but not on
-`assetViewer` — narrow with `if (context.surface === '…')` before
-accessing surface-specific fields, or `tsc` will reject the access. See
-`references/surfaces.md` for the full per-surface implementation guide
-and `references/app-lifecycle.md` for how surface context is delivered
-at runtime.
+All surfaces share `AppBaseProps`: `token`, `marketplaceServiceAppId`,
+`connected`, `brandId`, `domain`. `parentId` and `rootId` are
+surface-specific — present on `assetAction`, `assetCreation`, and
+`assetBulkActions`; absent on `assetViewer`, `pageAction`, and
+`assetChooser`. Narrow with `if (context.surface === '…')` before
+accessing any surface-specific field, or `tsc` will reject the access.
+See `references/surfaces.md` for the full per-surface implementation
+guide and `references/app-lifecycle.md` for how surface context is
+delivered at runtime.
 
 ---
 
@@ -301,15 +303,18 @@ Available via `appBridge.api({ name, payload })`:
 | `getAssetResourceInformation` | Fetch asset metadata + preview / download / source URLs |
 | `getCurrentUser` | `{ id, name?, avatar?, email }` of the authenticated user |
 | `getAccountId` | Frontify account ID |
-| `createAsset` | Upload a new asset — payload `{ data, filename, parentId }` |
-| `executeSecureRequest` | Call a manifest-declared endpoint with stored secrets |
-| `executeGraphql` *(alpha)* | Run any query/mutation against the Frontify Public API |
+| `createAsset` | Upload a new asset — payload `{ data, filename, parentId }` (optional `description`, `externalId`, `tags`) |
+| `getSecureRequest` | Call a manifest-declared endpoint with stored secrets — returns `{ data, status, statusText }` |
+| `executeSecureRequest` | Same, but returns the raw `Response` (stream the body yourself) |
+| `executeGraphQlWithFullResponse` | Run any query/mutation against the Frontify Public API — returns `{ data, errors }` |
+| `executeGraphQl` | Same, but resolves only `data` (top-level `errors` are dropped) |
 
-> **`createAsset` payload shape:** `{ data: File \| Blob, filename: string, parentId: string }`.
-> `parentId` is the library/folder where the new asset lands — on the
-> `assetCreation` surface it comes from `context.parentId`. Earlier
-> docs that say `createAsset` accepts a bare `File` are incorrect for
-> `@frontify/app-bridge-app` v0.2.x.
+> **`createAsset` payload shape:** `{ data: File \| Blob \| string,
+> filename: string, parentId: string }`, plus optional `description`,
+> `externalId`, and `tags: { value: string }[]`. It resolves to
+> `{ assetId }`. `parentId` is the library/folder where the new asset
+> lands — on the `assetCreation` surface it comes from
+> `context.parentId`.
 
 For GraphQL data work, load `../frontify-graphql/SKILL.md`.
 
@@ -334,10 +339,11 @@ export const settings = defineSettings({
 });
 ```
 
-Valid setting types in `@frontify/platform-app` v0.1.x: `slider`,
-`switch`, `textarea`, `input`, `colorInput`, `checklist`, `dropdown`,
-`multiInput`, `notification`, `sectionHeading`, `segmentedControls`.
-**There is no `select` type — use `dropdown`.**
+Valid setting types in `@frontify/platform-app`: `switch`, `textarea`,
+`input`, `colorInput`, `checklist`, `dropdown`, `multiInput`,
+`notification`, `sectionHeading`, `segmentedControls`.
+**There is no `select` type — use `dropdown`.** (`slider` is accepted
+only as a deprecated alias for `segmentedControls`.)
 
 Read and write at runtime with the `appSettings` helper or via
 `appBridge.state('settings')`. The subscribe callback parameter is
@@ -349,8 +355,8 @@ const unsubscribe = appBridge
   .subscribe((next: unknown) => apply(next as MySettingsShape));
 ```
 
-Settings UI is identical to Content Block settings except `Asset` and
-`Color` inputs are unavailable.
+Settings UI is identical to Content Block settings except `Asset`
+inputs are unavailable.
 
 ### Secure requests (secrets)
 
@@ -365,8 +371,9 @@ placeholders. For local testing, mirror the secret values in a
 
 Declare in `manifest.json` under `permissions.scopes`. Available scopes:
 `basic:read`, `basic:write`, `account:read`, `webhook:read`,
-`webhook:write`. Admins must approve scopes before installation —
-request only what you need. See
+`webhook:write`. Declare between 1 and 5 scopes; **`basic:read` is
+always required** and must be present. Admins must approve scopes before
+installation — request only what you need. See
 `../frontify-auth-app/references/scopes.md` for selection guidance.
 
 ---
@@ -385,7 +392,7 @@ App, then add `secrets[]` / `network.endpoints[]` only as needed.
     "version": 1
   },
   "permissions": {
-    "scopes": ["basic:write"]
+    "scopes": ["basic:read", "basic:write"]
   },
   "surfaces": {
     "mediaLibrary": {

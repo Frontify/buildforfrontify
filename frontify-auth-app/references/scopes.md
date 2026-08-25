@@ -2,7 +2,7 @@
 
 Scopes describe the capabilities an App requests from Frontify. They're
 declared in `manifest.json` `permissions.scopes`, presented to admins at
-install time, and enforced on every `executeGraphql` /
+install time, and enforced on every `executeGraphQl` /
 `executeSecureRequest` call.
 
 > Apps do **not** handle OAuth tokens or scope negotiations at runtime. The
@@ -92,7 +92,7 @@ asset-published events) need `webhook:write`. Note the layered requirements:
 
 ```ts
 const { data } = await appBridge.api({
-  name: 'executeGraphql',
+  name: 'executeGraphQlWithFullResponse',
   payload: { query: '...' },
 });
 ```

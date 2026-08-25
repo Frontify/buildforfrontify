@@ -2,7 +2,7 @@
 name: frontify-auth-app
 description: >
   Authenticate Frontify App code through the AppBridge — no raw tokens.
-  ALWAYS apply this skill when calling Frontify GraphQL (`executeGraphql`)
+  ALWAYS apply this skill when calling Frontify GraphQL (`executeGraphQl`)
   or third-party APIs (`executeSecureRequest`) from an App, editing
   `manifest.json` scopes / `secrets[]` / `network.endpoints[]`, or
   debugging 401 / 403 or the Authorize-permissions install dialog — even
@@ -62,17 +62,18 @@ const { id, name, avatar, email } = await appBridge.api({
   name: 'getCurrentUser',
 });
 
-const accountId = await appBridge.api({ name: 'getAccountId' });
+const { id: accountId } = await appBridge.api({ name: 'getAccountId' });
 ```
 
 `getCurrentUser` is gated by the `account:read` scope (declared in
-`manifest.json` — see below). `getAccountId` does not need additional scope.
+`manifest.json` — see below). `getAccountId` does not need additional scope
+and resolves to `{ id }`.
 
-### 3 — Call Frontify GraphQL — `executeGraphql`
+### 3 — Call Frontify GraphQL — `executeGraphQlWithFullResponse`
 
 ```ts
-const { data } = await appBridge.api({
-  name: 'executeGraphql',
+const { data, errors } = await appBridge.api({
+  name: 'executeGraphQlWithFullResponse',
   payload: {
     query: /* GraphQL */ `
       query CurrentUserBrands {
@@ -85,10 +86,13 @@ const { data } = await appBridge.api({
 });
 ```
 
-`executeGraphql` is the **only** correct way for an App to talk to Frontify
-GraphQL. Do not call `https://<domain>/graphql` directly with `fetch` — the
-App has no token, and you'd be re-implementing what AppBridge already
-provides safely.
+`executeGraphQlWithFullResponse` is the recommended way for an App to talk
+to Frontify GraphQL — it resolves the full `{ data, errors }` envelope. A
+shorter `executeGraphQl` also exists but is **deprecated**: it resolves
+only the `data` object (so top-level GraphQL `errors` are dropped). Either
+way, do not call `https://<domain>/graphql` directly with `fetch` — the App
+has no token, and you'd be re-implementing what AppBridge already provides
+safely.
 
 The call honours the App's manifest scopes; a query that needs `basic:write`
 will fail if the manifest only declares `basic:read`.
@@ -141,14 +145,20 @@ Two placeholder forms:
 **Call**:
 
 ```ts
-const { data, status } = await appBridge.api({
+const response = await appBridge.api({
   name: 'executeSecureRequest',
   payload: {
     endpoint: 'create-post',
     requestParams: { title: 'Hello' },
   },
 });
+const data = await response.json(); // executeSecureRequest resolves to a raw Response
 ```
+
+`executeSecureRequest` resolves to a raw `fetch` `Response` — call
+`.json()` / `.text()` yourself. A sibling `getSecureRequest` (same payload)
+instead resolves to a pre-parsed `{ data, status, statusText }` object if
+you prefer not to handle the `Response`.
 
 **Local development**: create a `.secret.json` at the project root (mirror
 the keys from `manifest.json` `secrets[]`) and add it to `.gitignore`:
@@ -263,7 +273,7 @@ session.
 When a surface launches the App, Frontify instantiates an `AppBridge` and
 delivers the surface-specific `context` synchronously. From that point:
 
-- `executeGraphql` calls run with the user's session — no token to manage
+- `executeGraphQl` calls run with the user's session — no token to manage
 - `executeSecureRequest` resolves manifest secrets server-side
 - Closing the modal unmounts the React tree — persist data via
   `userState` or `createAsset` before teardown

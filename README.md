@@ -48,8 +48,6 @@ If you already know what you're building, you can also load a type skill directl
 | Skill | Context |
 |---|---|
 | [`frontify-auth-app/`](frontify-auth-app/SKILL.md) | Apps — AppBridge auth, scopes in `manifest.json`, `executeSecureRequest`, secrets, App User State. |
-| [`frontify-auth-block/`](frontify-auth-block/SKILL.md) | Custom Blocks — block AppBridge, GraphQL via the host, scope model. |
-| [`frontify-auth-theme/`](frontify-auth-theme/SKILL.md) | Themes — theme AppBridge, Guideline/Portal/Project/Brand context, `themeAction`. |
 | [`frontify-auth-integration/`](frontify-auth-integration/SKILL.md) | External integrations — backend scripts, CI jobs, OAuth 2.0 client apps, Service Apps, personal tokens, raw bearer auth against `/api/oauth/*`. |
 
 ### Shared resources

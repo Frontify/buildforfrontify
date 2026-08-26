@@ -24,15 +24,28 @@ it receives context, or how state is shared and torn down.
 
 ## Initialisation
 
-The entry point mounts through `renderReactApp`, not `createRoot`:
+The entry point spans two files: `src/index.ts` default-exports
+`defineApp({ app, settings })`, and `index.html` hands that export to
+`renderReactApp` (from `@frontify/app-bridge-app`) — the app mounts
+through `renderReactApp`, not `createRoot`:
 
-```tsx
-import { renderReactApp } from '@frontify/app-bridge-app';
+```ts
+// src/index.ts
 import { defineApp } from '@frontify/platform-app';
-import App from './App';
+import { App } from './App';
 import { settings } from './settings';
 
-renderReactApp(defineApp({ app: App, settings }));
+export default defineApp({ app: App, settings });
+```
+
+```html
+<!-- index.html -->
+<script type="module">
+    import module from '/src/index.ts';
+    import { renderReactApp } from '@frontify/app-bridge-app';
+
+    renderReactApp(module);
+</script>
 ```
 
 `renderReactApp` instantiates the `AppBridgePlatformApp` singleton,

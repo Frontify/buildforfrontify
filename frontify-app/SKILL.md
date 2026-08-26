@@ -162,22 +162,26 @@ AppBridge connection.
 
 ### Scaffold a new app — non-interactive (agent / CI)
 
-The interactive CLI cannot be driven without a TTY (it has no flags for
-type/surface/styling). When running in a sandbox, container, or CI agent,
-**inline-scaffold** instead by copying the canonical files in
-`assets/scaffold/` into the new project directory and substituting the
-`<APP_NAME>` and `<APP_TITLE>` placeholders. The scaffold ships a
-complete, deploy-ready project: `manifest.json`, `package.json`,
-`tsconfig.json`, `eslint.config.js`, `index.html`, `src/index.tsx`,
-`src/App.tsx`, `src/settings.ts`. After copying:
+The interactive `create` prompts can't be driven without a TTY (there are
+no flags for type/surface/styling). When running in a sandbox, container,
+or CI agent, copy from the CLI's own project templates rather than
+maintaining a separate copy — they are the canonical, tool-maintained
+source. They ship inside the installed `@frontify/frontify-cli` package
+under `templates/platform-app-tailwind/` and `templates/platform-app-css/`
+(one per styling choice), each a complete, deploy-ready project
+(`manifest.json`, `package.json`, `tsconfig*.json`, `eslint.config.js`,
+`index.html`, `src/index.ts`, `src/App.tsx`, `src/settings.ts`). Copy a
+template into the new project directory, then set `name` in
+`package.json` / `manifest.json`, `appId` in `manifest.json`, and the
+surface `title`(s). Then install deps and sanity-check:
 
 ```bash
-cd <APP_NAME>
+cd <app-name>
 npm install
-npm run lint     # tsc --noEmit
+npm run typecheck   # tsc --noEmit
 ```
 
-### Verify the scaffold
+### Verify
 
 ```bash
 cd <app-name>
@@ -232,43 +236,54 @@ the current dev session.
 
 ---
 
-## Entry point — `src/index.tsx`
+## Entry point — `src/index.ts` + `index.html`
 
-A Platform App MUST mount React via the bundled `renderReactApp` helper.
-Mounting manually with `createRoot(...).render(<App />)` renders the App
-**before** AppBridge has finished its handshake with the host iframe, so
-`appContext()` returns `undefined` and the App crashes on first read with
-`TypeError: Cannot read properties of undefined (reading 'surface')`. The
-modal opens but the body is blank.
+Two files wire the app up:
 
-The canonical entry:
+- **`src/index.ts`** default-exports `defineApp({ app, settings })`, which
+  packages your `App` component and `settings` into the config the host
+  expects.
+- **`index.html`** imports that default export and hands it to
+  `renderReactApp` from `@frontify/app-bridge-app`.
 
-```tsx
-// src/index.tsx
-import { renderReactApp } from '@frontify/app-bridge-app';
+```ts
+// src/index.ts
 import { defineApp } from '@frontify/platform-app';
-import App from './App';
+import { App } from './App';
 import { settings } from './settings';
 
-renderReactApp(
-    defineApp({
-        app: App,
-        settings,
-    }),
-);
+// Fondue style imports (only when building UI with Fondue):
+import '@frontify/fondue/tokens/base';
+import '@frontify/fondue/components/styles';
+import '@frontify/fondue/styles';
+import 'tailwindcss/tailwind.css';
+
+export default defineApp({
+    app: App,
+    settings,
+});
 ```
 
-`renderReactApp` instantiates the AppBridge singleton, subscribes to the
-`Context.connected` event, dispatches `openConnection`, and only then
-mounts React on `#root`. After this, `appContext()` inside the App
-component returns a real, populated context.
+```html
+<!-- index.html -->
+<div id="root"></div>
+<script type="module">
+    import module from '/src/index.ts';
+    import { renderReactApp } from '@frontify/app-bridge-app';
+
+    renderReactApp(module);
+</script>
+```
+
+`renderReactApp` connects the AppBridge, waits for its handshake with the
+host iframe, and only then mounts React on `#root` — so `appContext()` is
+already populated on the App's first render and you never call
+`createRoot` yourself.
 
 ## AppBridge — interacting with the platform
 
 Apps communicate with Frontify via the **AppBridge**. Inside the App
-component, get the singleton instance — `new AppBridgePlatformApp()`
-returns the same instance `renderReactApp` already created (it stores
-itself on `window.appBridgePlatformApp`):
+component, instantiate it:
 
 ```ts
 import { AppBridgePlatformApp } from '@frontify/app-bridge-app';
@@ -372,8 +387,9 @@ placeholders. For local testing, mirror the secret values in a
 Declare in `manifest.json` under `permissions.scopes`. Available scopes:
 `basic:read`, `basic:write`, `account:read`, `webhook:read`,
 `webhook:write`. Declare between 1 and 5 scopes; **`basic:read` is
-always required** and must be present. Admins must approve scopes before
-installation — request only what you need. See
+always required** and must be present. Admins must approve the requested
+scopes in a consent dialog before installation; on update that dialog
+reappears only if the scopes changed. Request only what you need. See
 `../frontify-auth-app/references/scopes.md` for selection guidance.
 
 ---
@@ -408,7 +424,7 @@ Field notes (see also `../frontify-auth-app/references/manifest-permissions.md`)
 
 - `appType` — exactly `"platform-app"` (NOT `"type"`).
 - `name` — top-level slug. Required. Distinct from any `metadata.name`.
-- `metadata.version` — integer; bump on every published change.
+- `metadata.version` — integer.
 - Surface declarations use `"title"` (NOT `"label"`); `"icon"` is not
   part of the surface object.
 - Marketplace metadata (description, screenshots, gallery icon) lives
@@ -464,8 +480,7 @@ the app is registered, how state is shared, or how teardown works.
 Before the agent attempts any deploy command, verify:
 
 - [ ] `manifest.json` `appId` matches a Marketplace draft (registered in UI by the user).
-- [ ] `metadata.version` is set and **bumped if previously published**
-      (existing installs are version-pinned — see "After re-deploy" below).
+- [ ] `metadata.version` is present.
 - [ ] `permissions.scopes` is the minimum the App actually uses.
 - [ ] Surface declarations use `"title"` (not `"label"`).
 - [ ] No `<…>` placeholder strings remain in `manifest.json`,
@@ -474,7 +489,7 @@ Before the agent attempts any deploy command, verify:
       — should return no results.
 - [ ] Project contains all build-pipeline files: `eslint.config.js`,
       `index.html`, `terser` in devDeps, valid `tsconfig.json`.
-- [ ] `tsc --noEmit` (i.e. `npm run lint`) is clean.
+- [ ] `tsc --noEmit` (i.e. `npm run typecheck`) is clean.
 - [ ] `.gitignore` excludes `.secret.json`.
 
 ### CLI mechanics and credentials → deployment skill
@@ -494,29 +509,32 @@ The CLI authenticates one of two ways — it does **not** read
   `--token <token>` explicitly on each `deploy` / `publish` /
   `verify-manifest` invocation.
 
-### `package.json` scripts (App scaffold defaults)
+### `package.json` scripts
 
-Wire `package.json` scripts to use the entry path explicitly (the CLI's
-default `src/index.ts` does not match a TSX entry):
+The CLI's default entry is `src/index.ts`, so no `--entryPath` is needed.
+These mirror the CLI template's scripts, plus a couple of convenience
+aliases:
 
 ```json
 {
   "scripts": {
-    "serve": "frontify-cli serve --entryPath src/index.tsx",
-    "deploy": "frontify-cli deploy --entryPath src/index.tsx --no-verify",
-    "deploy:dry": "frontify-cli deploy --entryPath src/index.tsx --dry-run --no-verify",
+    "serve": "frontify-cli serve",
+    "deploy": "frontify-cli deploy",
+    "deploy:dry": "frontify-cli deploy --dry-run",
     "publish": "frontify-cli publish",
     "verify-manifest": "frontify-cli verify-manifest",
     "login": "frontify-cli login",
     "logout": "frontify-cli logout",
-    "lint": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
   }
 }
 ```
 
-`--no-verify` skips the CLI's own `tsc --noEmit` and `eslint src` gates,
-so run `npm run lint` yourself before deploying (as below). Manifest
-validation still runs on every `deploy`, regardless of `--no-verify`.
+A bare `deploy` runs the CLI's build gates (manifest validation,
+type-check, and — if an eslint config is present — lint) before
+uploading. `--no-verify` skips the type-check and eslint gates; if you use
+it, run `npm run typecheck` and `npm run lint` yourself first.
 
 Authenticate the CLI first — `npm run login` (interactive), or pass
 `--instance <url> --token <token>` on each command in CI — then:
@@ -541,7 +559,9 @@ After `deploy` lands a draft:
 2. Run `frontify-cli publish --availability PRIVATE …` (the agent
    should default to PRIVATE; only switch to COMMUNITY when the user
    explicitly authorises external publication).
-3. UI → **+ Install Platform app** on the target instance.
+3. UI → **+ Install Platform app** on the target instance. On install, a
+   consent dialog lists the App's requested scopes; an admin must approve
+   them before the App is installed.
 
 ### After re-deploy: existing installs do NOT auto-upgrade
 
@@ -554,24 +574,24 @@ indefinitely.
 
 To pick up changes after a re-deploy:
 
-1. **Bump `metadata.version`** in `manifest.json` before deploying. A
-   re-publish with the same version number is a no-op for installs.
-2. **Re-deploy + re-publish** to make the new version available.
-3. **Manually upgrade the install** in the Marketplace UI:
-   Marketplace → open the App → **Versions** tab → click the install
-   dropdown → **Upgrade**. Or, as a workaround: **Uninstall** then
-   **+ Install Platform app** again.
-4. **Hard-refresh the surface** that hosts the App
-   (`Cmd-Shift-R` / `Ctrl-Shift-R` in the browser). The surface caches
-   the old App bundle in the iframe; without a hard refresh, the new
-   code won't load even after the install upgrade.
+1. **Re-deploy + re-publish** to make the new version available on the
+   Marketplace.
+2. **Update the install** from the Marketplace UI — an installed app
+   exposes an **Update** action once a newer published version is
+   available. The consent dialog reappears **only if the App's scopes
+   changed**; otherwise it updates without prompting. (If you can't find
+   the action, **Uninstall** then **Install** again achieves the same — a
+   fresh install always shows the consent dialog.)
+3. **Hard-refresh the surface** that hosts the App
+   (`Cmd-Shift-R` / `Ctrl-Shift-R` in the browser). The surface can keep
+   serving the previously loaded App bundle until a hard refresh, so the
+   new code may not appear even after the install is updated.
 
 If a deploy succeeded but changes don't show up:
 
-- Confirm the install version in Marketplace matches the version you
-  just published (most often it doesn't — step 3 above wasn't done).
-- Confirm browser cache was cleared (step 4).
-- Confirm `metadata.version` was bumped (step 1).
+- Confirm the install in Marketplace was updated to the version you
+  just published (most often it wasn't — step 2 above).
+- Confirm browser cache was cleared (step 3).
 
 > **Note:** the long stream of `HydrateFallback` / "Dialog is changing
 > from uncontrolled to controlled" / "DialogContent requires a

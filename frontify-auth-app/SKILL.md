@@ -2,8 +2,9 @@
 name: frontify-auth-app
 description: >
   Authenticate Frontify App code through the AppBridge — no raw tokens.
-  ALWAYS apply this skill when calling Frontify GraphQL (`executeGraphQl`)
-  or third-party APIs (`executeSecureRequest`) from an App, editing
+  ALWAYS apply this skill when calling Frontify GraphQL
+  (`executeGraphQlWithFullResponse`) or third-party APIs
+  (`executeSecureRequest`) from an App, editing
   `manifest.json` scopes / `secrets[]` / `network.endpoints[]`, or
   debugging 401 / 403 or the Authorize-permissions install dialog — even
   if the user does not name AppBridge, scopes, or secrets explicitly. Do
@@ -273,7 +274,7 @@ session.
 When a surface launches the App, Frontify instantiates an `AppBridge` and
 delivers the surface-specific `context` synchronously. From that point:
 
-- `executeGraphQl` calls run with the user's session — no token to manage
+- `executeGraphQlWithFullResponse` calls run with the user's session — no token to manage
 - `executeSecureRequest` resolves manifest secrets server-side
 - Closing the modal unmounts the React tree — persist data via
   `userState` or `createAsset` before teardown

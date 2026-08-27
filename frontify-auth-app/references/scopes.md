@@ -2,7 +2,7 @@
 
 Scopes describe the capabilities an App requests from Frontify. They're
 declared in `manifest.json` `permissions.scopes`, presented to admins at
-install time, and enforced on every `executeGraphQl` /
+install time, and enforced on every `executeGraphQlWithFullResponse` /
 `executeSecureRequest` call.
 
 > Apps do **not** handle OAuth tokens or scope negotiations at runtime. The

@@ -54,8 +54,8 @@ The App's `manifest.json` is the single source of truth for what the App is
 
 ## `permissions.scopes`
 
-Frontify validates that every `executeGraphQl` / `executeSecureRequest` call
-the App makes is allowed by the declared scopes. Five scopes are usable:
+Frontify validates that every `executeGraphQlWithFullResponse` /
+`executeSecureRequest` call the App makes is allowed by the declared scopes. Five scopes are usable:
 
 | Scope | Description |
 |-------|-------------|

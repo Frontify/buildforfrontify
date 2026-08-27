@@ -6,10 +6,10 @@ Demonstrates how to make secure API requests to external services using secrets 
 
 ## Key Concepts
 
-- `manifest.json` `secrets` array defines secret names (e.g., `THIRD_PARTY_API_KEY`)
-- `manifest.json` `endpoints` array defines allowed network endpoints with method, URL, parameters, and headers
-- `%%SECRET_NAME%%` placeholder in endpoint URLs and headers gets replaced with actual secret values at runtime
-- `appBridge.api({ name: 'getSecureRequest', payload: { endpoint, requestParams } })` calls the endpoint
+- `manifest.json` `secrets` array defines secrets as `{ label, key }` objects (e.g. key `THIRD_PARTY_API_KEY`)
+- `manifest.json` `network.endpoints` array defines allowed endpoints, each with a `name`, a `resource` URL, and an `options` object (`method`, optional `headers`, optional `body`)
+- `%%SECRET_NAME%%` placeholder in endpoint `resource` and `headers` gets replaced with actual secret values at runtime
+- `appBridge.api({ name: 'getSecureRequest', payload: { endpoint, requestParams } })` calls the endpoint (`endpoint` matches an endpoint `name`)
 - `.secret.json` file (gitignored) stores local development secret values
 
 ## Additional Dependencies
@@ -23,57 +23,53 @@ None beyond the Hello World base.
 ```json
 {
   "appId": "",
-  "appVersion": "1.0.0",
-  "type": "platform-app",
-  "scopes": ["basic:read", "basic:write"],
-  "surfaces": {
-    "assetAction": {
-      "fileTypes": ["png", "jpeg", "jpg"]
-    },
-    "assetCreation": {}
+  "appType": "platform-app",
+  "name": "secure-third-party-request",
+  "metadata": {
+    "version": 1
   },
-  "secrets": [
-    "THIRD_PARTY_API_KEY"
-  ],
-  "endpoints": [
-    {
-      "id": "body-endpoint-get",
-      "method": "GET",
-      "url": "https://jsonplaceholder.typicode.com/posts/%%THIRD_PARTY_API_KEY%%",
-      "parameters": [
-        {
-          "name": "page",
-          "type": "string",
-          "required": false
-        },
-        {
-          "name": "segment",
-          "type": "string",
-          "required": false
-        }
-      ]
-    },
-    {
-      "id": "body-endpoint-post",
-      "method": "POST",
-      "url": "https://jsonplaceholder.typicode.com/posts",
-      "parameters": [
-        {
-          "name": "title",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "body",
-          "type": "string",
-          "required": true
-        }
-      ],
-      "headers": {
-        "x-api-key": "%%THIRD_PARTY_API_KEY%%"
+  "permissions": {
+    "scopes": ["basic:read", "basic:write"]
+  },
+  "surfaces": {
+    "mediaLibrary": {
+      "assetAction": {
+        "title": "Secure Third-Party Request",
+        "type": ["image"],
+        "filenameExtension": ["png", "jpeg", "jpg"]
+      },
+      "assetCreation": {
+        "title": "Secure Third-Party Request"
       }
     }
-  ]
+  },
+  "secrets": [
+    {
+      "label": "Third-party API key",
+      "key": "THIRD_PARTY_API_KEY"
+    }
+  ],
+  "network": {
+    "endpoints": [
+      {
+        "name": "body-endpoint-get",
+        "resource": "https://jsonplaceholder.typicode.com/posts/%%THIRD_PARTY_API_KEY%%",
+        "options": {
+          "method": "GET"
+        }
+      },
+      {
+        "name": "body-endpoint-post",
+        "resource": "https://jsonplaceholder.typicode.com/posts",
+        "options": {
+          "method": "POST",
+          "headers": {
+            "x-api-key": "%%THIRD_PARTY_API_KEY%%"
+          }
+        }
+      }
+    ]
+  }
 }
 ```
 
@@ -159,6 +155,6 @@ export const ChildWithRequestComponent = () => {
 
 - Secrets are managed per-app in the Frontify Developer Portal
 - For local development, create a `.secret.json` file (gitignored) based on `.secret-example.json`
-- Endpoint IDs are referenced in code via `appBridge.api({ name: 'getSecureRequest', payload: { endpoint: '<id>' } })`
-- Parameters defined in the endpoint config can be passed via `requestParams`
-- This pattern can be combined with any other template (just add `secrets` and `endpoints` to the manifest)
+- Endpoint names are referenced in code via `appBridge.api({ name: 'getSecureRequest', payload: { endpoint: '<name>' } })`
+- Per-call values can be passed via `requestParams`
+- This pattern can be combined with any other template (just add `secrets` and `network.endpoints` to the manifest)

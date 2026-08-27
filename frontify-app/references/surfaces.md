@@ -1,57 +1,222 @@
 # App Surfaces Reference
 
-[TODO: This file is the detailed reference for surface-specific implementation.
-The agent reads it after the surface(s) are known, during the development phase.
-Keep each surface section self-contained — the agent may need to refer to just
-one surface without reading all three.]
+Detailed, per-surface implementation guide. Read this once the target
+surface(s) are known. Each section is self-contained.
+
+A surface is declared in `manifest.json` under a **project type**, then a
+**surface type**:
+
+```jsonc
+{
+  "surfaces": {
+    "<projectType>": {
+      "<surfaceType>": { "title": "…" }
+    }
+  }
+}
+```
+
+- **Project types:** `guideline`, `mediaLibrary`, `iconLibrary`,
+  `logoLibrary`, `documentLibrary`, `workspace`.
+- **Surface types:** `assetAction`, `assetCreation`, `assetBulkActions`,
+  `assetViewer`, `pageAction`, `assetChooser`.
+- `assetAction` / `assetCreation` / `assetBulkActions` live under the
+  library/workspace project types; `assetViewer`, `pageAction`, and
+  `assetChooser` live under `guideline`.
+
+At runtime, `appContext()` returns a discriminated union keyed on
+`surface`. Every member carries `AppBaseProps` — `token`,
+`marketplaceServiceAppId`, `connected`, `brandId`, `domain` — plus the
+surface-specific fields documented below. Always narrow on
+`context.surface` before reading a surface-specific field.
+
+`type` in a surface declaration is an `AssetType[]`:
+`audio`, `document`, `image`, `video`, `file`, `embeddedContent`.
+`iconLibrary` and `logoLibrary` `assetAction` accept `["image"]` only.
+`filenameExtension` (and `filenameExtensions` for bulk) narrows further
+by extension. Titles are 2–28 characters, except `assetCreation` which
+allows 1–40. `exe`, `dmg`, `cmd`, `sh`, and `bat` are never allowed
+extensions.
 
 ---
 
-## Asset action
+## Asset action (`assetAction`)
 
-[TODO: Document everything a developer needs to implement an asset action surface:
+- **Trigger:** the user opens a single asset's "…" action menu inside a
+  Library, Project, or Workspace and picks the app.
+- **Project types:** `mediaLibrary`, `iconLibrary`, `logoLibrary`,
+  `documentLibrary`, `workspace`.
+- **Context:** `{ surface: 'assetAction', assetId, parentId, rootId }`
+  plus base props.
+- **Manifest:**
 
-- What triggers an asset action (user selects asset → opens action menu)
-- The context object the app receives (asset metadata, type, URL, etc.)
-- The action manifest — how to declare the action, its icon, and label
-- Supported asset types (image, video, document, etc.) and how to filter
-- How to render the action UI (panel, modal, inline)
-- Return values or mutations the action can produce
-- An annotated code example of a minimal asset action]
+  ```json
+  {
+    "surfaces": {
+      "mediaLibrary": {
+        "assetAction": {
+          "title": "Remove Background",
+          "type": ["image"],
+          "filenameExtension": ["png", "jpeg", "jpg"]
+        }
+      }
+    }
+  }
+  ```
+
+- **Minimal app:**
+
+  ```tsx
+  import { appContext } from '@frontify/app-bridge-app';
+
+  export default function App() {
+    const context = appContext();
+    if (context.surface !== 'assetAction') return null;
+    return <p>Acting on asset {context.assetId}</p>;
+  }
+  ```
+
+Fetch the asset's preview/download/source URLs with
+`appBridge.api({ name: 'getAssetResourceInformation', payload: { assetId } })`.
 
 ---
 
-## Guideline block
+## Asset creation (`assetCreation`)
 
-[TODO: Document everything needed to implement an app as a guideline block:
+- **Trigger:** the "+ New" menu inside a Library, Project, or Workspace.
+- **Project types:** `mediaLibrary`, `iconLibrary`, `logoLibrary`,
+  `documentLibrary`, `workspace`.
+- **Context:** `{ surface: 'assetCreation', parentId, rootId }` plus base
+  props. `parentId` is the folder/library the new asset lands in.
+- **Manifest** (title only; 1–40 chars):
 
-- How this surface differs from a custom block (capabilities, API access)
-- The block manifest and settings schema for apps
-- How the block receives guideline context (page, section, brand)
-- Lifecycle hooks specific to this surface
-- Interaction model — what editors can do with the block in the UI
-- An annotated code example of a minimal guideline block app]
+  ```json
+  {
+    "surfaces": {
+      "mediaLibrary": {
+        "assetCreation": { "title": "Generate Asset" }
+      }
+    }
+  }
+  ```
+
+- Create the asset with
+  `appBridge.api({ name: 'createAsset', payload: { data, filename, parentId: context.parentId } })`,
+  which resolves to `{ assetId }`.
 
 ---
 
-## Workspace / Library panel
+## Asset bulk actions (`assetBulkActions`)
 
-[TODO: Document everything needed to implement a workspace or library panel:
+- **Trigger:** the bottom action bar shown after multi-selecting assets.
+- **Project types:** `mediaLibrary`, `iconLibrary`, `logoLibrary`,
+  `documentLibrary`, `workspace`.
+- **Context:**
+  `{ surface: 'assetBulkActions', selection: { assets: { ids }, folders: { ids } }, parentId, rootId }`
+  plus base props.
+- **Manifest** — note the plural `filenameExtensions`:
 
-- Where the panel appears in the Frontify UI
-- The context object the panel receives (current library, selected assets, user)
-- Navigation and routing within a panel (if multi-view panels are supported)
-- How the panel communicates back to the Frontify workspace
-- Any persistent state or storage the panel can use
-- An annotated code example of a minimal workspace panel]
+  ```json
+  {
+    "surfaces": {
+      "mediaLibrary": {
+        "assetBulkActions": {
+          "title": "Bulk Rename",
+          "filenameExtensions": ["png", "jpeg", "jpg"]
+        }
+      }
+    }
+  }
+  ```
+
+- Read the selection from `context.selection.assets.ids`. For large
+  selections, page through the IDs in chunks (≈100) when calling the
+  GraphQL API. See `../../frontify-graphql/SKILL.md`.
+
+---
+
+## Asset viewer (`assetViewer`) — on-demand
+
+- **Trigger:** the app icon in the top-right of the Asset Viewer inside a
+  Guideline.
+- **Project type:** `guideline`.
+- **Context:** `{ surface: 'assetViewer', assetId }` plus base props.
+  (No `parentId`/`rootId`.)
+- **Manifest:**
+
+  ```json
+  {
+    "surfaces": {
+      "guideline": {
+        "assetViewer": {
+          "title": "Publish to Social",
+          "type": ["image"],
+          "filenameExtension": ["jpeg", "jpg", "png", "svg"]
+        }
+      }
+    }
+  }
+  ```
+
+On-demand surface — request enablement via the Frontify Friends Slack
+channel.
+
+---
+
+## Page action (`pageAction`) — on-demand
+
+- **Trigger:** the app icon in the top-right of a Guideline page.
+- **Project type:** `guideline`.
+- **Context:** `{ surface: 'pageAction' }` plus base props only.
+- **Manifest** (title only):
+
+  ```json
+  {
+    "surfaces": {
+      "guideline": {
+        "pageAction": { "title": "Page Tools" }
+      }
+    }
+  }
+  ```
+
+On-demand surface — request enablement via Frontify Friends.
+
+---
+
+## Asset chooser (`assetChooser`) — on-demand
+
+- **Trigger:** the Asset Chooser inside a Guideline.
+- **Project type:** `guideline`.
+- **Context:** `{ surface: 'assetChooser' }` plus base props only.
+
+On-demand surface — request enablement via Frontify Friends.
 
 ---
 
 ## Multi-surface apps
 
-[TODO: Document how a single app can support multiple surfaces:
+A single app can register on several surfaces at once by declaring each
+under its project type:
 
-- How surfaces are declared in the app manifest
-- How the app entry point determines which surface context it is running in
-- Shared state and code between surfaces
-- Testing a multi-surface app locally]
+```json
+{
+  "surfaces": {
+    "mediaLibrary": {
+      "assetAction": { "title": "My App", "type": ["image"], "filenameExtension": ["png"] },
+      "assetCreation": { "title": "My App" }
+    },
+    "guideline": {
+      "assetViewer": { "title": "My App", "type": ["image"], "filenameExtension": ["png"] }
+    }
+  }
+}
+```
+
+The same React entry point serves every surface. Branch on
+`context.surface` to render the right UI and to safely read
+surface-specific fields. Shared logic (auth, settings, API calls) is
+identical across surfaces; only the context shape differs. To test each
+surface locally, connect from the corresponding place in the Frontify UI
+(asset "…" menu, "+ New" menu, bulk action bar, or the Guideline
+viewer/page).

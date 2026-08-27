@@ -1,71 +1,137 @@
 # App Lifecycle Reference
 
-[TODO: This file covers the full lifecycle of a Frontify App — from
-registration through runtime operation to teardown. The agent reads it
-when the user has questions about how the app is initialised, how it
-receives context, or how surfaces share or isolate state.]
+The full lifecycle of a Frontify App — from registration through runtime
+to teardown. Read this when the user asks how the app is initialised, how
+it receives context, or how state is shared and torn down.
 
 ---
 
 ## App registration
 
-[TODO: Explain how an app is registered with a Frontify organisation:
-
-- The app manifest format and required fields
-- Registration via the Frontify developer portal or CLI
-- How the app ID and credentials are issued
-- Linking a local dev build to a registered app]
+- An app is created in the **Marketplace UI**, which issues a 25-character
+  **App ID**.
+- Copy it into `manifest.json` under `appId`. Also required:
+  `appType: "platform-app"`, a top-level `name` slug, and
+  `metadata.version: 1`.
+- `permissions.scopes` lists 1–5 scopes; `basic:read` must always be
+  present. `surfaces` declares where the app appears (see
+  `surfaces.md`).
+- A local dev build is linked to a registered app by setting the same
+  `appId`; during development the running dev server is connected
+  directly (see the SKILL's Development workflow).
 
 ---
 
 ## Initialisation
 
-[TODO: Describe how the app initialises when a surface loads it:
+The entry point spans two files: `src/index.ts` default-exports
+`defineApp({ app, settings })`, and `index.html` hands that export to
+`renderReactApp` (from `@frontify/app-bridge-app`) — the app mounts
+through `renderReactApp`, not `createRoot`:
 
-- The SDK initialisation call and required parameters
-- How the app receives its surface context on load
-- Authentication handshake — how the app gets a token for API calls
-- Timing guarantees (what is available synchronously vs asynchronously)]
+```ts
+// src/index.ts
+import { defineApp } from '@frontify/platform-app';
+import { App } from './App';
+import { settings } from './settings';
+
+export default defineApp({ app: App, settings });
+```
+
+```html
+<!-- index.html -->
+<script type="module">
+    import module from '/src/index.ts';
+    import { renderReactApp } from '@frontify/app-bridge-app';
+
+    renderReactApp(module);
+</script>
+```
+
+`renderReactApp` instantiates the `AppBridgePlatformApp` singleton,
+subscribes to the `Context.connected` event, dispatches `openConnection`,
+and only then renders `App` into `#root`. Because React mounts **after**
+the handshake, `appContext()` is already populated on the first render —
+mounting manually would render before the bridge connects and
+`appContext()` would be `undefined`.
+
+The authentication token needed for API calls is delivered on the context
+as `token` (part of `AppBaseProps`); the AppBridge uses it internally for
+`api()` calls, so app code rarely reads it directly.
 
 ---
 
 ## Context object
 
-[TODO: Document the context object passed to the app at runtime:
+`appContext()` (equivalently `appBridge.context().get()`) returns a
+`PlatformAppContext` — a discriminated union keyed on `surface`.
 
-- Fields common to all surfaces (user, organisation, locale, theme)
-- Surface-specific fields (asset, guideline page, library, etc.)
-- How to access and type-check the context in code]
+- **Base props on every surface (`AppBaseProps`):** `token`,
+  `marketplaceServiceAppId`, `connected`, `brandId`, `domain`.
+- **Surface-specific fields:** e.g. `assetId` on `assetAction` /
+  `assetViewer`, `parentId`/`rootId` on `assetAction` / `assetCreation` /
+  `assetBulkActions`, `selection` on `assetBulkActions`. See
+  `surfaces.md` for the per-surface shape.
+
+Narrow before access:
+
+```ts
+const context = appContext();
+if (context.surface === 'assetAction') {
+  // context.assetId is now typed
+}
+```
 
 ---
 
 ## State management
 
-[TODO: Describe how apps manage state:
+Three stores, each reachable via `appBridge.state('<name>')` with
+`.get()`, `.set()`, and `.subscribe()`:
 
-- Ephemeral state (local to the current surface session)
-- Persistent state (if the platform provides any storage API)
-- State sharing between surfaces within the same app
-- What happens to state when the user navigates away and returns]
+| Store | Scope | React hook |
+|-------|-------|------------|
+| `settings` | Admin-configured, per install | `appSettings<T>()` → `[value, setValue]` |
+| `userState` | Per user, per app | `appUserState<T>()` → `[value, setValue]` |
+| context | Read-only surface context | `appContext<T>()` |
+
+```ts
+// Reactive updates (subscribe payload is untyped — narrow it):
+const unsubscribe = appBridge
+  .state('userState')
+  .subscribe((next: unknown) => apply(next as MyState));
+```
+
+`settings` is written by admins in the app's configuration UI; the app
+reads it. `userState` is read/write from the app and is isolated per
+user — different users see different values. State set on `userState`
+persists across sessions for that user.
 
 ---
 
 ## Events and messaging
 
-[TODO: Document the event system between the app and the Frontify host:
-
-- Events the app can emit
-- Events the app can listen for
-- Any postMessage or SDK wrapper used for host communication
-- Error events and how to handle them gracefully]
+- The app talks to the host through the AppBridge, which wraps a
+  `postMessage` channel to the Frontify iframe host.
+- **App → host:** `appBridge.api({ name, payload })` — e.g.
+  `getAssetResourceInformation`, `getCurrentUser`, `getAccountId`,
+  `createAsset`, `getSecureRequest` / `executeSecureRequest`,
+  `executeGraphQlWithFullResponse` (and the deprecated `executeGraphQl`).
+- **Host → app:** lifecycle events such as `Context.connected` (consumed
+  by `renderReactApp`) and store-change notifications delivered through
+  `.subscribe()`.
+- API calls are promises; wrap them in `try/catch` and surface failures
+  in the UI, since the host may reject a call (e.g. missing scope,
+  disallowed endpoint).
 
 ---
 
 ## Teardown
 
-[TODO: Describe what happens when the app is closed or the surface is
-unmounted:
-
-- Any cleanup the app must perform
-- Whether unsaved state is preserved or lost
-- How to handle in-flight async operations at teardown]
+- Closing the modal unmounts the React tree; in-memory component state is
+  lost.
+- Persist anything that must survive to `userState` (or commit it to
+  Frontify via `createAsset` / a GraphQL mutation) **before** teardown.
+- Await or cancel in-flight async work before writing final state — a
+  promise that resolves after unmount cannot update the UI and its
+  `setState` will be a no-op.

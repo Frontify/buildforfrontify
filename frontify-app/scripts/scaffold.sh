@@ -186,7 +186,7 @@ cat <<EOF
          → assetAction, assetCreation, assetBulkActions
 
        guideline
-         → assetViewer (Alpha), pageAction (Alpha), themeAction (Alpha)
+         → assetViewer, pageAction, assetChooser (on-demand — request via Frontify Friends)
 
      See references/surfaces.md for the exact manifest structure per surface.
 

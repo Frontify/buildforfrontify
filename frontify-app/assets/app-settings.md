@@ -22,14 +22,25 @@ None beyond the Hello World base.
 ```json
 {
   "appId": "",
-  "appVersion": "1.0.0",
-  "type": "platform-app",
-  "scopes": ["basic:read", "basic:write"],
+  "appType": "platform-app",
+  "name": "app-settings",
+  "metadata": {
+    "version": 1
+  },
+  "permissions": {
+    "scopes": ["basic:read", "basic:write"]
+  },
   "surfaces": {
-    "assetAction": {
-      "fileTypes": ["png", "jpeg", "jpg"]
-    },
-    "assetCreation": {}
+    "mediaLibrary": {
+      "assetAction": {
+        "title": "App Settings",
+        "type": ["image"],
+        "filenameExtension": ["png", "jpeg", "jpg"]
+      },
+      "assetCreation": {
+        "title": "App Settings"
+      }
+    }
   }
 }
 ```

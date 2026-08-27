@@ -26,14 +26,25 @@ Only the `name` and dependency versions differ slightly. Use the Hello World bas
 ```json
 {
   "appId": "",
-  "appVersion": "1.0.0",
-  "type": "platform-app",
-  "scopes": ["basic:read", "basic:write"],
+  "appType": "platform-app",
+  "name": "app-with-state",
+  "metadata": {
+    "version": 1
+  },
+  "permissions": {
+    "scopes": ["basic:read", "basic:write"]
+  },
   "surfaces": {
-    "assetAction": {
-      "fileTypes": ["png", "jpeg", "jpg"]
-    },
-    "assetCreation": {}
+    "mediaLibrary": {
+      "assetAction": {
+        "title": "App with State",
+        "type": ["image"],
+        "filenameExtension": ["png", "jpeg", "jpg"]
+      },
+      "assetCreation": {
+        "title": "App with State"
+      }
+    }
   }
 }
 ```

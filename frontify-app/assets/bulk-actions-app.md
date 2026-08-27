@@ -6,11 +6,11 @@ Demonstrates how to use the Bulk Actions Surface for performing operations on mu
 
 ## Key Concepts
 
-- `assetBulkAction` surface in manifest.json for bulk operations across libraries
-- `appBridge.api({ name: 'executeGraphQl', payload: { query } })` for running GraphQL
+- `assetBulkActions` surface in manifest.json for bulk operations across libraries
+- `appBridge.api({ name: 'executeGraphQl', payload: { query } })` for running GraphQL (`executeGraphQl` is deprecated — prefer `executeGraphQlWithFullResponse`, which resolves `{ data, errors }`; the example below still uses the older method)
 - `context.selection.assets.ids` to get IDs of selected assets
 - Chunked processing for large asset sets (100 per chunk)
-- Multiple library surfaces: `mediaLibrary`, `iconLibrary`, `logoLibrary`, `documentLibrary`, `workspace`
+- Declared under multiple project types: `mediaLibrary`, `iconLibrary`, `logoLibrary`, `documentLibrary`, `workspace`
 
 ## Additional Dependencies
 
@@ -23,38 +23,45 @@ None beyond the Hello World base. Uses `@frontify/fondue` components including `
 ```json
 {
   "appId": "",
-  "appVersion": "1.0.0",
-  "type": "platform-app",
-  "scopes": ["basic:read", "basic:write"],
+  "appType": "platform-app",
+  "name": "bulk-actions-app",
+  "metadata": {
+    "version": 1
+  },
+  "permissions": {
+    "scopes": ["basic:read", "basic:write"]
+  },
   "surfaces": {
-    "assetBulkAction": [
-      {
-        "id": "bulk-rename-assets",
-        "label": "Bulk Rename Assets",
-        "surfaces": [
-          {
-            "id": "mediaLibrary",
-            "fileTypes": ["mp3", "wav", "flac", "mp4", "mov", "avi", "jpg", "jpeg", "png", "gif", "svg", "webp", "psd", "ai", "sketch", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "json", "xml", "yaml", "csv", "sql", "html", "css", "js", "ts", "jsx", "tsx", "vue", "react", "angular", "svelte", "tiff", "tif", "bmp", "ico", "webm", "flv", "mkv", "m4a", "aac", "ogg", "wma", "aiff", "alac", "dsd", "dsf", "dff", "wv", "ape"]
-          },
-          {
-            "id": "iconLibrary",
-            "fileTypes": ["svg"]
-          },
-          {
-            "id": "logoLibrary",
-            "fileTypes": ["svg", "jpg", "jpeg", "ai", "eps", "png", "tif", "tiff"]
-          },
-          {
-            "id": "documentLibrary",
-            "fileTypes": ["mp3", "wav", "flac", "mp4", "mov", "avi", "jpg", "jpeg", "png", "gif", "svg", "webp", "psd", "ai", "sketch", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "json", "xml", "yaml", "csv", "sql", "html", "css", "js", "ts", "jsx", "tsx", "vue", "react", "angular", "svelte", "tiff", "tif", "bmp", "ico", "webm", "flv", "mkv", "m4a", "aac", "ogg", "wma", "aiff", "alac", "dsd", "dsf", "dff", "wv", "ape"]
-          },
-          {
-            "id": "workspace",
-            "fileTypes": ["mp3", "wav", "flac", "mp4", "mov", "avi", "jpg", "jpeg", "png", "gif", "svg", "webp", "psd", "ai", "sketch", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "json", "xml", "yaml", "csv", "sql", "html", "css", "js", "ts", "jsx", "tsx", "vue", "react", "angular", "svelte", "tiff", "tif", "bmp", "ico", "webm", "flv", "mkv", "m4a", "aac", "ogg", "wma", "aiff", "alac", "dsd", "dsf", "dff", "wv", "ape"]
-          }
-        ]
+    "mediaLibrary": {
+      "assetBulkActions": {
+        "title": "Bulk Rename Assets",
+        "filenameExtensions": ["mp3", "wav", "flac", "mp4", "mov", "avi", "jpg", "jpeg", "png", "gif", "svg", "webp", "psd", "ai", "sketch", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "json", "xml", "yaml", "csv", "sql", "html", "css", "js", "ts", "jsx", "tsx", "vue", "react", "angular", "svelte", "tiff", "tif", "bmp", "ico", "webm", "flv", "mkv", "m4a", "aac", "ogg", "wma", "aiff", "alac", "dsd", "dsf", "dff", "wv", "ape"]
       }
-    ]
+    },
+    "iconLibrary": {
+      "assetBulkActions": {
+        "title": "Bulk Rename Assets",
+        "filenameExtensions": ["svg"]
+      }
+    },
+    "logoLibrary": {
+      "assetBulkActions": {
+        "title": "Bulk Rename Assets",
+        "filenameExtensions": ["svg", "jpg", "jpeg", "ai", "eps", "png", "tif", "tiff"]
+      }
+    },
+    "documentLibrary": {
+      "assetBulkActions": {
+        "title": "Bulk Rename Assets",
+        "filenameExtensions": ["mp3", "wav", "flac", "mp4", "mov", "avi", "jpg", "jpeg", "png", "gif", "svg", "webp", "psd", "ai", "sketch", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "json", "xml", "yaml", "csv", "sql", "html", "css", "js", "ts", "jsx", "tsx", "vue", "react", "angular", "svelte", "tiff", "tif", "bmp", "ico", "webm", "flv", "mkv", "m4a", "aac", "ogg", "wma", "aiff", "alac", "dsd", "dsf", "dff", "wv", "ape"]
+      }
+    },
+    "workspace": {
+      "assetBulkActions": {
+        "title": "Bulk Rename Assets",
+        "filenameExtensions": ["mp3", "wav", "flac", "mp4", "mov", "avi", "jpg", "jpeg", "png", "gif", "svg", "webp", "psd", "ai", "sketch", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "json", "xml", "yaml", "csv", "sql", "html", "css", "js", "ts", "jsx", "tsx", "vue", "react", "angular", "svelte", "tiff", "tif", "bmp", "ico", "webm", "flv", "mkv", "m4a", "aac", "ogg", "wma", "aiff", "alac", "dsd", "dsf", "dff", "wv", "ape"]
+      }
+    }
   }
 }
 ```
@@ -352,8 +359,8 @@ export const App = () => {
 
 ## Integration Notes
 
-- The `assetBulkAction` surface is separate from `assetAction` and `assetCreation` - it appears when multiple assets are selected
-- GraphQL queries/mutations are executed via `appBridge.api({ name: 'executeGraphQl', payload: { query } })`
+- The `assetBulkActions` surface is separate from `assetAction` and `assetCreation` - it appears when multiple assets are selected
+- GraphQL queries/mutations are executed via `appBridge.api({ name: 'executeGraphQl', payload: { query } })` — note `executeGraphQl` is deprecated in favor of `executeGraphQlWithFullResponse` (which resolves `{ data, errors }`); new apps should use the latter
 - Process assets in chunks (100 at a time) to avoid API limits
-- The bulk action can span multiple library types (media, icon, logo, document, workspace)
-- Adjust the `fileTypes` array in the manifest to control which asset types the bulk action applies to
+- The bulk action can span multiple project types (media, icon, logo, document, workspace)
+- Adjust the `filenameExtensions` array in the manifest to control which asset types the bulk action applies to

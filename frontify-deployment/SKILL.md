@@ -54,7 +54,7 @@ Use these frequently during development and always before committing to deployme
 ### Personal access token
 
 Generate one by **navigating directly** to
-`https://YOUR-INSTANCE.frontify.com/oauth-access-token`. The page is
+`https://<YOUR-INSTANCE>.frontify.com/oauth-access-token`. The page is
 **not linked from any UI menu** — there is no profile-icon, no top-right
 entry, no settings panel that takes you there. Frontify's own published
 documentation is **outdated** on this point (it still references a
@@ -64,8 +64,8 @@ into the address bar instead.
 Three ways to authenticate the CLI:
 
 1. **Interactive login (developer machine)** —
-   `npx frontify-cli login --instance YOUR-INSTANCE-URL`; browser opens;
-   CLI stores a session.
+   `npx frontify-cli login --instance "https://<YOUR-INSTANCE>.frontify.com"`;
+   browser opens; CLI stores a session.
 2. **Personal access token (CI / agent-driven)** — generate as above,
    then pass `--instance` + `--token` on each `deploy` / `publish` /
    `verify-manifest` command (see below).
@@ -88,7 +88,7 @@ Credentials come from one of two places:
 
 ```bash
 npx frontify-cli deploy \
-  --instance "https://YOUR-INSTANCE.frontify.com" \
+  --instance "https://<YOUR-INSTANCE>.frontify.com" \
   --token "$TOKEN"     # your own shell var, from a CI secret / secrets manager
 ```
 
@@ -100,7 +100,7 @@ login-related env var the CLI honours — the default instance for
 ### Network egress
 
 `frontify-cli` `login`, `deploy`, and `publish` require outbound HTTPS to
-the customer's Frontify instance (`<instance>.frontify.com`). In agent
+the customer's Frontify instance (`<YOUR-INSTANCE>.frontify.com`). In agent
 runtimes with strict allowlists, these commands won't work — the agent
 must hand off to the user.
 
@@ -180,7 +180,7 @@ read -s -p "Frontify token: " TOKEN
 TOKEN="$(op read 'op://Personal/frontify-pat/credential')"
 
 npx frontify-cli deploy \
-  --instance "https://YOUR-INSTANCE.frontify.com" \
+  --instance "https://<YOUR-INSTANCE>.frontify.com" \
   --token "$TOKEN"
 ```
 
@@ -195,7 +195,7 @@ npm run deploy 2>&1 \
 **If you suspect a leak:**
 
 1. Rotate the token immediately at the personal access tokens page
-   (`https://YOUR-INSTANCE.frontify.com/oauth-access-token`) → Revoke.
+   (`https://<YOUR-INSTANCE>.frontify.com/oauth-access-token`) → Revoke.
    Generate a fresh one.
 2. Update any CI / secrets manager with the new value.
 3. Audit recent commits for accidental check-ins
@@ -227,16 +227,18 @@ user explicitly authorises external publication.
 
 App-specific procedure that stays in `../frontify-app/SKILL.md`:
 
-- **Manifest prerequisites** — `appId` registration, `metadata.version`
-  bump, `permissions.scopes`, surface `"title"` field, placeholder
+- **Manifest prerequisites** — `appId` registration,
+  `permissions.scopes`, surface `"title"` field, placeholder
   sweep (`grep -rn '<[A-Z_]\+>' manifest.json …`), build-pipeline
   files present, `.gitignore` excludes `.secret.json`.
 - **Marketplace metadata + publish** — Description, screenshots, then
-  `publish`, then **+ Install Platform app** in the Marketplace UI.
+  `publish`, then **+ Install Platform app** in the Marketplace UI. On
+  install, an admin approves the App's requested scopes in a consent
+  dialog.
 - **Re-deploy gotcha — existing installs do NOT auto-upgrade.**
-  Installs are version-pinned. After re-deploy you must bump
-  `metadata.version`, re-publish, manually upgrade the install in the
-  Marketplace UI (Versions tab → Upgrade), and hard-refresh the surface
+  Installs are version-pinned. After re-deploy you must re-publish, then
+  **Update** the install from the Marketplace UI (the consent dialog
+  reappears only if the scopes changed), and hard-refresh the surface
   (`Cmd-Shift-R`). This is the most common "looks broken but isn't"
   failure mode during iteration. Full procedure in
   `../frontify-app/SKILL.md`.

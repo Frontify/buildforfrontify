@@ -49,27 +49,30 @@ All surfaces share `AppBaseProps`:
 
 ```ts
 type AppBaseProps = {
-  brandId: number;     // associated brand
-  domain: string;      // account domain
-  parentId: string;    // parent entity id
-  rootId: string;
+  token: string;                    // session token; used internally by the bridge
+  marketplaceServiceAppId: string;
+  connected: boolean;
+  brandId: number;                  // associated brand
+  domain: string;                   // account domain
 };
 ```
 
-These are not auth tokens, but they identify the **scope of the current
-session** — the brand and account the App is running against. Use them
-when constructing requests to the App's own backend.
+Most of these are consumed internally by the bridge rather than by App
+code, but `brandId` / `domain` identify the **scope of the current
+session** — the brand and account the App is running against.
+`parentId` and `rootId` are **not** base props; they are delivered
+per-surface (see below).
 
 ### Per-surface context (for reference)
 
-| Surface | Adds | Notes |
+| Surface | Adds (beyond base) | Notes |
 |---------|------|-------|
-| `assetAction` | `assetId: string` | Triggered from an asset's "…" menu |
-| `assetCreation` | (base only) | "+ New" menu inside a project |
-| `assetBulkActions` | `selection: { assets: { ids[] }, folders: { ids[] } }` | Multi-select bar |
-| `assetViewer` *(Alpha)* | `assetId`, `brandId`, `domain` | Top-right of Asset Viewer in a Guideline |
-| `pageAction` *(Alpha)* | (base only) | Top-right of a Guideline page |
-| `themeAction` *(Alpha)* | `portalId`, `projectId` | Triggered from a Guideline |
+| `assetAction` | `assetId`, `parentId`, `rootId` | Triggered from an asset's "…" menu |
+| `assetCreation` | `parentId`, `rootId` | "+ New" menu inside a project |
+| `assetBulkActions` | `selection: { assets: { ids[] }, folders: { ids[] } }`, `parentId`, `rootId` | Multi-select bar |
+| `assetViewer` *(on-demand)* | `assetId` | Top-right of Asset Viewer in a Guideline |
+| `pageAction` *(on-demand)* | (base only) | Top-right of a Guideline page |
+| `assetChooser` *(on-demand)* | (base only) | Asset Chooser inside a Guideline |
 
 ## API methods (auth-relevant)
 
@@ -89,10 +92,10 @@ Returns the signed-in user's identity. Requires the `account:read` scope in
 ### `getAccountId`
 
 ```ts
-const accountId = await appBridge.api({ name: 'getAccountId' });
+const { id: accountId } = await appBridge.api({ name: 'getAccountId' });
 ```
 
-Returns the Frontify account ID. No additional scope required.
+Resolves to `{ id }` (the Frontify account ID). No additional scope required.
 
 ### `getAssetResourceInformation`
 
@@ -110,20 +113,26 @@ signed CDN links — treat them as ephemeral. Requires `basic:read` scope.
 ### `createAsset`
 
 ```ts
-const asset = await appBridge.api({
+const { assetId } = await appBridge.api({
   name: 'createAsset',
-  payload: { /* upload payload — File | Blob | URL string */ },
+  payload: {
+    data: file,             // File | Blob | string
+    filename: 'photo.png',
+    parentId: ctx.parentId, // target library / folder
+    // optional: description, externalId, tags: [{ value }]
+  },
 });
 ```
 
-Uploads a new asset on behalf of the user. Requires `basic:write` scope and
-the user must have Editor rights on the target library.
+Uploads a new asset on behalf of the user and resolves to `{ assetId }`.
+`data`, `filename`, and `parentId` are required. Requires `basic:write`
+scope and the user must have Editor rights on the target library.
 
-### `executeGraphql`
+### `executeGraphQlWithFullResponse` / `executeGraphQl`
 
 ```ts
 const { data, errors } = await appBridge.api({
-  name: 'executeGraphql',
+  name: 'executeGraphQlWithFullResponse',
   payload: {
     query: `{ currentUser { id email } }`,
     variables: {},
@@ -131,9 +140,12 @@ const { data, errors } = await appBridge.api({
 });
 ```
 
-The canonical way for an App to call Frontify GraphQL. Auth and scope
-checking happen on the host side; the App never sees a token. For
-data-modeling guidance, load `../frontify-graphql/SKILL.md`.
+The recommended way for an App to call Frontify GraphQL — it resolves the
+full `{ data, errors, extensions }` envelope. The shorter `executeGraphQl`
+is **deprecated**: it resolves only the `data` object, so top-level GraphQL
+`errors` are not accessible. Auth and scope checking happen on the host
+side; the App never sees a token. For data-modeling guidance, load
+`../frontify-graphql/SKILL.md`.
 
 > **Do not** call `https://<domain>/graphql` directly with `fetch` — there
 > is no token to put in the header, and the host already provides this
@@ -142,17 +154,21 @@ data-modeling guidance, load `../frontify-graphql/SKILL.md`.
 ### `executeSecureRequest`
 
 ```ts
-const { data, status } = await appBridge.api({
+const response = await appBridge.api({
   name: 'executeSecureRequest',
   payload: {
     endpoint: 'create-post',
     requestParams: { title: 'Hello' },
   },
 });
+const data = await response.json();
 ```
 
 Calls a manifest-declared third-party endpoint with secrets substituted
-server-side. The App never sees the secret value. Full reference in
+server-side. The App never sees the secret value. `executeSecureRequest`
+resolves to a raw `fetch` `Response` — call `.json()` / `.text()`
+yourself; the sibling `getSecureRequest` (same payload) instead resolves to
+a pre-parsed `{ data, status, statusText }`. Full reference in
 `secure-requests.md`.
 
 ## Typed surface context — patterns

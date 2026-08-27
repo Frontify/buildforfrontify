@@ -37,9 +37,9 @@ authentication modes are available:
 Personal developer tokens are **not recommended for production**.
 
 In-platform extensions (Apps, Blocks, Themes) **do not** use any of these
-flows directly — they get a session through AppBridge and call GraphQL via
-`executeGraphql`. If the user's project is an in-platform extension, stop and
-load the matching `frontify-auth-{app,block,theme}` skill instead.
+flows directly — they get a session through AppBridge. If the user's
+project is an in-platform extension, stop and load the matching extension
+skill instead (for Apps, `../frontify-auth-app/SKILL.md`).
 
 ---
 

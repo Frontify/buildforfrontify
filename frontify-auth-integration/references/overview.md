@@ -88,7 +88,8 @@ Full model in `user-permissions.md`.
 ```
 Is the integration running INSIDE Frontify
 (an App, Custom Block, or Theme)?
-├─ Yes → stop reading this skill — use frontify-auth-{app,block,theme}
+├─ Yes → stop reading this skill — use the matching extension skill
+│         (Apps → frontify-auth-app)
 └─ No → continue
 
 Does it act on behalf of an end user

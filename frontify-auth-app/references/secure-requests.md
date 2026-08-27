@@ -78,7 +78,7 @@ import { AppBridgePlatformApp } from '@frontify/app-bridge-app';
 
 const appBridge = new AppBridgePlatformApp();
 
-const result = await appBridge.api({
+const response = await appBridge.api({
   name: 'executeSecureRequest',
   payload: {
     endpoint: 'create-post',         // matches network.endpoints[*].name
@@ -86,12 +86,23 @@ const result = await appBridge.api({
   },
 });
 
-const { data, status, statusText } = result;
+const data = await response.json();
 ```
 
-The `result` shape mirrors a typical fetch response — `data` is the parsed
-JSON body, `status` is the HTTP status code, `statusText` is the status
-message.
+`executeSecureRequest` resolves to a raw `fetch` `Response` — read the body
+yourself with `.json()` / `.text()` and inspect `response.status` /
+`response.ok`.
+
+If you'd rather receive a pre-parsed result, call `getSecureRequest` with
+the identical payload — it resolves to `{ data, status, statusText }` where
+`data` is the parsed body and `status` is the HTTP status (as a string):
+
+```ts
+const { data, status, statusText } = await appBridge.api({
+  name: 'getSecureRequest',
+  payload: { endpoint: 'create-post', requestParams: { title: 'Hello' } },
+});
+```
 
 ## Local development — `.secret.json`
 

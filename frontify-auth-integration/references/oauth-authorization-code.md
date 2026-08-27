@@ -59,7 +59,7 @@ Redirect the user's browser to `/api/oauth/authorize`.
 | `client_id` | yes | `client-tppftg3xddecd2vw` | From the Applications page |
 | `redirect_uri` | yes | `https://www.example.com/redirect` | Must exactly match a registered redirect |
 | `scope` | yes | `basic:read basic:write` | Space-separated; **URL-encode the space** as `%20`. At least `basic:read` is required |
-| `state` | yes | `testStateA@s432!` | ≤255 chars. **You MUST verify this on response** to prevent CSRF |
+| `state` | recommended | `testStateA@s432!` | ≤255 chars. Not server-enforced, but send a random value and **verify it on response** to prevent CSRF |
 | `code_challenge_method` | PKCE only | `S256` | Always `S256` |
 | `code_challenge` | PKCE only | `xxxxxxxxxxxxxxxxxxxxx` | SHA-256 hash of a 43–128 char `code_verifier` |
 
@@ -98,7 +98,7 @@ and your app's name/logo. They click **Allow access** or **Cancel**.
 After consent, Frontify redirects the user to your `redirect_uri`:
 
 ```
-https://{redirect_uri}?authorization_code=asfeYffSampleAuthCode&state=testStateA@s432!
+https://{redirect_uri}?code=asfeYffSampleAuthCode&state=testStateA@s432!
 ```
 
 **Verify the `state`** matches the value you sent. If it doesn't, abort —
@@ -110,7 +110,7 @@ this is a CSRF protection.
 
 | Param | Required | Sample | Notes |
 |-------|----------|--------|-------|
-| `code` | yes | `Avv45866yyssf` | The `authorization_code` from the redirect |
+| `code` | yes | `Avv45866yyssf` | The `code` value from the redirect |
 | `grant_type` | yes | `authorization_code` | Only supported value |
 | `client_id` | yes | `client-tppftg3xddecd2vw` | Same as authorize |
 | `redirect_uri` | yes | `https://www.domain.com/redirect` | Must match registered redirect |

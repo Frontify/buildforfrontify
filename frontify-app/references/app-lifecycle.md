@@ -12,7 +12,7 @@ it receives context, or how state is shared and torn down.
   **App ID**.
 - Copy it into `manifest.json` under `appId`. Also required:
   `appType: "platform-app"`, a top-level `name` slug, and
-  `metadata.version` (an integer, bumped on every published change).
+  `metadata.version: 1`.
 - `permissions.scopes` lists 1–5 scopes; `basic:read` must always be
   present. `surfaces` declares where the app appears (see
   `surfaces.md`).

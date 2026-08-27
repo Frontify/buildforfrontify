@@ -7,7 +7,7 @@ Demonstrates how to use the Bulk Actions Surface for performing operations on mu
 ## Key Concepts
 
 - `assetBulkActions` surface in manifest.json for bulk operations across libraries
-- `appBridge.api({ name: 'executeGraphQl', payload: { query } })` for running GraphQL
+- `appBridge.api({ name: 'executeGraphQl', payload: { query } })` for running GraphQL (`executeGraphQl` is deprecated — prefer `executeGraphQlWithFullResponse`, which resolves `{ data, errors }`; the example below still uses the older method)
 - `context.selection.assets.ids` to get IDs of selected assets
 - Chunked processing for large asset sets (100 per chunk)
 - Declared under multiple project types: `mediaLibrary`, `iconLibrary`, `logoLibrary`, `documentLibrary`, `workspace`
@@ -360,7 +360,7 @@ export const App = () => {
 ## Integration Notes
 
 - The `assetBulkActions` surface is separate from `assetAction` and `assetCreation` - it appears when multiple assets are selected
-- GraphQL queries/mutations are executed via `appBridge.api({ name: 'executeGraphQl', payload: { query } })`
+- GraphQL queries/mutations are executed via `appBridge.api({ name: 'executeGraphQl', payload: { query } })` — note `executeGraphQl` is deprecated in favor of `executeGraphQlWithFullResponse` (which resolves `{ data, errors }`); new apps should use the latter
 - Process assets in chunks (100 at a time) to avoid API limits
 - The bulk action can span multiple project types (media, icon, logo, document, workspace)
 - Adjust the `filenameExtensions` array in the manifest to control which asset types the bulk action applies to

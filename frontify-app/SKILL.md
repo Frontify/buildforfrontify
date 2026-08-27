@@ -322,7 +322,7 @@ Available via `appBridge.api({ name, payload })`:
 | `getSecureRequest` | Call a manifest-declared endpoint with stored secrets — returns `{ data, status, statusText }` |
 | `executeSecureRequest` | Same, but returns the raw `Response` (stream the body yourself) |
 | `executeGraphQlWithFullResponse` | Run any query/mutation against the Frontify Public API — returns `{ data, errors }` |
-| `executeGraphQl` | Same, but resolves only `data` (top-level `errors` are dropped) |
+| `executeGraphQl` *(deprecated)* | Same, but resolves only `data` (top-level `errors` are dropped) — prefer `executeGraphQlWithFullResponse` |
 
 > **`createAsset` payload shape:** `{ data: File \| Blob \| string,
 > filename: string, parentId: string }`, plus optional `description`,

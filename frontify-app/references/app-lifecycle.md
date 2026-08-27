@@ -116,7 +116,7 @@ persists across sessions for that user.
 - **App → host:** `appBridge.api({ name, payload })` — e.g.
   `getAssetResourceInformation`, `getCurrentUser`, `getAccountId`,
   `createAsset`, `getSecureRequest` / `executeSecureRequest`,
-  `executeGraphQl` / `executeGraphQlWithFullResponse`.
+  `executeGraphQlWithFullResponse` (and the deprecated `executeGraphQl`).
 - **Host → app:** lifecycle events such as `Context.connected` (consumed
   by `renderReactApp`) and store-change notifications delivered through
   `.subscribe()`.

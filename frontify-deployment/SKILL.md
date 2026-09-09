@@ -135,7 +135,7 @@ fixing one reveals the next.
 
 | Gate | Failure signature | Fix |
 |------|-------------------|-----|
-| **Manifest validation** | Platform-app: the raw schema error, e.g. `'basic:read' is required in scopes`, `At least one scope is required`, `No more than 5 scopes are allowed`. Content-block: `The manifest is invalid: …` | Field-shape mismatch — see the canonical manifest in the matching type skill. |
+| **Manifest validation** | Platform-app: the raw schema error, e.g. `'basic:read' is required in scopes`, `At least one scope is required`, `No more than 5 scopes are allowed`. Content-block: `The manifest is invalid: …`, most often a malformed or missing `settingsSchema` | Field-shape mismatch — see the canonical manifest in the matching type skill. For content blocks, `settingsSchema` rules and a pre-submission checklist are in `../frontify-custom-block/references/settings-schema.md`. |
 | **Type-check** | `error TS####` | Fix in source; align to published `@frontify/*` types. |
 | **ESLint** *(only if an eslint config exists)* | Actual lint errors in `src`. With **no** config present the step is *skipped* (`Eslint config file not found, skipping eslint checks…`), not failed. | Fix the reported lint errors, or ship the canonical `eslint.config.js` from the type skill's scaffold assets. |
 | **Vite build** | `terser not found` / `Cannot resolve entry module index.html` | Add `terser` to devDeps; ship `index.html` from scaffold assets. |
@@ -248,14 +248,24 @@ If the App has a backend (Hono on Lambda, GH Actions OIDC, etc.), see
 
 ## Deploying a Custom Block
 
-Validate the bundle before publishing:
+Validate the manifest, then the bundle:
 
 ```bash
+bash ../frontify-custom-block/scripts/check-settings-schema.sh
+npx @frontify/frontify-cli@latest verify-manifest
 npx @frontify/frontify-cli@latest deploy --dry-run
 ```
 
+`verify-manifest` checks the manifest only, so it fails faster than the
+dry-run and isolates manifest problems from bundle problems. It does not
+read `src/settings.ts`, so it cannot see a `settingsSchema` that
+disagrees with the block's actual settings — that is what the check
+script ahead of it is for. Both `settingsSchema` gaps and keyword
+mistakes are Marketplace blockers; the rules and checklist are in
+`../frontify-custom-block/references/settings-schema.md`.
+
 Block-specific testing flow (TypeScript compile check, live preview in a
-Guidelines page, then dry-run) lives in
+Guidelines page, manifest check, then dry-run) lives in
 `../frontify-custom-block/SKILL.md` § Testing. Once validated, the same
 shared CLI flow above (`deploy`, optional `publish`) applies.
 

@@ -40,8 +40,10 @@ upstream concerns this skill assumes are handled:
 - **Frontify CLI install** — install with `npm install -g @frontify/frontify-cli`.
 - **Build validation** — run `npx tsc --noEmit` and `npx eslint src` during
   iteration and before deployment.
-- **Shared resource map** — when to load `frontify-auth-block`, `frontify-graphql`,
-  `frontify-deployment`, `frontify-fondue`.
+- **Shared resource map** — when to load `frontify-graphql`, `frontify-deployment`,
+  `frontify-fondue`. There is no `frontify-auth-block` skill: blocks have no tokens or
+  scopes, and the relevant rules are in the constraints table of
+  [references/custom-block-api.md § 8](references/custom-block-api.md#8-constraints-and-limitations).
 
 For an **existing** Content Block project (debugging, extending, deploying), you
 can stay in this skill and reach for shared skills via the handoff table at the
@@ -310,7 +312,7 @@ Load these companion skills when the work expands beyond block component code:
 
 | Situation | Load |
 |-----------|------|
-| Auth — calling Frontify GraphQL via the bridge, 3rd-party API calls from a block, scope/permissions questions | `../frontify-auth-block/SKILL.md` |
-| Reading or mutating Frontify data via GraphQL | `../frontify-graphql/SKILL.md` |
+| Auth, reading Frontify data from a block, 3rd-party API calls, scope/permissions questions | [references/custom-block-api.md § 8](references/custom-block-api.md#8-constraints-and-limitations). For Apps: `../frontify-auth-app/SKILL.md` |
+| Writing GraphQL for a backend or an App (a block cannot call GraphQL through its bridge) | `../frontify-graphql/SKILL.md` |
 | Publishing, CI, versioning, deployment pipeline | `../frontify-deployment/SKILL.md` |
 | Building UI with Fondue design system components | `../frontify-fondue/SKILL.md` |

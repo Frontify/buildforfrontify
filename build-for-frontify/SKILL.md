@@ -136,8 +136,8 @@ Authentication varies sharply by extension type — there is no shared
 
 ```
 App                →  ../frontify-auth-app/SKILL.md
-Custom block       →  ../frontify-auth-block/SKILL.md
-Theme              →  ../frontify-auth-theme/SKILL.md
+Custom block       →  (no auth skill: blocks inherit the session; see ../frontify-custom-block/SKILL.md)
+Theme              →  (no auth skill: themes inherit the session; see ../frontify-theme/SKILL.md)
 External / script  →  ../frontify-auth-integration/SKILL.md
 ```
 
@@ -170,8 +170,8 @@ Fondue design system (installation, tokens, components)
 
 **When to load each:**
 
-- Load the matching `frontify-auth-{app,block,theme,integration}` skill the
-  moment authentication, scopes, secrets, or token handling comes up.
+- Load the matching auth skill (`frontify-auth-{app,integration}`; custom blocks and themes
+  have none) the moment authentication, scopes, secrets, or token handling comes up.
 - Load `frontify-graphql` before writing any API queries or when the user asks
   what data is available.
 - Load `frontify-media-processing` whenever the user wants to render, resize,

@@ -99,15 +99,41 @@ bash scripts/scaffold.sh
 
 ### Generated structure
 
-`manifest.json` holds the Marketplace app ID — fill it in after registering the block:
+### Canonical `manifest.json`
+
+`manifest.json` holds the Marketplace app ID and the schema for every setting the block stores.
+Write this minimum for any new block:
 
 ```json
-{ "appId": "<your-app-id-from-the-frontify-marketplace>" }
+{
+    "appId": "<your-app-id-from-the-frontify-marketplace>",
+    "settingsSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "title": {
+                "type": "string",
+                "frontify-translatable": true,
+                "frontify-serializable": true,
+                "frontify-serialization-index": 1
+            }
+        }
+    }
+}
 ```
+
+- `appId` — fill in after registering the block on the Marketplace.
+- `settingsSchema` — **required** for any block with settings. Without it the block is not
+  translatable, not search-indexed, and returns `null` settings on the public API.
+- `properties` is keyed by the setting `id` from `src/settings.ts`, and is **flat** — a setting
+  nested inside `switch.on` or `sectionHeading.blocks` still gets a top-level property.
+
+Full rules and the setting-type mapping: [references/settings-schema.md](references/settings-schema.md).
 
 ```
 my-block/
-├── manifest.json       # Marketplace metadata (appId, searchFields)
+├── manifest.json       # Marketplace metadata (appId, settingsSchema)
 ├── package.json        # Dependencies and npm scripts
 ├── tsconfig.json       # TypeScript config
 ├── postcss.config.js   # CSS pipeline (varies by CSS option chosen)
@@ -231,6 +257,38 @@ export const settings = defineSettings({
 });
 ```
 
+### Settings schema, part 2 — `settingsSchema` in `manifest.json`
+
+`src/settings.ts` and the manifest's `settingsSchema` are a pair. `settings.ts` defines what the
+editor sees in the sidebar; `settingsSchema` declares what the platform stores. Change one and you
+must change the other.
+
+```json
+"properties": {
+    "message": {
+        "type": "string",
+        "frontify-translatable": true,
+        "frontify-serializable": true,
+        "frontify-serialization-index": 1
+    }
+}
+```
+
+Three rules carry most of the weight:
+
+- **One property per setting, keyed by `id`.** With `additionalProperties: false`, a setting
+  missing from the schema can never be saved.
+- **Properties are flat.** A setting nested in `switch.on`, `sectionHeading.blocks`, or
+  `multiInput.blocks` still gets a **top-level** property. Nesting in `settings.ts` is sidebar
+  layout, not storage. `notification` and `sectionHeading` store nothing and need no property.
+- **Text settings need marking.** Every `input` and `textarea` holding user copy needs
+  `frontify-translatable` and `frontify-serializable`, plus a unique
+  `frontify-serialization-index`.
+
+Omitting `settingsSchema` is a Marketplace blocker. See
+[references/settings-schema.md](references/settings-schema.md) for the keyword table, the
+setting-type mapping, and the pre-submission checklist.
+
 ### Key AppBridge hooks
 
 | Hook | Use |
@@ -257,7 +315,17 @@ The scaffold does not include a pre-wired unit test setup. For a typical block:
 2. **Live preview** — Start the dev server (`npm run serve`) and interact with the
    block in a real Frontify Guidelines page. This is the primary way to verify
    settings changes, asset flows, and edit/view mode behaviour.
-3. **Marketplace dry-run** — Before publishing, run:
+3. **Manifest and schema check** — Before publishing, validate the manifest:
+   ```bash
+   bash scripts/check-settings-schema.sh    # cross-checks settingsSchema against settings.ts
+   npx @frontify/frontify-cli@latest verify-manifest
+   ```
+   `verify-manifest` is the validator that runs at submission time, but it never sees
+   `src/settings.ts` and it accepts several schemas that silently do not work. Run the check
+   script first, and walk
+   [references/settings-schema.md § 10](references/settings-schema.md#10-pre-submission-checklist)
+   before submitting.
+4. **Marketplace dry-run** — Before publishing, run:
    ```bash
    npx @frontify/frontify-cli@latest deploy --dry-run
    ```

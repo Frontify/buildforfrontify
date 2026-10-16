@@ -16,44 +16,66 @@ the relevant one rather than reading top to bottom.
 8. [Constraints and limitations](#8-constraints-and-limitations)
 9. [Minimal working example](#9-minimal-working-example)
 
+**Companion reference:** [settings-schema.md](settings-schema.md) — the `settingsSchema` in
+`manifest.json`, which declares the stored shape of everything the settings below produce.
+
 ---
 
 ## 1. Block manifest
 
 **File:** `manifest.json` at the project root.
 
-The manifest is read by the Frontify CLI at deploy time. It identifies the block on
-the Marketplace and declares which settings fields are full-text searchable.
+The manifest is read by the Frontify CLI at deploy time. It identifies the block on the
+Marketplace and declares the shape of every setting the block stores.
 
-### Minimal manifest
-
-```json
-{
-    "appId": "<your-app-id-from-the-marketplace>"
-}
-```
-
-`appId` is the only required field. Obtain it from the Frontify Marketplace developer
-portal when you create a new block entry.
-
-### With searchable fields
+### Canonical manifest
 
 ```json
 {
-    "appId": "<your-app-id>",
-    "searchFields": [
-        "plainTextSettingId",
-        {
-            "type": "fondueRte",
-            "settingId": "richTextSettingId"
+    "appId": "<your-app-id-from-the-marketplace>",
+    "settingsSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "title": {
+                "type": "string",
+                "frontify-translatable": true,
+                "frontify-serializable": true,
+                "frontify-serialization-index": 1
+            }
         }
-    ]
+    }
 }
 ```
 
-- Plain strings in `searchFields` refer to setting IDs whose values are simple strings.
-- Objects with `type: "fondueRte"` are for rich-text fields backed by the Fondue RTE
-  component — they have a different internal structure that requires the explicit type hint.
+- **`appId`** is required. Obtain it from the Frontify Marketplace developer portal when you
+  create a new block entry.
+- **`settingsSchema`** is required for any block that declares value settings. Without it the
+  block is not translatable, not indexed for search, and its `settings` and `content` fields come
+  back `null` on the public API.
+
+### settingsSchema in brief
+
+A [JSON Schema draft 2020-12](https://json-schema.org/specification) document describing the
+block's stored settings:
+
+- Root is `"type": "object"`; set `"additionalProperties": false`.
+- `properties` is keyed by the setting `id` from `src/settings.ts` — one property per setting.
+- **Properties are flat.** Every setting carrying an `id` gets a top-level property, however
+  deeply it is nested in `switch.on`, `sectionHeading.blocks`, or `multiInput.blocks`. Nesting in
+  `settings.ts` is sidebar layout only; it has no effect on storage.
+- `notification` and `sectionHeading` store no value and need no property.
+- `frontify-*` keywords mark fields as translatable, serializable, or API-visible. They only take
+  effect on leaf fields, and never inside `oneOf` / `anyOf` / `allOf` / `if`.
+
+Full rules, the setting-type to JSON Schema type mapping, and a pre-submission checklist are in
+[settings-schema.md](settings-schema.md). Validate with:
+
+```bash
+bash scripts/check-settings-schema.sh
+npx @frontify/frontify-cli@latest verify-manifest
+```
 
 ---
 
@@ -143,6 +165,10 @@ current state of another setting so you can make decisions based on it.
 ---
 
 ## 4. Setting types reference
+
+Every setting below also needs a matching property in the manifest's `settingsSchema`. The
+setting type to JSON Schema type mapping is in
+[settings-schema.md § 6](settings-schema.md#6-setting-type-to-json-schema-type).
 
 ### assetInput
 
@@ -547,6 +573,7 @@ appBridge.dispatch({
 
 | Area | Constraint |
 |------|-----------|
+| **Manifest** | A block with value settings and no `settingsSchema` is rejected at Marketplace submission |
 | **Isolation** | Each block runs in its own React instance — no shared state with other blocks on the page |
 | **Authentication** | No tokens, no OAuth — the host injects the session. Never attempt to handle auth yourself |
 | **Secrets in settings** | Settings values are visible in the rendered page source. Never store API keys, tokens, or credentials in block settings |
@@ -613,6 +640,25 @@ export const settings = defineSettings({
 
 ```json
 {
-    "appId": "<your-app-id>"
+    "appId": "<your-app-id>",
+    "settingsSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "message": {
+                "type": "string",
+                "default": "Hello from my block!",
+                "frontify-translatable": true,
+                "frontify-serializable": true,
+                "frontify-serialization-index": 1
+            }
+        }
+    }
 }
 ```
+
+Note that `message` appears three times, under the same name: as a member of the `Settings` type
+in `Block.tsx`, as the setting `id` in `settings.ts`, and as a schema property key in
+`manifest.json`. Keeping those three in step is what the checklist in
+[settings-schema.md § 10](settings-schema.md#10-pre-submission-checklist) is for.

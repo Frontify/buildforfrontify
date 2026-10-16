@@ -149,11 +149,22 @@ cat <<EOF
   3. Edit src/Block.tsx to build your block, and src/settings.ts to
      configure the settings panel. Changes hot-reload automatically.
 
-  4. When you're ready to publish:
+  4. Fill in manifest.json — the appId from the Marketplace, and a
+     settingsSchema describing every setting in src/settings.ts.
 
+     settingsSchema is required: without it your block cannot be
+     translated or searched, and its settings come back null on the
+     public API. See:
+
+       $(dirname "$0")/../references/settings-schema.md
+
+  5. When you're ready to publish:
+
+       bash $(dirname "$0")/check-settings-schema.sh          # check the schema
+       npx @frontify/frontify-cli@latest verify-manifest      # official gate
        npx @frontify/frontify-cli@latest login --instance=<your-frontify-url>
-       npx @frontify/frontify-cli@latest deploy --dry-run   # validate first
-       npx @frontify/frontify-cli@latest deploy             # publish
+       npx @frontify/frontify-cli@latest deploy --dry-run     # validate first
+       npx @frontify/frontify-cli@latest deploy               # publish
 
   Full API reference: $(dirname "$0")/../references/custom-block-api.md
 

@@ -309,7 +309,7 @@ Load these files surgically — don't pull everything in at once.
 
 For an interactive playground, the live transformations are
 documented at the
-[Frontify Developer Portal — Dynamic media services](https://developer.frontify.com/d/Mt7DxrMAxrFm/media-processing)
+[Frontify Developer Portal — Dynamic media services](https://developer.frontify.com/document/20#/introduction/media-processing)
 section.
 
 ---

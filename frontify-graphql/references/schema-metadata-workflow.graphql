@@ -1,5 +1,5 @@
-# Frontify GraphQL — Metadata & Workflow
-# Custom metadata properties and values, legacy MetadataField,
+# Frontify GraphQL — Metadata, Catalogs & Workflow
+# Custom metadata properties and values, Catalogs (rows/columns/cells), legacy MetadataField (deprecated),
 # WorkflowStatus, WorkflowTask, and WorkflowChecklist types.
 
 type MetadataValue {
@@ -38,7 +38,6 @@ type MetadataValue {
   """
   value: String! @deprecated(reason: "This field will be removed. Use `CustomMetadataValueType.value` instead. | Date: 2026-07-01")
 }
-
 
 type MetadataField {
   """
@@ -112,7 +111,6 @@ type MetadataField {
   isVisible: Boolean! @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.isViewable` instead. | Date: 2026-07-01")
 }
 
-
 type MetadataFieldValues {
   """
   **DEPRECATED** Value of `SELECT` type `Metadata Field`. This field will be removed. Use `CustomMetadataProperty.type.options.value` instead. | Date: 2026-07-01
@@ -125,13 +123,11 @@ type MetadataFieldValues {
   default: Boolean @deprecated(reason: "This field will be removed. Use `CustomMetadataProperty.type.options.isDefault` instead. | Date: 2026-07-01")
 }
 
-
 """`CustomMetadataInterface` for `CustomMetadata` returnable types."""
 interface CustomMetadata {
   """`CustomMetadataProperty` details."""
   property: CustomMetadataProperty!
 }
-
 
 """
 `CustomMetadataPropertyTypeInterface` for `CustomMetadataPropertyType` returnable types.
@@ -140,7 +136,6 @@ interface CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
   name: String!
 }
-
 
 """
 `CustomMetadataPropertyDependencyInterface` for `CustomMetadataPropertyDependency` returnable types.
@@ -152,7 +147,6 @@ interface CustomMetadataPropertyDependency {
   """The dependee `CustomMetadataProperty` Id."""
   propertyId: ID!
 }
-
 
 type CustomMetadataPropertyPermissions {
   """
@@ -166,7 +160,6 @@ type CustomMetadataPropertyPermissions {
   custom: [CustomMetadataPropertyCustomPermission]
 }
 
-
 type CustomMetadataPropertyBasicPermission {
   """**BETA** Subject granted with the permission."""
   subject: CustomMetadataPropertyBasicPermissionSubject!
@@ -174,7 +167,6 @@ type CustomMetadataPropertyBasicPermission {
   """**BETA** Permission level granted to the subject."""
   permissionLevel: CustomMetadataPropertyPermissionLevel!
 }
-
 
 """Subjects defined for basic custom metadata property permissions."""
 enum CustomMetadataPropertyBasicPermissionSubject {
@@ -200,7 +192,6 @@ enum CustomMetadataPropertyBasicPermissionSubject {
   ADMIN
 }
 
-
 """Permission levels allowed for a custom metadata property."""
 enum CustomMetadataPropertyPermissionLevel {
   """Allows updating and deleting `CustomMetadataProperty` items"""
@@ -217,7 +208,6 @@ enum CustomMetadataPropertyPermissionLevel {
   VIEW
 }
 
-
 type CustomMetadataPropertyCustomPermission {
   """
   **BETA** Subject representing the specific user or group granted with the permission.
@@ -227,7 +217,6 @@ type CustomMetadataPropertyCustomPermission {
   """**BETA** Permission level granted to the subject."""
   permissionLevel: CustomMetadataPropertyPermissionLevel!
 }
-
 
 type WorkflowTask {
   """**BETA** `WorkflowTask` Id."""
@@ -259,7 +248,6 @@ type WorkflowTask {
     page: Int = 1
   ): WorkflowChecklistItems!
 }
-
 
 type WorkflowStatus {
   """**BETA** `WorkflowStatus` id."""
@@ -294,7 +282,6 @@ type WorkflowStatus {
   enterRules: [WorkflowStatusEnterRule]!
 }
 
-
 type WorkflowChecklistPreset {
   """**BETA** `WorkflowChecklistPreset` Id."""
   id: ID!
@@ -305,7 +292,6 @@ type WorkflowChecklistPreset {
   """**BETA** The default assignee of the `WorkflowChecklistPreset`."""
   assignedUser: User
 }
-
 
 type WorkflowStatusTaskItems {
   """Total amount of results."""
@@ -324,7 +310,6 @@ type WorkflowStatusTaskItems {
   items: [WorkflowTask]
 }
 
-
 """
 A rule which needs to be satisfied for a `WorkflowTask` to enter a given `WorkflowStatus`.
 """
@@ -332,7 +317,6 @@ enum WorkflowStatusEnterRule {
   TASK_REQUIRES_ASSIGNEE
   TASK_REQUIRES_MESSAGE
 }
-
 
 type WorkflowChecklistItems {
   """Total amount of results."""
@@ -351,7 +335,6 @@ type WorkflowChecklistItems {
   items: [WorkflowChecklistItem]
 }
 
-
 type WorkflowChecklistItem {
   """**BETA** `WorkflowChecklistItem` Id."""
   id: ID!
@@ -366,17 +349,15 @@ type WorkflowChecklistItem {
   assignedUser: User
 }
 
-
 type CustomMetadataValue implements CustomMetadata {
   """`CustomMetadataProperty` details."""
   property: CustomMetadataProperty!
 
   """
-  `CustomMetadataProperty` value. For `SELECT`, returns an object with `optionId` and `text`. For `CATALOG`, returns the opaque `CatalogSelection` ID string — resolve the entry tree via `Catalog.selection(id: ID!)` using the `catalogId` on `CustomMetadataPropertyTypeCatalog`. For other single-value property types, returns the stored value as `String`/`Float`/`Int`/`DateTime`.
+  `CustomMetadataProperty` value. For `SELECT`, returns an object with `optionId` and `text`. For `CATALOG`, returns an opaque catalog selection ID string. For other single-value property types, returns the stored value as `String`/`Float`/`Int`/`DateTime`.
   """
   value: Any
 }
-
 
 type CustomMetadataValues implements CustomMetadata {
   """`CustomMetadataProperty` details."""
@@ -387,7 +368,6 @@ type CustomMetadataValues implements CustomMetadata {
   """
   values: [Any]!
 }
-
 
 type CustomMetadataPropertySelectValueTypeDependencyTypeEquals implements CustomMetadataPropertyDependency {
   """`CustomMetadataPropertyDependency` type."""
@@ -400,7 +380,6 @@ type CustomMetadataPropertySelectValueTypeDependencyTypeEquals implements Custom
   propertyOptionId: ID!
 }
 
-
 type CustomMetadataPropertySelectValueTypeDependencyTypeOneOf implements CustomMetadataPropertyDependency {
   """`CustomMetadataPropertyDependency` type."""
   type: String!
@@ -412,7 +391,6 @@ type CustomMetadataPropertySelectValueTypeDependencyTypeOneOf implements CustomM
   propertyOptionIds: [ID]!
 }
 
-
 type CustomMetadataPropertyValueTypeDependencyTypeFilled implements CustomMetadataPropertyDependency {
   """`CustomMetadataPropertyDependency` type."""
   type: String!
@@ -421,18 +399,15 @@ type CustomMetadataPropertyValueTypeDependencyTypeFilled implements CustomMetada
   propertyId: ID!
 }
 
-
 type CustomMetadataPropertyTypeDate implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
   name: String!
 }
 
-
 type CustomMetadataPropertyTypeLongText implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
   name: String!
 }
-
 
 type CustomMetadataPropertyTypeMultiSelect implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
@@ -441,7 +416,6 @@ type CustomMetadataPropertyTypeMultiSelect implements CustomMetadataPropertyType
   """`MULTISELECT` type `CustomMetadataProperty` options."""
   options: [CustomMetadataPropertyOption]!
 }
-
 
 input AddCustomMetadataInput {
   """Set of parent Ids to which `CustomMetadata` should be added."""
@@ -453,14 +427,12 @@ input AddCustomMetadataInput {
   customMetadata: [CustomMetadataInput!]!
 }
 
-
 type AddCustomMetadata {
   """
   List of the parent Ids where the new `CustomMetadata` values were added.
   """
   parentIds: [ID!]!
 }
-
 
 input AddCustomMetadataPropertyOptionsInput {
   """`CustomMetadataProperty` Id."""
@@ -472,12 +444,10 @@ input AddCustomMetadataPropertyOptionsInput {
   options: [AddCustomMetadataPropertyOptionInput!]!
 }
 
-
 type AddCustomMetadataPropertyOptions {
   """`CustomMetadataProperty` details."""
   customMetadataProperty: CustomMetadataProperty!
 }
-
 
 input AddWorkflowChecklistItemInput {
   """
@@ -495,12 +465,10 @@ input AddWorkflowChecklistItemInput {
   assigneeUserId: ID
 }
 
-
 type AddWorkflowChecklistItem {
   """**BETA** The created `WorkflowChecklistItem`."""
   checklistItem: WorkflowChecklistItem
 }
-
 
 input AddWorkflowChecklistPresetInput {
   """
@@ -515,12 +483,10 @@ input AddWorkflowChecklistPresetInput {
   assigneeUserId: ID
 }
 
-
 type AddWorkflowChecklistPreset {
   """**BETA** The created `WorkflowChecklistPreset`."""
   checklistPreset: WorkflowChecklistPreset
 }
-
 
 input AddWorkflowStatusAssigneesInput {
   """**BETA** `WorkflowStatus` Id."""
@@ -530,12 +496,10 @@ input AddWorkflowStatusAssigneesInput {
   userIds: [ID!]!
 }
 
-
 type AddWorkflowStatusAssignees {
   """**BETA** The updated `WorkflowStatus`."""
   workflowStatus: WorkflowStatus
 }
-
 
 input AddWorkflowTaskAssigneesInput {
   """**BETA** `WorkflowTask` Id."""
@@ -545,12 +509,10 @@ input AddWorkflowTaskAssigneesInput {
   userIds: [ID!]!
 }
 
-
 type AddWorkflowTaskAssignees {
   """**BETA** The updated `WorkflowTask`."""
   workflowTask: WorkflowTask
 }
-
 
 input CreateCustomMetadataPropertyInput {
   """`CustomMetadataProperty` parent Id."""
@@ -589,12 +551,10 @@ input CreateCustomMetadataPropertyInput {
   permissions: [CustomMetadataPropertyPermissionInput!]
 }
 
-
 type CreateCustomMetadataProperty {
   """The newly created `CustomMetadataProperty`."""
   property: CustomMetadataProperty!
 }
-
 
 input CreateMetadataFieldInput {
   """`Project`/`Library` Id where metadata field should be created."""
@@ -632,12 +592,10 @@ input CreateMetadataFieldInput {
   isVisible: Boolean = true
 }
 
-
 type CreateMetadataField {
   """Created `MetadataField`."""
   metadataField: MetadataField!
 }
-
 
 input CreateWorkflowStatusInput {
   """**BETA** `Workflow` Id where `WorkflowStatus` should be created."""
@@ -650,30 +608,25 @@ input CreateWorkflowStatusInput {
   color: RgbaColorInput
 }
 
-
 type CreateWorkflowStatus {
   """**BETA** The newly created `WorkflowStatus`."""
   workflowStatus: WorkflowStatus
 }
-
 
 input DeleteCustomMetadataPropertyInput {
   """`CustomMetadataProperty` Id."""
   id: ID!
 }
 
-
 type DeleteCustomMetadataProperty {
   """The Id of the deleted `CustomMetadataProperty`."""
   id: ID!
 }
 
-
 input DeleteMetadataFieldInput {
   """Id of the `MetadataField` to delete."""
   id: ID!
 }
-
 
 type DeleteMetadataField {
   """The Id of the deleted `MetadataField`."""
@@ -685,30 +638,25 @@ type DeleteMetadataField {
   metadataField: MetadataField! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
 }
 
-
 input DeleteWorkflowStatusInput {
   """**BETA** Id of the `WorkflowStatus` to be deleted."""
   id: ID!
 }
-
 
 type DeleteWorkflowStatus {
   """The Id of the deleted `WorkflowStatus`."""
   id: ID!
 }
 
-
 input DeleteWorkflowTaskInput {
   """**BETA** Id of the `WorkflowTask` to be deleted."""
   id: ID!
 }
 
-
 type DeleteWorkflowTask {
   """The Id of the deleted `WorkflowTask`."""
   id: ID!
 }
-
 
 input MoveWorkflowTaskInput {
   """**BETA** The Id of the destination `WorkflowStatus`."""
@@ -723,12 +671,10 @@ input MoveWorkflowTaskInput {
   statusEnterMessage: String
 }
 
-
 type MoveWorkflowTask {
   """**BETA** The `WorkflowStatus` with the moved tasks."""
   workflowStatus: WorkflowStatus
 }
-
 
 input RemoveCustomMetadataInput {
   """List of parent Ids where `CustomMetadata` should be removed from."""
@@ -738,12 +684,10 @@ input RemoveCustomMetadataInput {
   customMetadata: [CustomMetadataInput!]!
 }
 
-
 type RemoveCustomMetadata {
   """List of parentIds with removed `CustomMetadata` values."""
   parentIds: [ID!]!
 }
-
 
 input RemoveCustomMetadataPropertyOptionsInput {
   """`CustomMetadataProperty` Id."""
@@ -753,18 +697,15 @@ input RemoveCustomMetadataPropertyOptionsInput {
   optionIds: [ID!]!
 }
 
-
 type RemoveCustomMetadataPropertyOptions {
   """`CustomMetadataProperty` details."""
   customMetadataProperty: CustomMetadataProperty!
 }
 
-
 input RemoveMetadataValueInput {
   """`MetadataValue` Id."""
   id: ID!
 }
-
 
 type RemoveMetadataValue {
   """`MetadataValue` Id."""
@@ -789,30 +730,25 @@ type RemoveMetadataValue {
   value: String!
 }
 
-
 input RemoveWorkflowChecklistItemInput {
   """**BETA** The Id of the `WorkflowChecklistItem` to remove."""
   id: ID!
 }
-
 
 type RemoveWorkflowChecklistItem {
   """**BETA** The deleted `WorkflowChecklistItem`."""
   checklistItem: WorkflowChecklistItem
 }
 
-
 input RemoveWorkflowChecklistPresetInput {
   """**BETA** The Id of the `WorkflowChecklistPreset` to remove."""
   id: ID!
 }
 
-
 type RemoveWorkflowChecklistPreset {
   """**BETA** The deleted `WorkflowChecklistPreset`."""
   checklistPreset: WorkflowChecklistPreset
 }
-
 
 input RemoveWorkflowStatusAssigneesInput {
   """**BETA** `WorkflowStatus` Id."""
@@ -822,12 +758,10 @@ input RemoveWorkflowStatusAssigneesInput {
   userIds: [ID!]!
 }
 
-
 type RemoveWorkflowStatusAssignees {
   """**BETA** The updated `WorkflowStatus`."""
   workflowStatus: WorkflowStatus
 }
-
 
 input RemoveWorkflowTaskAssigneesInput {
   """**BETA** `WorkflowTask` Id."""
@@ -837,12 +771,10 @@ input RemoveWorkflowTaskAssigneesInput {
   userIds: [ID!]!
 }
 
-
 type RemoveWorkflowTaskAssignees {
   """**BETA** The updated `WorkflowTask`."""
   workflowTask: WorkflowTask
 }
-
 
 input SetCustomMetadataInput {
   """List of `parentIds` where `CustomMetadata` should be set."""
@@ -852,12 +784,10 @@ input SetCustomMetadataInput {
   customMetadata: [CustomMetadataInput!]!
 }
 
-
 type SetCustomMetadata {
   """List of parentIds with newly `CustomMetadata` values set."""
   parentIds: [ID!]!
 }
-
 
 input UpdateCustomMetadataPropertyInput {
   """`CustomMetadataProperty` Id."""
@@ -866,7 +796,6 @@ input UpdateCustomMetadataPropertyInput {
   """`CustomMetadataProperty` data."""
   data: UpdateCustomMetadataPropertyDataInput!
 }
-
 
 input UpdateCustomMetadataPropertyDataInput {
   """`CustomMetadataProperty` display name."""
@@ -899,14 +828,12 @@ input UpdateCustomMetadataPropertyDataInput {
   permissions: [CustomMetadataPropertyPermissionInput!]
 }
 
-
 input UpdateCustomMetadataPropertyTypeInput {
   """
   Define CustomMetadataProperty` options for `SELECT` or `MULTISELECT` type properties.
   """
   options: [UpdateCustomMetadataPropertyTypeOptionInput!]
 }
-
 
 input UpdateCustomMetadataPropertyTypeOptionInput {
   """
@@ -923,12 +850,10 @@ input UpdateCustomMetadataPropertyTypeOptionInput {
   isDefault: Boolean = false
 }
 
-
 type UpdateCustomMetadataProperty {
   """Name of the updated `CustomMetadataProperty`."""
   property: CustomMetadataProperty!
 }
-
 
 input UpdateWorkflowChecklistItemInput {
   """**BETA** `WorkflowChecklistItem` Id."""
@@ -937,7 +862,6 @@ input UpdateWorkflowChecklistItemInput {
   """`WorkflowChecklistItem` data."""
   data: UpdateWorkflowChecklistItemDataInput!
 }
-
 
 input UpdateWorkflowChecklistItemDataInput {
   """**BETA** Content of the `WorkflowChecklistItem`."""
@@ -950,12 +874,10 @@ input UpdateWorkflowChecklistItemDataInput {
   assigneeUserId: ID
 }
 
-
 type UpdateWorkflowChecklistItem {
   """**BETA** The updated `WorkflowChecklistItem`."""
   checklistItem: WorkflowChecklistItem
 }
-
 
 input UpdateWorkflowChecklistPresetInput {
   """**BETA** `WorkflowChecklistPreset` Id."""
@@ -965,7 +887,6 @@ input UpdateWorkflowChecklistPresetInput {
   data: UpdateWorkflowChecklistPresetDataInput!
 }
 
-
 input UpdateWorkflowChecklistPresetDataInput {
   """**BETA** Content of the `WorkflowChecklistPreset`."""
   content: String
@@ -974,12 +895,10 @@ input UpdateWorkflowChecklistPresetDataInput {
   assigneeUserId: ID
 }
 
-
 type UpdateWorkflowChecklistPreset {
   """**BETA** The updated `ChecklistPreset`."""
   checklistPreset: WorkflowChecklistPreset
 }
-
 
 input UpdateWorkflowStatusInput {
   """**BETA** `WorkflowStatus` Id."""
@@ -989,7 +908,6 @@ input UpdateWorkflowStatusInput {
   data: UpdateWorkflowStatusDataInput!
 }
 
-
 input UpdateWorkflowStatusDataInput {
   """**BETA** `WorkflowStatus` title."""
   title: String
@@ -998,12 +916,10 @@ input UpdateWorkflowStatusDataInput {
   color: RgbaColorInput
 }
 
-
 type UpdateWorkflowStatus {
   """**BETA** The updated `WorkflowStatus`."""
   workflowStatus: WorkflowStatus
 }
-
 
 input UpdateWorkflowTaskInput {
   """**BETA** `WorkflowTask` Id."""
@@ -1013,7 +929,6 @@ input UpdateWorkflowTaskInput {
   data: UpdateWorkflowTaskDataInput!
 }
 
-
 input UpdateWorkflowTaskDataInput {
   """**BETA** `WorkflowTask` title."""
   title: String
@@ -1022,12 +937,10 @@ input UpdateWorkflowTaskDataInput {
   description: String
 }
 
-
 type UpdateWorkflowTask {
   """**BETA** The updated `WorkflowTask`."""
   workflowTask: WorkflowTask
 }
-
 
 type CustomMetadataPropertyOption {
   """`CustomMetadataPropertyOption` Id."""
@@ -1042,12 +955,10 @@ type CustomMetadataPropertyOption {
   isDefault: Boolean!
 }
 
-
 type CustomMetadataPropertyTypeNumber implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
   name: String!
 }
-
 
 type CustomMetadataPropertyTypeSelect implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
@@ -1057,18 +968,15 @@ type CustomMetadataPropertyTypeSelect implements CustomMetadataPropertyType {
   options: [CustomMetadataPropertyOption]!
 }
 
-
 type CustomMetadataPropertyTypeText implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
   name: String!
 }
 
-
 type CustomMetadataPropertyTypeUrl implements CustomMetadataPropertyType {
   """The `CustomMetadataProperty` type name."""
   name: String!
 }
-
 
 type Workflow {
   """**BETA** `Workflow` Id."""
@@ -1079,7 +987,6 @@ type Workflow {
   """
   statuses: [WorkflowStatus]!
 }
-
 
 type CustomMetadataProperty implements Node {
   """`CustomMetadataProperty` Id."""
@@ -1112,7 +1019,9 @@ type CustomMetadataProperty implements Node {
   """**BETA** Indicates if a `CustomMetadataProperty` is searchable."""
   isSearchable: Boolean!
 
-  """**BETA** Indicates if a `CustomMetadataProperty` is viewable."""
+  """
+  **BETA** Indicates if a `CustomMetadataProperty` is viewable. This is a stored flag that hides the property from users entirely, independent of the current user's access. See `currentUserPermissions` for the per-request, access-rule-based canEdit/canAdmin checks.
+  """
   isViewable: Boolean!
 
   """
@@ -1132,17 +1041,15 @@ type CustomMetadataProperty implements Node {
   permissions: CustomMetadataPropertyPermissions
 }
 
-
 input CustomMetadataInput {
   """`CustomMetadataProperty` Id."""
   propertyId: ID!
 
   """
-  `CustomMetadataProperty` value. Polymorphic per property type: scalar (`String`/`Float`/`Int`/`DateTime`) for single-value types; list of `Int` option IDs for `MULTISELECT`; for `CATALOG`, a non-empty list of entry objects of the shape `[{"primaryKey": "SKU-001"}, …]` — the server creates a `CatalogSelection` and persists its ID transparently.
+  `CustomMetadataProperty` value. Polymorphic per property type: scalar (`String`/`Float`/`Int`/`DateTime`) for single-value types; list of `Int` option IDs for `MULTISELECT`; for `CATALOG`, a non-empty list of entry objects of the shape `[{"rowId": 123, "children": [{"rowId": 456, "sourceColumnId": 789}]}, …]` — the server persists the selection transparently.
   """
   value: Any
 }
-
 
 input AddCustomMetadataPropertyOptionInput {
   """`CustomMetadataPropertyOption` value."""
@@ -1154,7 +1061,6 @@ input AddCustomMetadataPropertyOptionInput {
   isDefault: Boolean = false
 }
 
-
 input CreateCustomMetadataPropertyTypeInput {
   """`CustomMetadataProperty` type name."""
   name: CustomMetadataPropertyTypeName!
@@ -1163,8 +1069,12 @@ input CreateCustomMetadataPropertyTypeInput {
   Define CustomMetadataProperty` options for `SELECT` or `MULTISELECT` type properties.
   """
   options: [CreateCustomMetadataPropertyTypeOptionInput!]
-}
 
+  """
+  **BETA** CATALOG-specific configuration. Required when type name is `CATALOG`; ignored otherwise.
+  """
+  catalogOptions: CatalogPropertyTypeOptionsInput
+}
 
 """List of possible `CustomMetadataProperty` type names."""
 enum CustomMetadataPropertyTypeName {
@@ -1178,7 +1088,6 @@ enum CustomMetadataPropertyTypeName {
   CATALOG
 }
 
-
 input CreateCustomMetadataPropertyTypeOptionInput {
   """`CustomMetadataPropertyOption` value."""
   value: String!
@@ -1188,7 +1097,6 @@ input CreateCustomMetadataPropertyTypeOptionInput {
   """
   isDefault: Boolean = false
 }
-
 
 input CustomMetadataPropertyPositionInput {
   """
@@ -1200,7 +1108,6 @@ input CustomMetadataPropertyPositionInput {
   placement: CustomMetadataPropertyPositionPlacement!
 }
 
-
 """List of possible `CustomMetadataProperty` position placement options."""
 enum CustomMetadataPropertyPositionPlacement {
   FIRST
@@ -1208,7 +1115,6 @@ enum CustomMetadataPropertyPositionPlacement {
   BEFORE
   AFTER
 }
-
 
 input CustomMetadataPropertyDependencyInput {
   """`CustomMetadataPropertyDependency` type."""
@@ -1218,14 +1124,12 @@ input CustomMetadataPropertyDependencyInput {
   property: CustomMetadataPropertyDependencyPropertyInput!
 }
 
-
 """List of possible `CustomMetadataPropertyDependency` types."""
 enum CustomMetadataPropertyDependencyType {
   FILLED
   SELECT_EQUALS
   SELECT_ONE_OF
 }
-
 
 input CustomMetadataPropertyDependencyPropertyInput {
   """The dependee `CustomMetadataProperty` Id."""
@@ -1242,7 +1146,6 @@ input CustomMetadataPropertyDependencyPropertyInput {
   optionIds: [ID!]
 }
 
-
 input CustomMetadataPropertyPermissionInput {
   """
   **BETA** Subject representing one specific user, a user group, or a role granted with the permission
@@ -1254,7 +1157,6 @@ input CustomMetadataPropertyPermissionInput {
   permissionLevel: CustomMetadataPropertyPermissionLevel!
 }
 
-
 """List of possible custom `MetadataField` types."""
 enum MetadataFieldType {
   SELECT
@@ -1263,7 +1165,6 @@ enum MetadataFieldType {
   DATE
   NUMBER
 }
-
 
 input MetadataFieldValuesInput {
   """Possible value of `SELECT` type `Metadata Field`."""
@@ -1275,3 +1176,1095 @@ input MetadataFieldValuesInput {
   default: Boolean = false
 }
 
+type CatalogItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `Catalog` items."""
+  items: [Catalog!]!
+}
+
+type CatalogRowItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `CatalogRow` items."""
+  items: [CatalogRow!]!
+}
+
+""""""
+interface CatalogCell {
+  """**BETA** `CatalogColumn` of the `CatalogCell`."""
+  column: CatalogColumn!
+
+  """**BETA** `CatalogRow` of the `CatalogCell`."""
+  row: CatalogRow!
+}
+
+""""""
+interface CatalogColumn {
+  """**BETA** `CatalogColumn` ID."""
+  id: ID!
+
+  """**BETA** `name` of the `CatalogColumn`."""
+  name: String!
+
+  """**BETA** `position` of the `CatalogColumn` for ordering."""
+  position: Int!
+}
+
+type CatalogColumnItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `CatalogColumn` items."""
+  items: [CatalogColumn!]!
+}
+
+input CatalogWindowPaginationInput {
+  """
+  **BETA** Number of items to return per page. Values below 1 become 1 and values above 50 become 50.
+  """
+  limit: Int
+
+  """**BETA** One-indexed page number to return. Values below 1 become 1."""
+  page: Int! = 1
+}
+
+type CatalogWindow {
+  """
+  **BETA** The independently paginated columns represented by this window.
+  """
+  columns: CatalogColumnItems!
+
+  """
+  **BETA** The independently paginated rows and their cells represented by this window.
+  """
+  rows: CatalogWindowRowItems!
+}
+
+type CatalogWindowRowItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** `CatalogWindowRow` items."""
+  items: [CatalogWindowRow!]!
+}
+
+type CatalogWindowRow {
+  """**BETA** The `CatalogRow` represented by this window row."""
+  row: CatalogRow!
+
+  """
+  **BETA** Cells corresponding one-to-one, and in the same order, as the containing window columns.
+  """
+  cells: [CatalogCell!]!
+}
+
+input ColumnFilterInput {
+  """**BETA** Column ID to filter on."""
+  columnId: ID!
+
+  """**BETA** Exact value to match."""
+  value: String!
+}
+
+type ColumnFilter {
+  """**BETA** The column ID."""
+  columnId: ID!
+
+  """**BETA** The column name."""
+  columnName: String!
+
+  """**BETA** Paginated filter values with counts."""
+  items: ColumnFilterItems!
+}
+
+type ColumnFilterItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """**BETA** Filter values with counts."""
+  items: [ColumnFilterItem!]!
+}
+
+type ColumnFilterItem {
+  """**BETA** The cell value."""
+  value: String!
+
+  """**BETA** Number of occurrences of this value."""
+  count: Int!
+}
+
+""""""
+enum CatalogUsageReason {
+  USED_BY_METADATA_PROPERTY
+  LINKED_BY_OTHER_CATALOG
+}
+
+"""Filter for workflow status. Exactly one field must be set."""
+input WorkflowStatusFilterInput {
+  """Match assets whose workflow status is ANY of these."""
+  isAny: [ID!]
+
+  """Match assets whose workflow status is NONE of these."""
+  isNotAny: [ID!]
+
+  """
+  Match assets with no workflow status assigned. Must be `true` when provided.
+  """
+  isEmpty: Boolean
+
+  """
+  Match assets with a workflow status assigned. Must be `true` when provided.
+  """
+  isNotEmpty: Boolean
+}
+
+"""
+Filter for one custom metadata property's value. Values are matched as plain strings; the expected format depends on the property's type: date properties use `YYYY-MM-DD`, select/multi-select properties use the option's text (not its id), and catalog properties use the display value.
+"""
+input CustomMetadataValueFilterInput {
+  """Id of the `CustomMetadataProperty` to filter on."""
+  propertyId: ID!
+
+  """Condition applied to the property's values."""
+  condition: CustomMetadataConditionInput!
+}
+
+"""
+Condition applied to a custom metadata property's values. Exactly one field must be set.
+"""
+input CustomMetadataConditionInput {
+  """
+  Match assets that have ALL of these values. Only meaningful for multi-select and multi-value catalog properties.
+  """
+  is: [String!]
+
+  """Match assets that have ANY of these values."""
+  isAny: [String!]
+
+  """
+  Match assets that do NOT have ALL of these values. Only meaningful for multi-select and multi-value catalog properties.
+  """
+  isNot: [String!]
+
+  """Match assets that have NONE of these values."""
+  isNotAny: [String!]
+
+  """
+  Match assets with no value set for this property. Must be `true` when provided.
+  """
+  isEmpty: Boolean
+
+  """
+  Match assets with a value set for this property. Must be `true` when provided.
+  """
+  isNotEmpty: Boolean
+}
+
+type Catalog implements Node {
+  """**BETA** `Catalog` id."""
+  id: ID!
+
+  """**BETA** `name` of the `Catalog`."""
+  name: String!
+
+  """**BETA** `DateTime` of the `Catalog` creation."""
+  createdAt: DateTime!
+
+  """**BETA** `DateTime` of the `Catalog` last update."""
+  updatedAt: DateTime
+
+  """**BETA** `rows` of the `Catalog`."""
+  rows(
+    """**BETA** Number of items to return per page (max 100)."""
+    limit: Int = 25
+
+    """**BETA** Page number to return."""
+    page: Int = 1
+  ): CatalogRowItems!
+
+  """**BETA** `columns` of the `Catalog`."""
+  columns(
+    """**BETA** Number of items to return per page (max 100)."""
+    limit: Int = 100
+
+    """**BETA** Page number to return."""
+    page: Int = 1
+  ): CatalogColumnItems!
+
+  """
+  **BETA** A rectangular page of catalog data whose cells correspond to the selected columns. One catalog window can contain at most 2,500 cell coordinates.
+  """
+  window(
+    """
+    **BETA** Pagination for the window columns. An omitted or null limit defaults to 10.
+    """
+    columns: CatalogWindowPaginationInput! = { limit: 10, page: 1 }
+
+    """
+    **BETA** Pagination for the window rows. An omitted or null limit defaults to 25.
+    """
+    rows: CatalogWindowPaginationInput! = { limit: 25, page: 1 }
+  ): CatalogWindow!
+
+  """**BETA** Primary `CatalogColumn` of the `Catalog`."""
+  primaryColumn: CatalogColumn
+
+  """**BETA** Fetch cells for a row identified by its primary key value."""
+  cellsByPrimaryKey(
+    """**BETA** The value to match in the catalog's primary column."""
+    primaryKey: String!
+
+    """
+    **BETA** The column IDs to fetch cell values for. The columns must belong to the catalog.
+    """
+    columnIds: [ID!]!
+  ): [CatalogCell!]!
+
+  """
+  **BETA** Get a paginated page of filter values (with counts) for one column. Returns null when the column does not belong to the catalog. Items are ordered by `count DESC, value ASC`.
+  """
+  columnFilter(
+    """**BETA** Column ID to get filter values for."""
+    columnId: ID!
+
+    """
+    **BETA** Active column filters for faceted count computation. Filters whose `columnId` matches the argument `columnId` are self-excluded.
+    """
+    activeFilters: [ColumnFilterInput!]
+
+    """
+    **BETA** Search text for faceted filtering (split by whitespace, case-insensitive, matches across all cells of a row).
+    """
+    query: String
+
+    """
+    **BETA** Case-insensitive substring filter applied to the value strings of the returned items only.
+    """
+    columnQuery: String
+
+    """**BETA** Number of items to return per page (max 100)."""
+    limit: Int = 100
+
+    """**BETA** Page number to return (1-indexed)."""
+    page: Int = 1
+  ): ColumnFilter
+
+  """
+  **BETA** Why this `Catalog` is currently in use, as reason codes. Empty when it is not in use.
+  """
+  usageReasons: [CatalogUsageReason!]!
+
+  """
+  **BETA** Search catalog cells by query and column filters. Query is split by whitespace; each part must match (case-insensitive) in at least one cell per row. Column filters match entire cell values; multiple values for the same column are OR'd, cross-column is AND'd. Results limited to 100 rows.
+  """
+  searchCells(
+    """**BETA** Search text (will be split by whitespace, case-insensitive)."""
+    query: String!
+
+    """
+    **BETA** Column filters. Same-column values are OR'd, cross-column is AND'd.
+    """
+    columnFilters: [ColumnFilterInput!]
+
+    """**BETA** Column IDs to return cell values for."""
+    columnIds: [ID!]!
+  ): [CatalogCell!]!
+}
+
+type CatalogLinkCell implements CatalogCell {
+  """**BETA** `CatalogColumn` of the `CatalogCell`."""
+  column: CatalogColumn!
+
+  """**BETA** `CatalogRow` of the `CatalogCell`."""
+  row: CatalogRow!
+
+  """
+  **BETA** Linked target rows and their display values for this link cell.
+  """
+  links: [CatalogLinkCellValue!]!
+}
+
+type CatalogLinkCellValue {
+  """**BETA** Linked target `CatalogRow`."""
+  row: CatalogRow!
+
+  """**BETA** Display value of the linked target row."""
+  displayValue: String!
+}
+
+type CatalogLinkColumn implements CatalogColumn {
+  """**BETA** `CatalogColumn` ID."""
+  id: ID!
+
+  """**BETA** `name` of the `CatalogColumn`."""
+  name: String!
+
+  """**BETA** `position` of the `CatalogColumn` for ordering."""
+  position: Int!
+
+  """**BETA** The target `Catalog` this column links to."""
+  targetCatalog: Catalog
+}
+
+type CatalogRow implements Node {
+  """**BETA** `CatalogRow` ID."""
+  id: ID!
+
+  """**BETA** `position` of the `CatalogRow` for ordering."""
+  position: Int!
+
+  """**BETA** `Catalog` of the `CatalogRow`."""
+  catalog: Catalog!
+
+  """**BETA** `cells` of the `CatalogRow`."""
+  cells(
+    """**BETA** Column IDs to fetch cells for."""
+    columnIds: [ID!]!
+  ): [CatalogCell!]!
+}
+
+type CatalogTextCell implements CatalogCell {
+  """**BETA** `CatalogColumn` of the `CatalogCell`."""
+  column: CatalogColumn!
+
+  """**BETA** `CatalogRow` of the `CatalogCell`."""
+  row: CatalogRow!
+
+  """**BETA** `value` of the `CatalogCell`."""
+  value: String
+}
+
+type CatalogTextColumn implements CatalogColumn {
+  """**BETA** `CatalogColumn` ID."""
+  id: ID!
+
+  """**BETA** `name` of the `CatalogColumn`."""
+  name: String!
+
+  """**BETA** `position` of the `CatalogColumn` for ordering."""
+  position: Int!
+}
+
+type CustomMetadataCatalogLinkCell implements CustomMetadataCatalogCell {
+  """
+  **BETA** Catalog column of this link cell readable through custom metadata visibility.
+  """
+  column: CustomMetadataCatalogColumn!
+
+  """
+  **BETA** Linked row details readable through custom metadata visibility.
+  """
+  links: [CustomMetadataCatalogLinkValue!]!
+
+  """
+  **BETA** Link display values readable through custom metadata visibility.
+  """
+  values: [String!]!
+}
+
+""""""
+interface CustomMetadataCatalogCell {
+  """
+  **BETA** Catalog column of this cell readable through custom metadata visibility.
+  """
+  column: CustomMetadataCatalogColumn!
+}
+
+""""""
+interface CustomMetadataCatalogColumn {
+  """
+  **BETA** Opaque catalog column ID readable through custom metadata visibility.
+  """
+  id: ID!
+
+  """
+  **BETA** Catalog column name readable through custom metadata visibility.
+  """
+  name: String!
+}
+
+type CustomMetadataCatalogLinkValue {
+  """
+  **BETA** Cells readable for the linked row through custom metadata visibility.
+  """
+  cells: [CustomMetadataCatalogCell!]!
+
+  """
+  **BETA** Columns readable for the linked row through custom metadata visibility.
+  """
+  columns: [CustomMetadataCatalogColumn!]!
+
+  """
+  **BETA** Display value of the linked row readable through custom metadata visibility.
+  """
+  displayValue: String!
+}
+
+type CustomMetadataCatalogLinkColumn implements CustomMetadataCatalogColumn {
+  """
+  **BETA** Opaque catalog link column ID readable through custom metadata visibility.
+  """
+  id: ID!
+
+  """
+  **BETA** Catalog link column name readable through custom metadata visibility.
+  """
+  name: String!
+}
+
+type CustomMetadataCatalogTextCell implements CustomMetadataCatalogCell {
+  """
+  **BETA** Catalog column of this text cell readable through custom metadata visibility.
+  """
+  column: CustomMetadataCatalogColumn!
+
+  """**BETA** Text cell value readable through custom metadata visibility."""
+  value: String
+}
+
+type CustomMetadataCatalogTextColumn implements CustomMetadataCatalogColumn {
+  """
+  **BETA** Opaque catalog text column ID readable through custom metadata visibility.
+  """
+  id: ID!
+
+  """
+  **BETA** Catalog text column name readable through custom metadata visibility.
+  """
+  name: String!
+}
+
+type CustomMetadataCatalogValue implements CustomMetadata {
+  """**BETA** `CustomMetadataProperty` details."""
+  property: CustomMetadataProperty!
+
+  """
+  **BETA** Catalog display column readable through custom metadata visibility.
+  """
+  displayColumn: CustomMetadataCatalogColumn!
+
+  """
+  **BETA** Catalog columns readable for displaying this custom metadata catalog value.
+  """
+  columns: [CustomMetadataCatalogColumn!]!
+
+  """
+  **BETA** Selected catalog entries readable for displaying this custom metadata catalog value.
+  """
+  entries: [CustomMetadataCatalogEntry!]!
+}
+
+type CustomMetadataCatalogEntry {
+  """**BETA** Cells readable for displaying this selected catalog entry."""
+  cells: [CustomMetadataCatalogCell!]!
+
+  """**BETA** Opaque catalog selection entry ID."""
+  id: ID!
+}
+
+type CustomMetadataPropertyCatalogValueType implements CustomMetadataPropertyValueType {
+  """**BETA** `CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+"""
+`CustomMetadataPropertyValueTypeInterface` for `CustomMetadataPropertyValueType` returnable types.
+"""
+interface CustomMetadataPropertyValueType {
+  """The `CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+type CustomMetadataPropertyDateValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+type CustomMetadataPropertyLongTextValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+type CustomMetadataPropertyMultiSelectValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+
+  """`MultiSelectPropertyValueType` options."""
+  options: [CustomMetadataPropertyOption]!
+}
+
+type CustomMetadataPropertyNumberValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+type CustomMetadataPropertySelectValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+
+  """`SelectPropertyValueType` options."""
+  options: [CustomMetadataPropertyOption]!
+}
+
+type CustomMetadataPropertyTextValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+type CustomMetadataPropertyTypeCatalog implements CustomMetadataPropertyType {
+  """The `CustomMetadataProperty` type name."""
+  name: String!
+
+  """**BETA** The `Catalog` linked to this `CustomMetadataProperty`."""
+  catalog: Catalog!
+
+  """**BETA** The `CatalogColumn` used for display values."""
+  displayColumn: CatalogColumn!
+
+  """
+  **BETA** Whether multiple catalog rows can be selected for this property.
+  """
+  allowMultiSelect: Boolean!
+
+  """**BETA** Link column IDs the user may traverse via link expansion."""
+  allowedLinkedColumnIds: [ID!]!
+}
+
+type CustomMetadataPropertyUrlValueType implements CustomMetadataPropertyValueType {
+  """`CustomMetadataPropertyValueType` property type."""
+  propertyType: String!
+}
+
+type CatalogSelection {
+  """**BETA** `CatalogSelection` id."""
+  id: ID!
+
+  """**BETA** Root-level entries of the selection tree."""
+  entries: [CatalogSelectionEntry!]!
+}
+
+type CatalogSelectionEntry {
+  """**BETA** `CatalogSelectionEntry` id."""
+  id: ID!
+
+  """
+  **BETA** Opaque id of the link column that led to this entry, `null` for root entries.
+  """
+  sourceColumnId: ID
+
+  """**BETA** The selected `CatalogRow`."""
+  row: CatalogRow!
+
+  """**BETA** Linked-row children of this entry."""
+  children: [CatalogSelectionEntry!]!
+}
+
+input CatalogPropertyTypeOptionsInput {
+  """**BETA** The `Catalog` to link to."""
+  catalogId: ID!
+
+  """**BETA** The `CatalogColumn` to use for display values."""
+  catalogDisplayColumnId: ID!
+
+  """
+  **BETA** Whether multiple catalog rows can be selected for this property.
+  """
+  allowMultiSelect: Boolean! = false
+
+  """**BETA** Link column IDs the user may traverse via link expansion."""
+  allowedLinkedColumnIds: [ID!]! = []
+}
+
+input CreateCatalogInput {
+  """**BETA** The name of the new `Catalog`."""
+  name: String!
+}
+
+type CreateCatalog {
+  """**BETA** The `Catalog` that was just created."""
+  catalog: Catalog!
+}
+
+input UpdateCatalogInput {
+  """**BETA** The `id` of the `Catalog` to update."""
+  id: ID!
+
+  """**BETA** The data to update on the `Catalog`."""
+  data: UpdateCatalogDataInput!
+}
+
+input UpdateCatalogDataInput {
+  """**BETA** The new name for the `Catalog`."""
+  name: String!
+}
+
+type UpdateCatalog {
+  """**BETA** The updated `Catalog`."""
+  catalog: Catalog!
+}
+
+input RemoveCatalogInput {
+  """**BETA** The ID of the `Catalog` to be removed."""
+  id: ID!
+}
+
+type RemoveCatalog {
+  """**BETA** The ID of the `Catalog` that was just removed."""
+  id: ID!
+}
+
+input CreateCatalogColumnInput {
+  """**BETA** Create a text `CatalogColumn`."""
+  text: CreateCatalogTextColumnInput
+
+  """**BETA** Create a link `CatalogColumn`."""
+  link: CreateCatalogLinkColumnInput
+}
+
+input CreateCatalogTextColumnInput {
+  """**BETA** The `id` of the `Catalog` in which to create the text column."""
+  catalogId: ID!
+
+  """**BETA** The name of the new `CatalogTextColumn`."""
+  name: String!
+
+  """**BETA** The position of the new `CatalogTextColumn`."""
+  position: Int!
+}
+
+input CreateCatalogLinkColumnInput {
+  """**BETA** The `id` of the `Catalog` in which to create the link column."""
+  catalogId: ID!
+
+  """**BETA** The name of the new `CatalogLinkColumn`."""
+  name: String!
+
+  """**BETA** The position of the new `CatalogLinkColumn`."""
+  position: Int!
+
+  """
+  **BETA** The `id` of the target `Catalog` linked by the new `CatalogLinkColumn`.
+  """
+  targetCatalogId: ID!
+}
+
+type CreateCatalogColumn {
+  """**BETA** The `CatalogColumn` that was just created."""
+  column: CatalogColumn!
+}
+
+input UpdateCatalogColumnInput {
+  """**BETA** The `id` of the `CatalogColumn` to update."""
+  id: ID!
+
+  """**BETA** The data to update on the `CatalogColumn`."""
+  data: UpdateCatalogColumnDataInput!
+}
+
+input UpdateCatalogColumnDataInput {
+  """**BETA** The new name for the `CatalogColumn`."""
+  name: String!
+}
+
+type UpdateCatalogColumn {
+  """**BETA** The `CatalogColumn` that was just updated."""
+  column: CatalogColumn!
+}
+
+input RemoveCatalogColumnsInput {
+  """**BETA** The `id`s of the `CatalogColumn`s to remove."""
+  ids: [ID!]!
+
+  """
+  **BETA** How to treat columns that are in use. `SAFE` (default) deletes nothing and returns the in-use columns with their reasons; `FORCE` deletes regardless and clears incoming references.
+  """
+  mode: CatalogColumnRemovalMode = SAFE
+}
+
+""""""
+enum CatalogColumnRemovalMode {
+  SAFE
+  FORCE
+}
+
+union RemoveCatalogColumns = RemoveCatalogColumnsSuccessful | RemoveCatalogColumnsBlocked
+
+type RemoveCatalogColumnsSuccessful {
+  """**BETA** The IDs of the `CatalogColumn`s that were just removed."""
+  ids: [ID!]!
+}
+
+type RemoveCatalogColumnsBlocked {
+  """
+  **BETA** The in-use `CatalogColumn`s that prevented the removal, with the reasons each is in use.
+  """
+  blockedColumns: [CatalogColumnUsage!]!
+}
+
+type CatalogColumnUsage {
+  """**BETA** The in-use `CatalogColumn`."""
+  column: CatalogColumn!
+
+  """**BETA** Why this `CatalogColumn` is currently in use."""
+  reasons: [CatalogColumnUsageReason!]!
+}
+
+""""""
+enum CatalogColumnUsageReason {
+  USED_AS_METADATA_DISPLAY_COLUMN
+  USED_BY_EXTERNAL_REFERENCE
+}
+
+input MoveCatalogColumnInput {
+  """**BETA** The `id` of the `CatalogColumn` to move."""
+  id: ID!
+
+  """**BETA** The new position for the `CatalogColumn`."""
+  position: Int!
+}
+
+type MoveCatalogColumn {
+  """**BETA** The `CatalogColumn` that was just moved."""
+  column: CatalogColumn!
+}
+
+input DuplicateCatalogColumnInput {
+  """**BETA** The `id` of the `CatalogColumn` to duplicate."""
+  id: ID!
+
+  """**BETA** The new name for the duplicated `CatalogColumn`."""
+  name: String!
+}
+
+type DuplicateCatalogColumn {
+  """**BETA** The `CatalogColumn` that was just duplicated."""
+  column: CatalogColumn!
+}
+
+input ClearCatalogColumnInput {
+  """**BETA** The `id` of the `CatalogColumn` to clear."""
+  id: ID!
+}
+
+type ClearCatalogColumn {
+  """**BETA** The `CatalogColumn` that was just cleared."""
+  column: CatalogColumn!
+}
+
+input SetCatalogColumnAsPrimaryInput {
+  """**BETA** The `id` of the `CatalogColumn` to set as primary key."""
+  id: ID!
+}
+
+type SetCatalogColumnAsPrimary {
+  """**BETA** The `CatalogColumn` that was just set as primary key."""
+  column: CatalogColumn!
+}
+
+input CreateCatalogRowInput {
+  """**BETA** The `id` of the `Catalog` in which to create the row."""
+  catalogId: ID!
+
+  """**BETA** The position of the new `CatalogRow`."""
+  position: Int!
+
+  """
+  **BETA** Cells to set on the new `CatalogRow`; each entry is either a `text` or a `link` cell. When the `Catalog` has a primary column, exactly one `text` cell must target it with a non-empty value.
+  """
+  cells: [CreateCatalogRowCellInput!]! = []
+}
+
+input CreateCatalogRowCellInput {
+  """**BETA** A text cell. Mutually exclusive with `link`."""
+  text: CreateCatalogRowTextCellInput
+
+  """**BETA** A link cell. Mutually exclusive with `text`."""
+  link: CreateCatalogRowLinkCellInput
+}
+
+input CreateCatalogRowTextCellInput {
+  """**BETA** The `id` of the text column where the cell is located."""
+  columnId: ID!
+
+  """
+  **BETA** The value to set in the text cell. Null or empty string leaves the cell empty.
+  """
+  value: String
+}
+
+input CreateCatalogRowLinkCellInput {
+  """**BETA** The `id` of the link column where the cell is located."""
+  columnId: ID!
+
+  """**BETA** Row ids of the target rows the cell points at."""
+  linkedRowIds: [ID!]!
+}
+
+type CreateCatalogRow {
+  """**BETA** The `CatalogRow` that was just created."""
+  row: CatalogRow!
+}
+
+input RemoveCatalogRowsInput {
+  """**BETA** The `id`s of the `CatalogRow`s to remove."""
+  ids: [ID!]!
+
+  """
+  **BETA** How to treat rows that are in use. `SAFE` (default) deletes nothing and returns the in-use rows with their reasons; `FORCE` deletes regardless and clears incoming references.
+  """
+  mode: CatalogRowRemovalMode = SAFE
+}
+
+""""""
+enum CatalogRowRemovalMode {
+  SAFE
+  FORCE
+}
+
+union RemoveCatalogRows = RemoveCatalogRowsSuccessful | RemoveCatalogRowsBlocked
+
+type RemoveCatalogRowsSuccessful {
+  """**BETA** The IDs of the `CatalogRow`s that were just removed."""
+  ids: [ID!]!
+}
+
+type RemoveCatalogRowsBlocked {
+  """
+  **BETA** The in-use `CatalogRow`s that prevented the removal, with the reasons each is in use.
+  """
+  blockedRows: [CatalogRowUsage!]!
+}
+
+type CatalogRowUsage {
+  """**BETA** The in-use `CatalogRow`."""
+  row: CatalogRow!
+
+  """**BETA** Why this `CatalogRow` is currently in use."""
+  reasons: [CatalogRowUsageReason!]!
+}
+
+""""""
+enum CatalogRowUsageReason {
+  LINKED_BY_OTHER_CATALOG
+  USED_BY_EXTERNAL_REFERENCE
+}
+
+input MoveCatalogRowInput {
+  """**BETA** The `id` of the `CatalogRow` to move."""
+  id: ID!
+
+  """**BETA** The new position for the `CatalogRow`."""
+  position: Int!
+}
+
+type MoveCatalogRow {
+  """**BETA** The `CatalogRow` that was just moved."""
+  row: CatalogRow!
+}
+
+input DuplicateCatalogRowInput {
+  """**BETA** The `id` of the `CatalogRow` to duplicate."""
+  id: ID!
+
+  """
+  **BETA** The primary-key value for the duplicated row. Required (non-empty) when the source row's catalog has a primary column; must be null otherwise.
+  """
+  primaryKeyValue: String
+}
+
+type DuplicateCatalogRow {
+  """**BETA** The `CatalogRow` that was just duplicated."""
+  row: CatalogRow!
+}
+
+input ClearCatalogRowInput {
+  """**BETA** The `id` of the `CatalogRow` to clear."""
+  id: ID!
+}
+
+type ClearCatalogRow {
+  """**BETA** The `CatalogRow` that was just cleared."""
+  row: CatalogRow!
+}
+
+input SetCatalogCellsInput {
+  """**BETA** Cells to set; each entry is either a `text` or a `link` cell."""
+  cells: [SetCatalogCellInput!]!
+}
+
+input SetCatalogCellInput {
+  """**BETA** Set a text cell."""
+  text: SetCatalogTextCellInput
+
+  """**BETA** Set a link cell."""
+  link: SetCatalogLinkCellInput
+}
+
+input SetCatalogTextCellInput {
+  """**BETA** The `id` of the row where the text cell is located."""
+  rowId: ID!
+
+  """**BETA** The `id` of the text column where the cell is located."""
+  columnId: ID!
+
+  """
+  **BETA** The value to set in the text cell. Null or empty string clears the cell.
+  """
+  value: String
+}
+
+input SetCatalogLinkCellInput {
+  """**BETA** The `id` of the row where the link cell is located."""
+  rowId: ID!
+
+  """**BETA** The `id` of the link column where the cell is located."""
+  columnId: ID!
+
+  """
+  **BETA** Row ids of the target rows the cell points at. Empty list clears the cell.
+  """
+  linkedRowIds: [ID!]!
+}
+
+type SetCatalogCells {
+  """**BETA** The `cells` that were just set in the `Catalog`."""
+  cells: [CatalogCell!]!
+}
+
+input IngestCatalogRowsInput {
+  """**BETA** The `id` of the `Catalog` to ingest rows into."""
+  catalogId: ID!
+
+  """
+  **BETA** `CatalogColumn` IDs defining the order of values in each row. The columns must all be part of the `Catalog`.
+  """
+  columnIds: [ID!]!
+
+  """
+  **BETA** Row values positionally aligned with `columnIds`. Each cell is a list of strings: single-valued columns use a one-element list, multi-valued columns use N elements, and an empty list clears the cell.
+  """
+  rowValues: [[[String!]!]!]!
+}
+
+type IngestCatalogRows {
+  """**BETA** Number of new `CatalogRow` created."""
+  created: Int!
+
+  """**BETA** Number of existing `CatalogRow` updated."""
+  updated: Int!
+
+  """**BETA** Number of `CatalogRow` skipped (null primary key values)."""
+  skipped: Int!
+}
+
+input DispatchAutomationActionInput {
+  """**BETA** Automation execution id."""
+  executionId: String!
+
+  """**BETA** `Automation` id."""
+  automationId: Int!
+
+  """**BETA** Automation action id."""
+  actionId: String!
+
+  """**BETA** Automation workflow node name."""
+  nodeName: String!
+
+  """**BETA** Resolved automation action payload."""
+  action: JsonObject!
+}
+
+"""
+Acknowledges a dispatched automation action. Its outcome is reported through the workflow lifecycle events either
+way; `status` tells whether that already happened.
+"""
+type DispatchAutomationAction {
+  """
+  **BETA** `PROCESSED` when the action's lifecycle event is already published, `QUEUED` when it follows once the queued action has been applied.
+  """
+  status: AutomationActionDispatchStatus!
+}
+
+"""Identifies the `WorkflowStatus` to assign to an `Asset`."""
+input WorkflowStatusAssignmentInput {
+  """`WorkflowStatus` Id."""
+  id: ID!
+}
+
+"""Sets one custom metadata property's value on an `Asset`."""
+input CustomMetadataEntryInput {
+  """`CustomMetadataProperty` id."""
+  propertyId: ID!
+
+  """
+  The value to store; the property's current value is replaced. `null` clears the value on this `Asset`. The field is required — omitting it rejects the request.
+  """
+  value: CustomMetadataValueInput
+}
+
+"""
+The value to store for one custom metadata property. Provide exactly one arm, matching the property's type.
+"""
+input CustomMetadataValueInput {
+  """Value for a `TEXT`, `LONGTEXT` or `URL` property."""
+  text: String
+
+  """Value for a `NUMBER` property."""
+  number: Float
+
+  """Value for a `DATE` property."""
+  date: DateTime
+
+  """
+  `CustomMetadataPropertyOption` ids for a `SELECT` or `MULTISELECT` property.
+  """
+  optionIds: [ID!]
+}

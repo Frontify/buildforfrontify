@@ -8,7 +8,6 @@ interface Node {
   id: ID!
 }
 
-
 """`AssetInterface` for `Asset` returnable types."""
 interface Asset {
   """`Asset` id."""
@@ -111,8 +110,32 @@ interface Asset {
 
   """**BETA** Background color of the `Asset` preview."""
   previewBackgroundColor: RgbaColor
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 """`UserInterface` for `User` returnable types."""
 interface User {
@@ -133,20 +156,16 @@ interface User {
   avatar: Url @deprecated(reason: "This field will be removed. Use `AccountUser.avatar` instead. | Date: 2025-07-01")
 }
 
-
 """The `Email` scalar type represents email addresses."""
 scalar Email
 
-
 """The `Url` scalar type represents absolute urls."""
 scalar Url
-
 
 """
 The `DateTime` scalar type represents date and time data in RFC 3339 format with millisecond precision (i.e., 2001-12-31T22:10:30.000+00:00).
 """
 scalar DateTime
-
 
 """`AttachmentInterface` for `Attachment` returnable types."""
 interface Attachment {
@@ -184,10 +203,8 @@ interface Attachment {
   externalId: ID
 }
 
-
 """The `BigInt` scalar type represents big integers (2^63 signed)."""
 scalar BigInt
-
 
 type Tag {
   """`Tag` value."""
@@ -199,13 +216,11 @@ type Tag {
   source: TagSource
 }
 
-
 """The source of a `tag`."""
 enum TagSource {
   MANUAL
   AUTO
 }
-
 
 type Copyright {
   """Asset `copyright` status."""
@@ -215,14 +230,12 @@ type Copyright {
   notice: String
 }
 
-
 """List of possible asset `copyright` status."""
 enum CopyrightStatus {
   UNKNOWN
   COPYRIGHTED
   PUBLIC
 }
-
 
 type DateTimeRange {
   """Start `DateTime` of the range."""
@@ -231,7 +244,6 @@ type DateTimeRange {
   """End `DateTime` of the range."""
   to: DateTime
 }
-
 
 type License {
   """`License` id."""
@@ -250,7 +262,6 @@ type License {
   requireConsensus: Boolean!
 }
 
-
 type Target {
   """The unique identifier of the `Target`."""
   id: ID!
@@ -259,14 +270,12 @@ type Target {
   name: String
 }
 
-
 """List of possible `Asset` status types."""
 enum AssetStatusType {
   FINISHED
   PROCESSING
   PROCESSING_FAILED
 }
-
 
 type AssetItems {
   """Total amount of results."""
@@ -284,7 +293,6 @@ type AssetItems {
   """`Asset` items list."""
   items: [Asset]
 }
-
 
 """`CommentInterface` for `Comment` returnable types."""
 interface Comment {
@@ -307,7 +315,6 @@ interface Comment {
   content: String!
 }
 
-
 """
 Interface representing a visual `Marking` (highlighted point/area) of an `Asset`.
 """
@@ -323,7 +330,6 @@ interface Marking {
   dimensions: MarkingDimensions
 }
 
-
 type MarkingPosition {
   """
   The horizontal position of the `Marking` in percentage, in relation to the `Asset` total width.
@@ -336,12 +342,10 @@ type MarkingPosition {
   y: Percent!
 }
 
-
 """
 Represents an integer or a float value between `0` and `1`, corresponding to percentage values between 0% and 100% (both inclusive).
 """
 scalar Percent
-
 
 type MarkingDimensions {
   """
@@ -355,12 +359,10 @@ type MarkingDimensions {
   height: Percent
 }
 
-
 """
 The `Any` scalar type represents any of the supported types: Null, Integer, Float, String, Boolean, Enum, Object and List.
 """
 scalar Any
-
 
 type RgbaColor {
   """Red color channel value."""
@@ -376,12 +378,10 @@ type RgbaColor {
   alpha: Percent!
 }
 
-
 """
 The `RgbColorChannel` scalar represents an integer value between 0 and 255 (both inclusive).
 """
 scalar RgbColorChannel
-
 
 type Breadcrumb {
   """`Breadcrumb` folder id."""
@@ -390,7 +390,6 @@ type Breadcrumb {
   """`Breadcrumb` folder name."""
   name: String
 }
-
 
 """
 Condition types. A Condition defines which field value of the `Asset` is compared against a given value.
@@ -409,7 +408,6 @@ enum ConditionType {
   FILE_EXTENSION
 }
 
-
 """
 Condition operators. Defines how the value of the `Asset` is compared to the provided value.
 Supported Operators:
@@ -421,18 +419,15 @@ enum ConditionOperator {
   IS_NOT
 }
 
-
 """
 The `JsonObject` scalar type represents a JSON object according to the ECMA-404 JSON data interchange syntax. Note, that it is not encoded as a string.
 """
 scalar JsonObject
 
-
 input TagInput {
   """Tag name."""
   value: String!
 }
-
 
 input CreateCopyrightInput {
   """`Asset` copyright status."""
@@ -442,7 +437,6 @@ input CreateCopyrightInput {
   notice: String = ""
 }
 
-
 input DateTimeRangeInput {
   """Start `DateTime` of the range."""
   from: DateTime
@@ -450,7 +444,6 @@ input DateTimeRangeInput {
   """End `DateTime` of the range."""
   to: DateTime
 }
-
 
 input RgbaColorInput {
   """Red color channel value."""
@@ -465,4 +458,3 @@ input RgbaColorInput {
   """Alpha channel value."""
   alpha: Percent!
 }
-

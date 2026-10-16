@@ -1,6 +1,6 @@
-# Frontify GraphQL — Platform (Apps & Webhooks)
-# ServiceApp, MarketplaceApp, ProjectWebhook, SecurityScope,
-# and related input/mutation types.
+# Frontify GraphQL — Platform (Apps, Webhooks)
+# ServiceApp, ProjectWebhook, SecurityScope, AssetWebhookEvent,
+# marketplace publishing, and related input/mutation types.
 
 """`WebhookInterface` for `Webhook` returnable types."""
 interface Webhook {
@@ -23,9 +23,8 @@ interface Webhook {
   secret: String!
 }
 
-
 type ServiceAppItems {
-  """**BETA** `ServiceApp` items."""
+  """`ServiceApp` items."""
   items: [ServiceApp]!
 
   """Total amount of results."""
@@ -41,30 +40,27 @@ type ServiceAppItems {
   hasNextPage: Boolean!
 }
 
-
 type ServiceApp {
-  """**BETA** The ID of the ServiceApp"""
+  """The ID of the ServiceApp"""
   id: ID!
 
-  """**BETA** The description text of the ServiceApp"""
+  """The description text of the ServiceApp"""
   description: String
 
-  """**BETA** Describes if the ServiceApp is enabled or disabled"""
+  """Describes if the ServiceApp is enabled or disabled"""
   status: ServiceAppStatus!
 
-  """**BETA** The scopes that are accessible to the ServiceApp"""
+  """The scopes that are accessible to the ServiceApp"""
   scopes: [SecurityScope!]!
 
-  """**BETA** The title of the ServiceAPpp"""
+  """The title of the ServiceApp"""
   title: String!
 }
-
 
 enum ServiceAppStatus {
   ENABLED
   DISABLED
 }
-
 
 enum SecurityScope {
   BASIC_READ
@@ -73,7 +69,6 @@ enum SecurityScope {
   WEBHOOK_READ
   WEBHOOK_WRITE
 }
-
 
 type WebhookItems {
   """Total amount of results."""
@@ -92,7 +87,6 @@ type WebhookItems {
   items: [Webhook]
 }
 
-
 input PublishMarketplaceAppInput {
   """The marketplace app ID to publish."""
   appId: String!
@@ -104,7 +98,6 @@ input PublishMarketplaceAppInput {
   availability: MarketplaceAppAvailability = null
 }
 
-
 """Whether the marketplace app is available publicly or privately."""
 enum MarketplaceAppAvailability {
   """Private Availability"""
@@ -114,48 +107,42 @@ enum MarketplaceAppAvailability {
   COMMUNITY
 }
 
-
 type PublishMarketplaceApp {
   """The ID of the published marketplace app."""
   id: String!
 }
 
-
 input CreateServiceAppInput {
-  """**BETA** The title for the ServiceApp"""
+  """The title for the ServiceApp"""
   title: String!
 
-  """**BETA** The scoped allowed for the ServiceApp"""
+  """The scopes allowed for the ServiceApp"""
   scopes: [SecurityScope!]!
 
-  """**BETA** The description for the ServiceApp"""
+  """The description for the ServiceApp"""
   description: String = null
 }
 
-
 type CreateServiceApp {
-  """**BETA** The created ServiceApp"""
+  """The created ServiceApp"""
   serviceApp: ServiceApp!
 
-  """**BETA** The secret tied to the ServiceApp"""
+  """The secret tied to the ServiceApp"""
   secret: String!
 
-  """**BETA** Disclaimer message"""
+  """Disclaimer message"""
   message: String!
 }
 
-
 input DeleteServiceAppInput {
-  """**BETA** The ID of the ServiceApp to be removed"""
+  """The ID of the ServiceApp to be removed"""
   serviceAppId: ID!
 }
 
-
 type DeleteServiceApp {
-  """**BETA** The ID of the removed ServiceApp"""
+  """The ID of the removed ServiceApp"""
   id: ID!
 }
-
 
 input InstallProjectWebhookInput {
   """Destination `Project` Id."""
@@ -168,44 +155,39 @@ input InstallProjectWebhookInput {
   name: String!
 }
 
-
 type InstallProjectWebhook {
   """`Webhook` details."""
   webhook: Webhook!
 }
 
-
 input ConfigureProjectWebhookInput {
-  """**BETA** Project ID."""
+  """Project ID."""
   projectId: ID!
 
-  """**BETA** Webhook notification URL."""
+  """Webhook notification URL."""
   notificationUrl: String!
 
-  """**BETA** Webhook name."""
+  """Webhook name."""
   name: String!
 
-  """**BETA** Webhook payload version (1 or 2)."""
+  """Webhook payload version (1 or 2)."""
   version: Int!
 
   """
-  **BETA** Subscribe to specific webhook events. If not defined the webhook will subscribe to all events
+  Subscribe to specific webhook events. If not defined the webhook will subscribe to all events
   """
   subscribeTo: [AssetWebhookEvent!] = null
 }
 
-
 type ConfigureProjectWebhook {
-  """**BETA** The configured project webhook."""
+  """The configured project webhook."""
   webhook: ProjectWebhook!
 }
-
 
 input UninstallWebhookInput {
   """Id of the `Webhook` to be uninstalled."""
   id: ID!
 }
-
 
 type UninstallWebhook {
   """
@@ -216,4 +198,3 @@ type UninstallWebhook {
   """The Id of the deleted `Webhook`."""
   id: ID!
 }
-

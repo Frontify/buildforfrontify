@@ -1,6 +1,6 @@
 # Frontify GraphQL — Assets
-# Concrete asset types (Image, Video, Audio, Document, File, EmbeddedContent),
-# comments, markings, locations, permissions, and asset mutation types.
+# Concrete asset types (Image, Video, Audio, Document, File, EmbeddedContent), searchAssets filters,
+# bulk updateAssets inputs, comments, markings, locations, permissions, variants, revisions, and asset mutation inputs.
 
 type Audio implements Node & Asset {
   """`Asset` id."""
@@ -30,7 +30,7 @@ type Audio implements Node & Asset {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean!
 
@@ -137,26 +137,43 @@ type Audio implements Node & Asset {
   ): Url
 
   """Preview `Url` of converted `Audio` file in mp3 format."""
-  previewUrl(
-    """`Audio` preview width value in pixels."""
-    width: Int
-
-    """`Audio` preview height value in pixels."""
-    height: Int
-  ): Url!
+  previewUrl: Url!
 
   """
   Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
   """
   thumbnailUrl: Url
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 input AssetCommentQueryInput {
   """Filter `AssetComment` by status."""
   status: AssetCommentStatusFilter! = ALL
 }
-
 
 """Defines how the `AssetComment` list should be filtered."""
 enum AssetCommentStatusFilter {
@@ -164,7 +181,6 @@ enum AssetCommentStatusFilter {
   RESOLVED
   ALL
 }
-
 
 type AssetCommentItems {
   """Total amount of results."""
@@ -183,7 +199,6 @@ type AssetCommentItems {
   items: [AssetComment]
 }
 
-
 type AssetCommentReplyItems {
   """Total amount of results."""
   total: Int!
@@ -201,7 +216,6 @@ type AssetCommentReplyItems {
   items: [AssetCommentReply]
 }
 
-
 type AssetCommentUserPermissions {
   """Check if the current user can edit this `AssetComment`."""
   canEdit: Boolean!
@@ -212,7 +226,6 @@ type AssetCommentUserPermissions {
   """Check if the current user can reply to this `AssetComment`."""
   canReply: Boolean!
 }
-
 
 type AssetUserPermissions {
   """
@@ -236,7 +249,6 @@ type AssetUserPermissions {
   canComment: Boolean!
 }
 
-
 type AssetLocation {
   """`Brand` location of the `Asset`."""
   brand: AssetLocationBrand
@@ -251,7 +263,6 @@ type AssetLocation {
   folder: AssetLocationFolder
 }
 
-
 type AssetLocationBrand {
   """`Brand` Id."""
   id: ID!
@@ -259,7 +270,6 @@ type AssetLocationBrand {
   """`Brand` name."""
   name: String!
 }
-
 
 type AssetLocationLibrary {
   """`Library` Id."""
@@ -269,7 +279,6 @@ type AssetLocationLibrary {
   name: String
 }
 
-
 type AssetLocationWorkspaceProject {
   """`WorkspaceProject` Id."""
   id: ID!
@@ -277,7 +286,6 @@ type AssetLocationWorkspaceProject {
   """`WorkspaceProject` name."""
   name: String
 }
-
 
 type AssetLocationFolder {
   """`Folder` Id."""
@@ -291,7 +299,6 @@ type AssetLocationFolder {
   """
   breadcrumbs: [Breadcrumb!]!
 }
-
 
 type Document implements Node & Asset {
   """`Asset` id."""
@@ -321,7 +328,7 @@ type Document implements Node & Asset {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean!
 
@@ -457,8 +464,32 @@ type Document implements Node & Asset {
 
   """`Document` total number of pages."""
   pageCount: Int
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 type Image implements Node & Asset {
   """`Asset` id."""
@@ -488,7 +519,7 @@ type Image implements Node & Asset {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean!
 
@@ -618,8 +649,32 @@ type Image implements Node & Asset {
 
   """`Image` height in pixels."""
   height: Int!
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 type Video implements Node & Asset {
   """`Asset` id."""
@@ -649,7 +704,7 @@ type Video implements Node & Asset {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean!
 
@@ -780,8 +835,32 @@ type Video implements Node & Asset {
 
   """`Video` bitrate in bits per second."""
   bitrate: Int!
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 type File implements Node & Asset {
   """`Asset` id."""
@@ -811,7 +890,7 @@ type File implements Node & Asset {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean!
 
@@ -924,8 +1003,32 @@ type File implements Node & Asset {
     """
     permanent: Boolean
   ): Url
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 type EmbeddedContent implements Node & Asset {
   """`Asset` id."""
@@ -955,7 +1058,7 @@ type EmbeddedContent implements Node & Asset {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean!
 
@@ -1043,8 +1146,32 @@ type EmbeddedContent implements Node & Asset {
   Provides a `Url` for the custom user defined thumbnail or a system generated one when possible.
   """
   thumbnailUrl: Url
-}
 
+  """Paginated list of `AssetRevision` items for `Asset`, newest first."""
+  revisions(
+    """How many `AssetRevision` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetRevisionItems!
+
+  """
+  `AssetVariant` items of the asset. Only available for assets in icon and logo libraries.
+  """
+  variants(
+    """How many `AssetVariant` items to show per query. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """Current page number."""
+    page: Int = 1
+  ): AssetVariantItems
+
+  """
+  **BETA** AI provenance read from the asset's current file, or `null` if none has been extracted yet.
+  """
+  provenance: AssetProvenance
+}
 
 type AssetAttachment implements Node & Attachment {
   """`Attachment` Id."""
@@ -1094,7 +1221,6 @@ type AssetAttachment implements Node & Attachment {
   ): Url
 }
 
-
 type AssetComment implements Node & Comment {
   """`AssetComment` id."""
   id: ID!
@@ -1138,7 +1264,6 @@ type AssetComment implements Node & Comment {
   currentUserPermissions: AssetCommentUserPermissions!
 }
 
-
 type AssetCommentReply implements Comment {
   """The id of the current `AssetCommentReply`."""
   id: ID!
@@ -1164,7 +1289,6 @@ type AssetCommentReply implements Comment {
   mentionedUsers: [User]!
 }
 
-
 input AddAssetLicenseInput {
   """`Asset` Id."""
   assetId: ID!
@@ -1173,7 +1297,6 @@ input AddAssetLicenseInput {
   licenseId: ID!
 }
 
-
 type AddAssetLicense {
   """`Asset` details."""
   asset: Asset
@@ -1181,7 +1304,6 @@ type AddAssetLicense {
   """`License` details."""
   license: License
 }
-
 
 input AddAssetMetadataFieldValueInput {
   """`Asset` Id."""
@@ -1193,7 +1315,6 @@ input AddAssetMetadataFieldValueInput {
   """Value to be assigned to `Asset` and `Metadata Field`."""
   value: String!
 }
-
 
 type AddAssetMetadataFieldValue {
   """`MetadataValue` Id."""
@@ -1218,7 +1339,6 @@ type AddAssetMetadataFieldValue {
   value: String!
 }
 
-
 input AddAssetPreviewImageInput {
   """`Asset` Id."""
   assetId: ID!
@@ -1227,21 +1347,18 @@ input AddAssetPreviewImageInput {
   fileId: ID!
 }
 
-
 type AddAssetPreviewImage {
   """The newly created `Asset` preview image processing job response."""
   job: AssetPreviewProcessingJob!
 }
-
 
 input AddAssetRelationsInput {
   """`Asset` Id."""
   assetId: ID!
 
   """Related `Asset` Id list."""
-  relatedAssetIds: [ID]!
+  relatedAssetIds: [ID!]!
 }
-
 
 type AddAssetRelations {
   """`Asset` details."""
@@ -1251,7 +1368,6 @@ type AddAssetRelations {
   relatedAssets: [Asset]
 }
 
-
 input AddAssetTagsInput {
   """`Asset` Id."""
   id: ID!
@@ -1260,12 +1376,10 @@ input AddAssetTagsInput {
   tags: [TagInput]
 }
 
-
 type AddAssetTags {
   """`Asset` details."""
   asset: Asset
 }
-
 
 input CreateAssetInput {
   """File Id. Signed Id returned in `uploadFile`."""
@@ -1280,7 +1394,7 @@ input CreateAssetInput {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean
 
@@ -1326,12 +1440,10 @@ input CreateAssetInput {
   previewBackgroundColor: RgbaColorInput
 }
 
-
 type CreateAsset {
   """The newly created `Asset` processing job response."""
   job: AssetProcessingJob!
 }
-
 
 input CreateAssetCommentInput {
   """Id of the `Asset` where you wish to create a new `AssetComment`."""
@@ -1346,12 +1458,10 @@ input CreateAssetCommentInput {
   marking: MarkingInput
 }
 
-
 type CreateAssetComment {
   """`AssetComment` details."""
   comment: AssetComment!
 }
-
 
 input CreateAttachmentInput {
   """Parent Id."""
@@ -1367,12 +1477,10 @@ input CreateAttachmentInput {
   externalId: ID
 }
 
-
 type CreateAttachment {
   """The newly created `Attachment` processing job response."""
   job: AttachmentProcessingJob!
 }
-
 
 input CreateAssetWorkflowTaskInput {
   """
@@ -1396,18 +1504,15 @@ input CreateAssetWorkflowTaskInput {
   statusEnterMessage: String
 }
 
-
 type CreateAssetWorkflowTask {
   """**BETA** The newly created `WorkflowTask`."""
   workflowTask: WorkflowTask
 }
 
-
 input DeleteAssetInput {
   """Id of the `Asset` to delete."""
   id: ID!
 }
-
 
 type DeleteAsset {
   """The Id of the deleted `Asset`."""
@@ -1419,12 +1524,10 @@ type DeleteAsset {
   asset: Asset! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
 }
 
-
 input DeleteAttachmentInput {
   """Id of the `Attachment` to delete."""
   id: ID!
 }
-
 
 type DeleteAttachment {
   """The Id of the deleted `Attachment`."""
@@ -1436,12 +1539,10 @@ type DeleteAttachment {
   attachment: Attachment! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
 }
 
-
 input DeleteCommentInput {
   """Id of the `AssetComment` to delete."""
   id: ID!
 }
-
 
 type DeleteComment {
   """The Id of the deleted `Comment`."""
@@ -1453,7 +1554,6 @@ type DeleteComment {
   comment: Comment! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
 }
 
-
 input EditCommentInput {
   """`AssetComment` Id you wish to edit."""
   id: ID!
@@ -1464,12 +1564,10 @@ input EditCommentInput {
   content: String!
 }
 
-
 type EditComment {
   """`Comment` details."""
   comment: Comment!
 }
-
 
 input MoveAssetsInput {
   """Ids of the `Asset` items to be moved."""
@@ -1481,12 +1579,10 @@ input MoveAssetsInput {
   destinationId: ID!
 }
 
-
 type MoveAssets {
   """List of moved `Asset` items."""
   assets: [Asset!]
 }
-
 
 input RemoveAssetLicenseInput {
   """`Asset` Id."""
@@ -1496,7 +1592,6 @@ input RemoveAssetLicenseInput {
   licenseId: ID!
 }
 
-
 type RemoveAssetLicense {
   """`Asset` details."""
   asset: Asset
@@ -1505,18 +1600,15 @@ type RemoveAssetLicense {
   license: License
 }
 
-
 input RemoveAssetPreviewImageInput {
   """`Asset` Id."""
   id: ID!
 }
 
-
 type RemoveAssetPreviewImage {
   """`Asset` details."""
   asset: Asset
 }
-
 
 input RemoveAssetRelationsInput {
   """`Asset` Id."""
@@ -1526,7 +1618,6 @@ input RemoveAssetRelationsInput {
   relatedAssetIds: [ID!]!
 }
 
-
 type RemoveAssetRelations {
   """`Asset` details."""
   asset: Asset!
@@ -1534,7 +1625,6 @@ type RemoveAssetRelations {
   """Related `Asset` items details."""
   relatedAssets: [Asset!]!
 }
-
 
 input RemoveAssetTagsInput {
   """`Asset` Id."""
@@ -1544,24 +1634,20 @@ input RemoveAssetTagsInput {
   tags: [TagInput]
 }
 
-
 type RemoveAssetTags {
   """`Asset` details."""
   asset: Asset
 }
-
 
 input ReopenAssetCommentInput {
   """`AssetComment` Id to reopen."""
   id: ID!
 }
 
-
 type ReopenAssetComment {
   """The reopened `AssetComment`."""
   comment: AssetComment
 }
-
 
 input ReplaceAssetInput {
   """Parent `Asset` Id."""
@@ -1576,12 +1662,10 @@ input ReplaceAssetInput {
   skipFileMetadata: Boolean = false
 }
 
-
 type ReplaceAsset {
   """The newly created `Asset` processing job response."""
   job: AssetProcessingJob!
 }
-
 
 input ReplyToCommentInput {
   """`AssetComment` Id of the comment you want to reply to."""
@@ -1593,24 +1677,20 @@ input ReplyToCommentInput {
   reply: String!
 }
 
-
 type ReplyToComment {
   """`AssetCommentReply` details."""
   reply: AssetCommentReply!
 }
-
 
 input ResolveAssetCommentInput {
   """`AssetComment` Id to resolve."""
   id: ID!
 }
 
-
 type ResolveAssetComment {
   """The resolved `AssetComment`."""
   comment: AssetComment
 }
-
 
 input SyncAssetTagsInput {
   """`Asset` Id."""
@@ -1620,12 +1700,10 @@ input SyncAssetTagsInput {
   tags: [TagInput]
 }
 
-
 type SyncAssetTags {
   """`Asset` details."""
   asset: Asset
 }
-
 
 input UpdateAssetInput {
   """`Asset` Id."""
@@ -1634,7 +1712,6 @@ input UpdateAssetInput {
   """`Asset` data."""
   data: UpdateAssetDataInput!
 }
-
 
 input UpdateAssetDataInput {
   """`Asset` title or display name."""
@@ -1646,7 +1723,7 @@ input UpdateAssetDataInput {
   alternativeText: String
 
   """
-  **BETA** Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
+  Indicates whether the `Asset` is decorative and not meant to be read by screen readers. If true, alternative text is ignored.
   """
   isDecorative: Boolean
 
@@ -1676,7 +1753,6 @@ input UpdateAssetDataInput {
   previewBackgroundColor: RgbaColorInput
 }
 
-
 input UpdateCopyrightInput {
   """`Asset` copyright status."""
   status: CopyrightStatus!
@@ -1685,12 +1761,10 @@ input UpdateCopyrightInput {
   notice: String
 }
 
-
 type UpdateAsset {
   """`Asset` details."""
   asset: Asset
 }
-
 
 input UploadFileInput {
   """
@@ -1702,7 +1776,6 @@ input UploadFileInput {
   size: BigInt!
 }
 
-
 type UploadFile {
   """Signed Id."""
   id: ID!
@@ -1710,7 +1783,6 @@ type UploadFile {
   """List of presigned urls to upload the file parts."""
   urls: [Url]!
 }
-
 
 """The events a webhook can subscribe to."""
 enum AssetWebhookEvent {
@@ -1740,7 +1812,6 @@ enum AssetWebhookEvent {
   WORKFLOW_TASK_MOVED
 }
 
-
 """
 Search sorting option. Defines how the search results should be sorted.
 """
@@ -1760,7 +1831,6 @@ enum AssetQueryFilterSortType {
   """sorts the results descending by the title of the `Assets`."""
   TITLE_DESCENDING
 }
-
 
 input AssetQueryInput {
   """
@@ -1784,7 +1854,6 @@ input AssetQueryInput {
   types: [AssetType]
 }
 
-
 input AssetQueryFilterInput {
   """
   The Asset must pass **all conditions** in this List to be present in the result set.
@@ -1796,7 +1865,6 @@ input AssetQueryFilterInput {
   """
   orConditions: [AssetQueryFilterConditionInput]
 }
-
 
 input AssetQueryFilterConditionInput {
   """
@@ -1823,7 +1891,6 @@ input AssetQueryFilterConditionInput {
   customMetadataPropertyId: ID
 }
 
-
 """The type of an `asset`."""
 enum AssetType {
   AUDIO
@@ -1832,7 +1899,6 @@ enum AssetType {
   IMAGE
   VIDEO
 }
-
 
 type SimpleMarking implements Marking {
   """
@@ -1843,7 +1909,6 @@ type SimpleMarking implements Marking {
   """The `Marking` dimensions in percent of `Asset` dimensions."""
   dimensions: MarkingDimensions
 }
-
 
 type MultiPageMarking implements Marking {
   """
@@ -1857,7 +1922,6 @@ type MultiPageMarking implements Marking {
   """The `Asset` page where the `Marking` is set."""
   page: Int
 }
-
 
 type VideoMarking implements Marking {
   """
@@ -1874,7 +1938,6 @@ type VideoMarking implements Marking {
   timeframe: MarkingTimeframe
 }
 
-
 type MarkingTimeframe {
   """The start of the `Marking` area in percentage of total video length."""
   start: Percent
@@ -1883,18 +1946,15 @@ type MarkingTimeframe {
   end: Percent
 }
 
-
 type AssetPreviewProcessingJob {
   """`Asset` Id."""
   assetId: ID!
 }
 
-
 type AssetProcessingJob {
   """`Asset` Id."""
   assetId: ID!
 }
-
 
 input MarkingInput {
   """
@@ -1918,7 +1978,6 @@ input MarkingInput {
   page: Int
 }
 
-
 input MarkingPositionInput {
   """
   The horizontal position of the `Marking` in percentage, in relation to the `Asset` top left corner.
@@ -1930,7 +1989,6 @@ input MarkingPositionInput {
   """
   y: Percent!
 }
-
 
 input MarkingDimensionsInput {
   """
@@ -1944,7 +2002,6 @@ input MarkingDimensionsInput {
   height: Percent!
 }
 
-
 input MarkingTimeframeInput {
   """
   The start of the `Marking` area in percentage of total video length. Defaults to video start (0) when the timeframe input property is set.
@@ -1957,12 +2014,10 @@ input MarkingTimeframeInput {
   end: Percent
 }
 
-
 type AttachmentProcessingJob {
   """`Attachment` Id."""
   attachmentId: ID!
 }
-
 
 input CreateExternalAssetInput {
   """Destination `Project` Id."""
@@ -2006,9 +2061,743 @@ input CreateExternalAssetInput {
   author: String = ""
 }
 
-
 type CreateExternalAsset {
   """The newly created `Asset` processing job response."""
   job: AssetProcessingJob!
 }
 
+type AssetRevisionItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """List of `AssetRevision` items."""
+  items: [AssetRevision!]!
+}
+
+type AssetRevision {
+  """`AssetRevision` id."""
+  id: ID!
+
+  """`DateTime` of the `AssetRevision` creation."""
+  createdAt: DateTime!
+
+  """The `User` who created the `AssetRevision`."""
+  creator: User!
+}
+
+type AssetVariantItems {
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+
+  """`AssetVariant` items list."""
+  items: [AssetVariant]!
+}
+
+type AssetVariant {
+  """The key to identify the variant."""
+  key: ID!
+
+  """Filename of the `AssetVariant` `File`."""
+  filename: String
+
+  """Signed `Url` to download the original `AssetVariant` from Frontify."""
+  downloadUrl(
+    """
+    Download `Url` validity in days. Defaults to `1` when both `validityInDays` and `permanent` arguments are not specified.
+    """
+    validityInDays: Int
+
+    """
+    Download `Url` validity state. When `true`, `Url` will be indefinitely valid, unless explicitly stated otherwise in the `validityInDays` argument.
+    """
+    permanent: Boolean
+  ): Url
+}
+
+type AssetProvenance {
+  """
+  **BETA** Whether a credential was found, absent, could not be read, is still being extracted, or cannot be extracted for this file.
+  """
+  state: AssetProvenanceState!
+
+  """
+  **BETA** How the content was generated, derived from the credential's declared source types.
+  """
+  contentOrigin: AssetProvenanceContentOrigin
+
+  """**BETA** Whether the credential itself could be confirmed."""
+  certStatus: AssetProvenanceCertStatus
+
+  """
+  **BETA** Organization the signing certificate was issued to, as its subject.
+  """
+  certSubject: String
+
+  """
+  **BETA** Name of the software that generated the content, as the credential declares it.
+  """
+  generatorName: String
+
+  """
+  **BETA** Version of the generating software, as the credential declares it.
+  """
+  generatorVersion: String
+
+  """**BETA** Issuer of the signing certificate."""
+  certIssuer: String
+
+  """**BETA** When the signing certificate was issued."""
+  certIssuedAt: DateTime
+
+  """**BETA** When the signing certificate expires."""
+  certExpiresAt: DateTime
+}
+
+enum AssetProvenanceState {
+  """An embedded credential was found and read."""
+  DETECTED
+
+  """The file was examined and carries no embedded credential."""
+  NO_CREDENTIAL
+
+  """
+  Extraction could not complete, so nothing was established about the file either way.
+  """
+  FAILED
+
+  """Extraction has been requested and has not finished yet."""
+  PROCESSING
+
+  """The file does not support content credentials."""
+  UNSUPPORTED
+}
+
+enum AssetProvenanceContentOrigin {
+  """
+  No AI was declared: either the credential positively attributes the content to real-world capture, human authorship, or an automated-but-not-AI source, or it declares no source type at all. Both reach the same conclusion — there is no evidence of AI — and this is not a claim that no AI was used.
+  """
+  NO_AI_DECLARED
+
+  """
+  Generative AI touched part of the content — for example an inpainted region on a photograph.
+  """
+  AI_ASSISTED
+
+  """The content was created by a trained AI model."""
+  AI_GENERATED
+}
+
+enum AssetProvenanceCertStatus {
+  """
+  The credential's signature validated against a signer on the trust list.
+  """
+  TRUSTED
+
+  """
+  The file's content or claim hash binding failed validation - the file was altered after signing.
+  """
+  TAMPERED
+
+  """
+  The signature is self-consistent but trust could not be confirmed: an unrecognized signer, or a certificate that aged out without a trusted timestamp.
+  """
+  NOT_TRUSTED
+}
+
+"""Arguments for `searchAssets`."""
+input AssetSearchInput {
+  """How to sort the results."""
+  sortBy: AssetSearchSortInput!
+
+  """Maximum number of results to return."""
+  limit: Int!
+
+  """
+  Filter conditions to apply. All entries are combined with AND; provide the same key more than once to combine several conditions on it.
+  """
+  filters: [AssetSearchFilterInput!] = null
+
+  """
+  Free-text search term. When set, only the first 10,000 matching assets are reachable via pagination.
+  """
+  searchTerm: String = null
+
+  """Restrict the search to this folder."""
+  folderId: ID = null
+
+  """
+  Whether to also search subfolders — of `folderId` if set, otherwise of the library/workspace root. Defaults to `true`.
+  """
+  isRecursive: Boolean! = true
+
+  """
+  Pagination cursor from a previous page. `filters` and `sortBy` must be identical to the call that produced it — changing either between pages is not detected and yields undefined results.
+  """
+  cursor: String = null
+}
+
+"""Sort option for `searchAssets`."""
+input AssetSearchSortInput {
+  """
+  The field to sort by. Sorting by `LAST_MODIFIED` while paginating can produce duplicate or missing results for assets that are modified while you're paginating through the results.
+  """
+  key: AssetSearchSortKey!
+
+  """The sort direction."""
+  direction: AssetSearchSortDirection!
+}
+
+enum AssetSearchSortKey {
+  AVAILABLE_FROM
+  AVAILABLE_UNTIL
+  CREATED
+  FILE_CREATION_DATE
+  FILE_EXTENSION
+  LAST_MODIFIED
+  MANUAL
+  RELEVANCE
+  TITLE
+}
+
+enum AssetSearchSortDirection {
+  ASCENDING
+  DESCENDING
+}
+
+"""
+One filter condition for `searchAssets`. Exactly one field must be set.
+"""
+input AssetSearchFilterInput {
+  """Filter by tags."""
+  tags: AssetArrayFilterInput
+
+  """Filter by the collections the asset belongs to."""
+  collectionId: AssetIdArrayFilterInput
+
+  """Filter by the users/groups the asset is targeted to."""
+  targetId: AssetIdArrayFilterInput
+
+  """Filter by the licenses attached to the asset."""
+  licenseId: AssetIdArrayFilterInput
+
+  """Filter by file extension."""
+  extension: AssetScalarFilterInput
+
+  """Filter by copyright status."""
+  copyrightStatus: CopyrightStatusFilterInput
+
+  """Filter by image orientation."""
+  orientation: OrientationFilterInput
+
+  """Filter by the id of the user who created the asset."""
+  creatorId: AssetIdScalarFilterInput
+
+  """Filter by workflow status."""
+  workflowStatusId: WorkflowStatusFilterInput
+
+  """Filter by creation date."""
+  createdDate: AssetDateFilterInput
+
+  """
+  Filter by last modification date. Filtering on this while paginating can produce duplicate or missing results for assets that are modified while you're paginating through the results.
+  """
+  modifiedDate: AssetDateFilterInput
+
+  """Filter by the start of the asset's availability window."""
+  beginDate: AssetNullableDateFilterInput
+
+  """Filter by the end of the asset's availability window."""
+  expiryDate: AssetNullableDateFilterInput
+
+  """Filter by the original file creation date."""
+  fileCreatedDate: AssetNullableDateFilterInput
+
+  """Filter by whether the asset has a copyright notice."""
+  hasCopyrightNotice: Boolean
+
+  """Filter by whether the asset has missing required metadata."""
+  hasMissingMetadata: Boolean
+
+  """Filter by whether the asset is download-protected."""
+  isDownloadProtected: Boolean
+
+  """
+  Filter by whether the asset has a description. `true` matches assets that have one, `false` matches assets that don't.
+  """
+  hasDescription: Boolean
+
+  """Filter by one custom metadata property's value."""
+  customMetadataValue: CustomMetadataValueFilterInput
+
+  """Filter by asset availability (validity window relative to now)."""
+  assetAvailability: AssetAvailabilityFilterInput
+}
+
+"""Filter for a multi-valued text field. Exactly one field must be set."""
+input AssetArrayFilterInput {
+  """Match assets that have ALL of these values."""
+  is: [String!]
+
+  """Match assets that have ANY of these values."""
+  isAny: [String!]
+
+  """Match assets that do NOT have ALL of these values."""
+  isNot: [String!]
+
+  """Match assets that have NONE of these values."""
+  isNotAny: [String!]
+
+  """Match assets with no value set. Must be `true` when provided."""
+  isEmpty: Boolean
+
+  """Match assets with a value set. Must be `true` when provided."""
+  isNotEmpty: Boolean
+}
+
+"""Filter for a multi-valued id field. Exactly one field must be set."""
+input AssetIdArrayFilterInput {
+  """Match assets that have ALL of these values."""
+  is: [ID!]
+
+  """Match assets that have ANY of these values."""
+  isAny: [ID!]
+
+  """Match assets that do NOT have ALL of these values."""
+  isNot: [ID!]
+
+  """Match assets that have NONE of these values."""
+  isNotAny: [ID!]
+
+  """Match assets with no value set. Must be `true` when provided."""
+  isEmpty: Boolean
+
+  """Match assets with a value set. Must be `true` when provided."""
+  isNotEmpty: Boolean
+}
+
+"""Filter for a single-valued text field. Exactly one field must be set."""
+input AssetScalarFilterInput {
+  """Match assets whose value is ANY of these."""
+  isAny: [String!]
+
+  """Match assets whose value is NONE of these."""
+  isNotAny: [String!]
+}
+
+"""Filter for copyright status. Exactly one field must be set."""
+input CopyrightStatusFilterInput {
+  """Match assets whose copyright status is ANY of these."""
+  isAny: [AssetCopyrightStatus!]
+
+  """Match assets whose copyright status is NONE of these."""
+  isNotAny: [AssetCopyrightStatus!]
+}
+
+enum AssetCopyrightStatus {
+  COPYRIGHTED
+  PUBLIC
+  UNKNOWN
+}
+
+"""Filter for image orientation. Exactly one field must be set."""
+input OrientationFilterInput {
+  """Match assets whose orientation is ANY of these."""
+  isAny: [AssetOrientation!]
+
+  """Match assets whose orientation is NONE of these."""
+  isNotAny: [AssetOrientation!]
+}
+
+enum AssetOrientation {
+  LANDSCAPE
+  PORTRAIT
+  SQUARE
+}
+
+"""Filter for a single-valued id field. Exactly one field must be set."""
+input AssetIdScalarFilterInput {
+  """Match assets whose value is ANY of these."""
+  isAny: [ID!]
+
+  """Match assets whose value is NONE of these."""
+  isNotAny: [ID!]
+}
+
+"""
+Filter for a non-nullable date field. Exactly one field must be set. Accepts a full date-time; send UTC to avoid ambiguity.
+"""
+input AssetDateFilterInput {
+  """Match assets before this date-time."""
+  isBefore: DateTime
+
+  """Match assets after this date-time."""
+  isAfter: DateTime
+
+  """Match assets within this date-time range."""
+  isBetween: AssetDateRangeInput
+}
+
+"""Inclusive date range."""
+input AssetDateRangeInput {
+  """Start of the range (inclusive)."""
+  from: DateTime!
+
+  """End of the range (inclusive)."""
+  to: DateTime!
+}
+
+"""
+Filter for a nullable date field. Exactly one field must be set. Accepts a full date-time; send UTC to avoid ambiguity.
+"""
+input AssetNullableDateFilterInput {
+  """Match assets exactly on this date-time."""
+  is: DateTime
+
+  """Match assets before this date-time."""
+  isBefore: DateTime
+
+  """Match assets after this date-time."""
+  isAfter: DateTime
+
+  """Match assets within this date-time range."""
+  isBetween: AssetDateRangeInput
+
+  """Match assets with no value set. Must be `true` when provided."""
+  isEmpty: Boolean
+
+  """Match assets with a value set. Must be `true` when provided."""
+  isNotEmpty: Boolean
+}
+
+"""
+Filter by asset availability. Matches assets whose availability is one of `options` (or, with `negate`, none of them).
+"""
+input AssetAvailabilityFilterInput {
+  """Availability states to match."""
+  options: [AssetAvailabilityOption!]!
+
+  """Invert the match: true excludes assets in any of `options`."""
+  negate: Boolean! = false
+}
+
+enum AssetAvailabilityOption {
+  NOT_YET_VALID
+  VALID
+  EXPIRED
+}
+
+"""
+Deliberately cursor-paginated rather than the schema's usual `limit`/`page`/`total` shape: the
+underlying search index paginates via `search_after`, which has no depth limit, unlike
+offset-based `from`/`size` paging. (When `searchTerm` is set, a different, deep-pagination-
+capped strategy applies instead — see `AssetSearchInput.searchTerm`.)
+"""
+type LibrarySearchAssetsResult {
+  """Matched `Asset` items."""
+  items: [Asset!]!
+
+  """
+  Opaque cursor for the next result page; null when there are no further results.
+  """
+  nextCursor: String
+
+  """Whether a further result page exists."""
+  hasNextPage: Boolean!
+}
+
+type LibraryAssetsByExternalIdResult {
+  """`Asset` items carrying the externalId."""
+  items: [Asset!]!
+
+  """
+  Opaque cursor for the next result page; null when there are no further results.
+  """
+  nextCursor: String
+}
+
+input CreateAssetVariantInput {
+  """File Id. Signed Id returned in `uploadFile`."""
+  fileId: ID!
+
+  """
+  `Asset` Id. Currently, only `Assets` from Logo and Icon `Library` type are supported.
+  """
+  assetId: ID!
+
+  """
+  `AssetVariant` key composed of the color space and the file extension. Examples: RGB:JPG, CMYK:SVG
+  """
+  key: String!
+}
+
+type CreateAssetVariant {
+  """The newly created `AssetVariant` processing job response."""
+  job: AssetVariantProcessingJob!
+}
+
+type AssetVariantProcessingJob {
+  """`AssetVariant` Id."""
+  variantId: ID!
+}
+
+input DeleteAssetVariantInput {
+  """`Asset` Id of the `AssetVariant` to delete."""
+  assetId: ID!
+
+  """
+  Key of the `AssetVariant` to delete. Composed of the color space and the file extension. Examples: RGB:JPG, CMYK:SVG.
+  """
+  key: String!
+}
+
+type DeleteAssetVariant {
+  """`AssetVariant` Id."""
+  id: ID!
+}
+
+input ReplaceAssetVariantInput {
+  """File Id. Signed Id returned in `uploadFile`."""
+  fileId: ID!
+
+  """
+  Parent `Asset` Id of the `AssetVariant` to replace. Currently, only `Assets` from Logo and Icon `Library` type are supported.
+  """
+  assetId: ID!
+
+  """
+  `AssetVariant` key to replace. Composed of the color space and the file extension. Examples: RGB:JPG, CMYK:SVG
+  """
+  key: String!
+}
+
+type ReplaceAssetVariant {
+  """The newly created `AssetVariant` processing job response."""
+  job: AssetVariantProcessingJob!
+}
+
+"""
+Input for a bulk `Asset` update where each entry carries its own values.
+"""
+input UpdateAssetsInput {
+  """`Project` Id containing the `Assets` to update."""
+  projectId: ID!
+
+  """
+  Per-`Asset` changes. Each entry names only the fields it updates; omitted fields are left untouched.
+  """
+  assets: [AssetUpdateEntryInput!]!
+}
+
+"""One `Asset`'s requested changes."""
+input AssetUpdateEntryInput {
+  """`Asset` Id."""
+  id: ID!
+
+  """The fields to change on this `Asset`."""
+  data: AssetUpdateEntryDataInput!
+}
+
+"""
+The fields one `Asset` update entry changes. Omitted fields are left untouched.
+"""
+input AssetUpdateEntryDataInput {
+  """`Asset` title or display name. `null` clears it."""
+  title: String
+
+  """`Asset` description. `null` clears it."""
+  description: String
+
+  """
+  Alternative text for the `Asset`. Used by screen readers when the asset is not decorative. `null` clears it.
+  """
+  alternativeText: String
+
+  """
+  Whether the `Asset` is decorative. Decorative assets are skipped by screen readers. Does not accept `null`; omit the field to leave it unchanged.
+  """
+  isDecorative: Boolean
+
+  """
+  Represents the Author of the `Asset`. Example: Photographer Name. `null` clears it.
+  """
+  author: String
+
+  """
+  `Asset` copyright status. `UNKNOWN` is the empty state; `null` is not accepted.
+  """
+  copyrightStatus: CopyrightStatus
+
+  """`Asset` copyright notice. `null` clears it."""
+  copyrightNotice: String
+
+  """`Asset` filename, including extension. `null` clears it."""
+  filename: String
+
+  """
+  Availability start date. The `Asset` becomes available once the defined date is reached. `null` clears it.
+  """
+  beginsAt: DateTime
+
+  """
+  Expiry date. The `Asset` expires once the defined date is reached. `null` clears it.
+  """
+  expiresAt: DateTime
+
+  """
+  Tags to add to the `Asset`. Existing tags are kept; an empty list equals omitting the field.
+  """
+  addTags: [TagInput!] = null
+
+  """
+  Tags to remove from the `Asset`. Applied after `addTags` — a tag listed in both ends up removed. An empty list equals omitting the field.
+  """
+  removeTags: [TagInput!] = null
+
+  """
+  The `WorkflowStatus` to assign to the `Asset`. `null` unassigns the current status.
+  """
+  workflowStatus: WorkflowStatusAssignmentInput
+
+  """
+  Custom metadata values to set on the `Asset`. Setting a value for a property deletes its current value on this `Asset` and stores the one you specify; properties not listed are untouched.
+  """
+  customMetadata: [CustomMetadataEntryInput!] = null
+
+  """Library `Licenses` to add to the `Asset`."""
+  addLicenses: [ID!] = null
+
+  """
+  `Collection` ids to add the `Asset` to. Only curated collections in the call's `Library` are accepted. An empty list equals omitting the field.
+  """
+  addCollections: [ID!] = null
+}
+
+type UpdateAssets {
+  """
+  Outcome of the bulk update. Changes apply independently per asset and per field; a partial failure does not roll back applied changes.
+  """
+  status: UpdateAssetsStatus!
+
+  """
+  Failures only: an `Asset` absent from this list had every requested change applied in full.
+  """
+  failedAssets: [FailedAssetUpdate!]!
+
+  """
+  `Assets` touched by this mutation, reflecting their state after whatever changes succeeded. Includes assets with field errors, since those were still partially updated; excludes assets present in `failedAssets` with a non-null `code`, since those were not touched at all.
+  """
+  updatedAssets: [Asset!]!
+}
+
+enum UpdateAssetsStatus {
+  """Every requested change was applied."""
+  SUCCEEDED
+
+  """Some requested changes were applied; others failed."""
+  PARTIALLY_SUCCEEDED
+
+  """No requested change was applied."""
+  FAILED
+}
+
+type FailedAssetUpdate {
+  """`Asset` Id."""
+  id: ID!
+
+  """
+  Whole-asset failure code — none of the entry's changes were applied. `null` when the asset itself was writable and only individual fields failed; see `fieldErrors`.
+  """
+  code: AssetUpdateFailureCode
+
+  """
+  The entry fields that did not apply; every other requested field was applied. An asset whose every requested field failed carries all its field errors and counts as failed.
+  """
+  fieldErrors: [AssetFieldError!]!
+}
+
+enum AssetUpdateFailureCode {
+  """The `Asset` does not exist, or is not accessible to the caller."""
+  ASSET_NOT_FOUND
+
+  """The caller can view the `Asset` but lacks edit permission."""
+  ASSET_NOT_EDITABLE
+}
+
+type AssetFieldError {
+  """The input field that did not apply."""
+  field: AssetUpdateFieldName!
+
+  """
+  Opaque id of the referenced property, license, or collection. Set only for `CUSTOM_METADATA`, `ADD_LICENSES`, and `ADD_COLLECTIONS` field errors; `null` otherwise.
+  """
+  id: ID
+
+  """Why the field did not apply."""
+  code: AssetUpdateFieldErrorCode!
+}
+
+enum AssetUpdateFieldName {
+  TITLE
+  DESCRIPTION
+  ALTERNATIVE_TEXT
+  IS_DECORATIVE
+  AUTHOR
+  BEGINS_AT
+  EXPIRES_AT
+  COPYRIGHT_STATUS
+  COPYRIGHT_NOTICE
+  FILENAME
+  WORKFLOW_STATUS
+  ADD_TAGS
+  REMOVE_TAGS
+  ADD_LICENSES
+  CUSTOM_METADATA
+  ADD_COLLECTIONS
+}
+
+enum AssetUpdateFieldErrorCode {
+  """The caller lacks the permission this field's operation requires."""
+  PERMISSION_DENIED
+
+  """The provided value is not valid for this field."""
+  INVALID_VALUE
+
+  """
+  The referenced `WorkflowStatus` does not exist in the `Library`'s workflow.
+  """
+  STATUS_NOT_FOUND
+
+  """
+  The referenced custom metadata property does not exist in the `Library`.
+  """
+  PROPERTY_NOT_FOUND
+
+  """The referenced `License` does not exist in the `Library`."""
+  LICENSE_NOT_FOUND
+
+  """
+  The referenced `Collection` does not exist, or is not accessible to the caller.
+  """
+  COLLECTION_NOT_FOUND
+
+  """The referenced `Collection` exists but is not curated (project-level)."""
+  COLLECTION_NOT_CURATED
+}

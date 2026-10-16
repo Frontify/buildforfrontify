@@ -1,6 +1,6 @@
-# Frontify GraphQL — Creatives & Guidelines
-# CreativeTemplate, CreativeExport, BrandEssentials (fonts, colours),
-# Guideline, GuidelinePage, LibraryPage, and related types.
+# Frontify GraphQL — Creatives, Guidelines & Brand Essentials
+# CreativeTemplate, CreativeExport, Guideline (pages, sections, blocks, navigation, design settings,
+# color schemes), BrandEssentials (fonts, colours), and related mutations.
 
 type BrandEssentialsAdobeFontStyle implements BrandEssentialsFontStyle {
   """**BETA** The name of the font style."""
@@ -16,7 +16,6 @@ type BrandEssentialsAdobeFontStyle implements BrandEssentialsFontStyle {
   kitId: String!
 }
 
-
 """"""
 interface BrandEssentialsFontStyle {
   """**BETA** The name of the font style."""
@@ -29,7 +28,6 @@ interface BrandEssentialsFontStyle {
   isItalic: Boolean!
 }
 
-
 type BrandEssentialsGoogleFontStyle implements BrandEssentialsFontStyle {
   """**BETA** The name of the font style."""
   name: String!
@@ -40,7 +38,6 @@ type BrandEssentialsGoogleFontStyle implements BrandEssentialsFontStyle {
   """**BETA** Whether the font style is italic."""
   isItalic: Boolean!
 }
-
 
 type BrandEssentialsMonotypeFontStyle implements BrandEssentialsFontStyle {
   """**BETA** The name of the font style."""
@@ -59,7 +56,6 @@ type BrandEssentialsMonotypeFontStyle implements BrandEssentialsFontStyle {
   cssUrl: String!
 }
 
-
 type BrandEssentialsSelfhostedFontStyle implements BrandEssentialsFontStyle {
   """**BETA** The name of the font style."""
   name: String!
@@ -74,7 +70,6 @@ type BrandEssentialsSelfhostedFontStyle implements BrandEssentialsFontStyle {
   formats: [BrandEssentialsSelfhostedFontStyleFormat!]!
 }
 
-
 type BrandEssentialsSelfhostedFontStyleFormat {
   """**BETA** The format of the font file."""
   format: String!
@@ -82,7 +77,6 @@ type BrandEssentialsSelfhostedFontStyleFormat {
   """**BETA** The URL of the font file."""
   url: String!
 }
-
 
 """
 Language code based on the ISO 639-1 standard, represented as two-letter codes such as en (English), de (German), and es (Spanish).
@@ -641,7 +635,6 @@ enum LanguageCode {
   ZU
 }
 
-
 type GuidelinePage {
   """**BETA** The `GuidelinePage` id."""
   id: ID!
@@ -668,7 +661,6 @@ type GuidelinePage {
     page: Int = 1
   ): GuidelinePageSectionItems
 }
-
 
 type CreativeTemplate {
   """`CreativeTemplate` id."""
@@ -720,7 +712,6 @@ type CreativeTemplate {
   tags: [Tag]!
 }
 
-
 type CreativeExport {
   """`CreativeJob` Id."""
   id: ID!
@@ -731,7 +722,6 @@ type CreativeExport {
   """Generated Creative."""
   result: CreativeResult
 }
-
 
 """List of possible `Creative Job` statuses."""
 enum CreativeJobStatus {
@@ -751,7 +741,6 @@ enum CreativeJobStatus {
   FAILED
 }
 
-
 type CreativeResult {
   """Signed `Url` to download the Creative."""
   downloadUrl: Url!
@@ -762,7 +751,6 @@ type CreativeResult {
   """`Asset` details of the stored asset when save-to has been used."""
   asset: File
 }
-
 
 input ExportCreativeInput {
   """`CreativeTemplateId` Id."""
@@ -780,7 +768,6 @@ input ExportCreativeInput {
   options: ExportCreativeOptionsInput
 }
 
-
 input ExportCreativeDestinationInput {
   """`Project` Id destination for the exported Creative."""
   destinationId: ID!
@@ -789,7 +776,6 @@ input ExportCreativeDestinationInput {
   title: String!
 }
 
-
 input CreativeVariableInput {
   """Template variable `Key`."""
   key: String!
@@ -797,7 +783,6 @@ input CreativeVariableInput {
   """`Value` of template variable."""
   value: Any
 }
-
 
 input ExportCreativeOptionsInput {
   """`Format` of exported file."""
@@ -847,7 +832,6 @@ input ExportCreativeOptionsInput {
   clickTagUrl: String
 }
 
-
 """
 Compression level, affecting quality and filesize of the exported Creative.
 """
@@ -858,7 +842,6 @@ enum CreativeExportQuality {
   LOW
 }
 
-
 """
 Specifies the ad network, affecting the structure of the exported HTML.
 """
@@ -866,24 +849,20 @@ enum CreativeExportAdsNetwork {
   GOOGLE
 }
 
-
 type ExportCreative {
   """The newly created `CreativeJob`."""
   job: CreativeExport!
 }
-
 
 input CancelExportCreativesInput {
   """List of `CreativeJob` Ids that should be canceled."""
   ids: [ID]!
 }
 
-
 type CancelExportCreatives {
   """A list of `CreativeJobs` that have been canceled successfully."""
   canceledJobs: [CreativeExport]!
 }
-
 
 type GuidelineItems {
   """Total amount of results."""
@@ -902,7 +881,6 @@ type GuidelineItems {
   items: [Guideline]
 }
 
-
 type Language {
   """**BETA** The ISO code of the language."""
   code: LanguageCode!
@@ -910,7 +888,6 @@ type Language {
   """**BETA** The name of the language in English."""
   name: String!
 }
-
 
 type LibraryPageItems {
   """Total amount of results."""
@@ -929,7 +906,6 @@ type LibraryPageItems {
   items: [LibraryPage]
 }
 
-
 type LibraryPageCollectionItems {
   """Total amount of results."""
   total: Int!
@@ -943,37 +919,34 @@ type LibraryPageCollectionItems {
   """Indicates if a next page is available or not"""
   hasNextPage: Boolean!
 
-  """List of `LibraryPage` `Collection` items."""
+  """**BETA** List of `LibraryPage` `Collection` items."""
   items: [LibraryPageCollection]!
 }
 
-
 type LibraryPageCollection implements Node {
-  """`Collection` Id."""
+  """**BETA** `Collection` Id."""
   id: ID!
 
-  """`Collection` name."""
+  """**BETA** `Collection` name."""
   name: String!
 
-  """`LibraryPageCollection`'s `Asset` items list."""
+  """**BETA** `LibraryPageCollection`'s `Asset` items list."""
   assets(
-    """How many `AssetItems` to show per query. Min: 1, Max: 100."""
+    """**BETA** How many `AssetItems` to show per query. Min: 1, Max: 100."""
     limit: Int = 25
 
-    """Current page number."""
+    """**BETA** Current page number."""
     page: Int = 1
   ): AssetItems!
 
-  """`LibraryPageCollection`'s privacy state setting."""
+  """**BETA** `LibraryPageCollection`'s privacy state setting."""
   isPrivate: Boolean!
 }
-
 
 input LibraryPageAssetQueryInput {
   """Search term used to retrieve matched results."""
   term: String
 }
-
 
 type LibraryPageAssetItems {
   """Total amount of results."""
@@ -992,7 +965,6 @@ type LibraryPageAssetItems {
   items: [Asset]
 }
 
-
 type GuidelinePageItems {
   """Total amount of results."""
   total: Int!
@@ -1009,7 +981,6 @@ type GuidelinePageItems {
   """**BETA** List of `GuidelinePage` items."""
   items: [GuidelinePage]
 }
-
 
 type GuidelinePageSectionItems {
   """Total amount of results."""
@@ -1028,7 +999,6 @@ type GuidelinePageSectionItems {
   items: [GuidelinePageSection]
 }
 
-
 type GuidelinePageSection {
   """**BETA** `GuidelinePageSection` id."""
   id: ID!
@@ -1044,7 +1014,6 @@ type GuidelinePageSection {
     limit: Int = 25
   ): GuidelinePageSectionElementItems
 }
-
 
 type GuidelinePageSectionElementItems {
   """Total amount of results."""
@@ -1063,9 +1032,7 @@ type GuidelinePageSectionElementItems {
   items: [GuidelinePageSectionElement]
 }
 
-
-union GuidelinePageSectionElement = GuidelinePageHeading | GuidelinePageBlock | GuidelinePageBlockReference
-
+union GuidelinePageSectionElement = GuidelinePageHeading | GuidelinePageBlock | GuidelinePageBlockReference | BrandEssentialsColorBlock
 
 type GuidelinePageHeading {
   """**BETA** `GuidelinePageHeading` id."""
@@ -1083,8 +1050,7 @@ type GuidelinePageHeading {
   modifiedAt: DateTime!
 }
 
-
-type GuidelinePageBlock {
+type GuidelinePageBlock implements GuidelinePageBlockInterface {
   """**BETA** The id of the `GuidelinePageBlock`."""
   id: ID!
 
@@ -1119,12 +1085,11 @@ type GuidelinePageBlock {
   ): GuidelinePageBlockAssetSettingItems
 }
 
-
 type GuidelinePageBlockType {
-  """**BETA** The block type id the `GuidelinePageBlock`."""
+  """**BETA** The block type id of a `GuidelinePageBlock`."""
   id: ID!
 
-  """**BETA** The block type name of the `GuidelinePageBlock`."""
+  """**BETA** The block type name of a `GuidelinePageBlock`."""
   name: String!
 
   """
@@ -1132,7 +1097,6 @@ type GuidelinePageBlockType {
   """
   settingsSchema: JsonObject
 }
-
 
 type GuidelinePageBlockAssetSettingItems {
   """Total amount of results."""
@@ -1151,7 +1115,6 @@ type GuidelinePageBlockAssetSettingItems {
   items: [GuidelinePageBlockAssetSetting!]!
 }
 
-
 type GuidelinePageBlockAssetSetting {
   """**BETA** The name of the `GuidelinePageBlockAssetSetting`."""
   settingName: String!
@@ -1167,7 +1130,6 @@ type GuidelinePageBlockAssetSetting {
     limit: Int = 25
   ): GuidelinePageBlockAssetItems
 }
-
 
 type GuidelinePageBlockAssetItems {
   """Total amount of results."""
@@ -1186,7 +1148,6 @@ type GuidelinePageBlockAssetItems {
   items: [GuidelinePageBlockAsset]!
 }
 
-
 type GuidelinePageBlockAsset {
   """
   **BETA** Preview `Url` which has optional `width` and `height` arguments.
@@ -1200,21 +1161,18 @@ type GuidelinePageBlockAsset {
   ): Url!
 }
 
-
 type GuidelinePageBlockReference {
   """**BETA** The id of the `GuidelinePageBlockReference`."""
   id: ID!
 
   """**BETA** The `GuidelinePageBlock` that this reference resolves to."""
-  block: GuidelinePageBlock!
+  block: GuidelinePageBlockInterface!
 }
-
 
 input CreativeTemplateQueryInput {
   """Sort order of the `CreativeTemplate` query result set."""
   sortBy: CreativeTemplateQuerySort
 }
-
 
 """Query sorting option. Defines how the search results should be sorted."""
 enum CreativeTemplateQuerySort {
@@ -1224,7 +1182,6 @@ enum CreativeTemplateQuerySort {
   """Sorts the results by the oldest entry`."""
   OLDEST
 }
-
 
 type CreativeTemplateItems {
   """Total amount of results."""
@@ -1243,7 +1200,6 @@ type CreativeTemplateItems {
   items: [CreativeTemplate]!
 }
 
-
 """List of possible `CreativeTemplate` modes."""
 enum CreativeTemplateMode {
   """Represents a static template."""
@@ -1252,7 +1208,6 @@ enum CreativeTemplateMode {
   """Represents a motion template."""
   MOTION
 }
-
 
 type CreativeTemplatePage {
   """Preview URL of `CreativeTemplatePage`."""
@@ -1271,12 +1226,10 @@ type CreativeTemplatePage {
   name: String
 }
 
-
 type CreativeTemplateExportOption {
   """Allowed format for exporting an `CreativeTemplate`, e.g., JPG."""
   format: CreativeExportFormat
 }
-
 
 """List of possible `CreativeExportOptionsInput` formats."""
 enum CreativeExportFormat {
@@ -1287,7 +1240,6 @@ enum CreativeExportFormat {
   GIF
   HTML
 }
-
 
 type CreativeTemplateVariable {
   """Key of the `CreativeTemplateVariable`."""
@@ -1313,7 +1265,6 @@ type CreativeTemplateVariable {
   """Number of template items connected to the `CreativeTemplateVariable`."""
   connectionCount: Int!
 }
-
 
 """List of possible `CreativeTemplateVariable` types."""
 enum CreativeTemplateVariableType {
@@ -1343,10 +1294,9 @@ enum CreativeTemplateVariableType {
   POSITION
 }
 
-
 type CreativeColor {
   """ID of the `Color`."""
-  id: Int!
+  id: ID!
 
   """Name of the `Color`."""
   name: String
@@ -1357,7 +1307,6 @@ type CreativeColor {
   """RGBA color value of the `Color`."""
   color: RgbaColor!
 }
-
 
 type BrandEssentials {
   """**BETA** The color palettes of the brand essentials."""
@@ -1379,7 +1328,6 @@ type BrandEssentials {
   ): BrandEssentialsFontFamilyItems!
 }
 
-
 type BrandEssentialsColorPaletteItems {
   """Total amount of results."""
   total: Int!
@@ -1397,8 +1345,7 @@ type BrandEssentialsColorPaletteItems {
   items: [BrandEssentialsColorPalette!]!
 }
 
-
-type BrandEssentialsColorPalette {
+type BrandEssentialsColorPalette implements Node {
   """**BETA** The unique identifier of the color palette."""
   id: ID!
 
@@ -1416,8 +1363,10 @@ type BrandEssentialsColorPalette {
     """**BETA** Page number to return."""
     page: Int! = 1
   ): BrandEssentialsColorItems!
-}
 
+  """**BETA** `DateTime` of the color palette creation."""
+  createdAt: DateTime!
+}
 
 type BrandEssentialsColorItems {
   """Total amount of results."""
@@ -1436,8 +1385,7 @@ type BrandEssentialsColorItems {
   items: [BrandEssentialsColor!]!
 }
 
-
-type BrandEssentialsColor {
+type BrandEssentialsColor implements Node {
   """**BETA** The unique identifier of the color."""
   id: ID!
 
@@ -1448,87 +1396,8 @@ type BrandEssentialsColor {
   description: String
 
   """**BETA** The different color representations available for the color."""
-  representations: [BrandEssentialsColorRepresentation!]!
+  representations: BrandEssentialsColorRepresentations!
 }
-
-
-type BrandEssentialsColorRepresentation {
-  """**BETA** The key of the color representation."""
-  key: String!
-
-  """**BETA** The value of the color representation."""
-  value: BrandEssentialsColorRepresentationValue!
-}
-
-
-union BrandEssentialsColorRepresentationValue = BrandEssentialsCmykColorSpaceValue | BrandEssentialsHexColorSpaceValue | BrandEssentialsHslColorSpaceValue | BrandEssentialsLabColorSpaceValue | BrandEssentialsColorSystemValue | BrandEssentialsRgbaColorSpaceValue
-
-
-type BrandEssentialsCmykColorSpaceValue {
-  """**BETA** Cyan component of the CMYK color space."""
-  cyan: Float!
-
-  """**BETA** Magenta component of the CMYK color space."""
-  magenta: Float!
-
-  """**BETA** Yellow component of the CMYK color space."""
-  yellow: Float!
-
-  """**BETA** Black component of the CMYK color space."""
-  black: Float!
-}
-
-
-type BrandEssentialsHexColorSpaceValue {
-  """**BETA** Hex code of the HEX color space."""
-  hexCode: String!
-}
-
-
-type BrandEssentialsHslColorSpaceValue {
-  """**BETA** Hue component of the HSL color space."""
-  hue: Float!
-
-  """**BETA** Saturation component of the HSL color space."""
-  saturation: Float!
-
-  """**BETA** Lightness component of the HSL color space."""
-  lightness: Float!
-}
-
-
-type BrandEssentialsLabColorSpaceValue {
-  """**BETA** Lightness component of the LAB color space."""
-  lightness: Float!
-
-  """**BETA** A axis component of the LAB color space."""
-  aAxis: Float!
-
-  """**BETA** B axis component of the LAB color space."""
-  bAxis: Float!
-}
-
-
-type BrandEssentialsColorSystemValue {
-  """**BETA** Color value of the color system."""
-  colorValue: String!
-}
-
-
-type BrandEssentialsRgbaColorSpaceValue {
-  """**BETA** Red component of the RGBA color space."""
-  red: Int!
-
-  """**BETA** Green component of the RGBA color space."""
-  green: Int!
-
-  """**BETA** Blue component of the RGBA color space."""
-  blue: Int!
-
-  """**BETA** Alpha component of the RGBA color space."""
-  alpha: Float!
-}
-
 
 type BrandEssentialsFontFamilyItems {
   """Total amount of results."""
@@ -1547,7 +1416,6 @@ type BrandEssentialsFontFamilyItems {
   items: [BrandEssentialsFontFamily!]!
 }
 
-
 type BrandEssentialsFontFamily {
   """**BETA** The unique identifier of the font family."""
   id: ID!
@@ -1564,7 +1432,6 @@ type BrandEssentialsFontFamily {
   """**BETA** The font styles available for this font family."""
   fontStyles: [BrandEssentialsFontStyle!]!
 }
-
 
 type Guideline implements Node {
   """`Guideline` Id."""
@@ -1604,8 +1471,38 @@ type Guideline implements Node {
     """**BETA** Current page number."""
     page: Int = 1
   ): GuidelinePageItems
-}
 
+  """**BETA** `Guideline` design settings."""
+  designSettings: GuidelineDesignSettings!
+
+  """**BETA** `Guideline` color schemes."""
+  colorSchemes: [GuidelineColorScheme]!
+
+  """
+  **BETA** Paginated navigation items for `Guideline`. The `language` argument must be set at the
+  highest applicable level within the query (e.g. on `brand.guidelines`); when omitted here,
+  the language already set upstream is reused.
+  """
+  navigation(
+    """**BETA**"""
+    language: String = null
+
+    """**BETA**"""
+    limit: Int = 100
+
+    """**BETA**"""
+    page: Int = 1
+  ): GuidelineNavigationItems!
+
+  """**BETA** The block types available for the `Guideline`."""
+  availableBlockTypes: [GuidelinePageBlockType!]!
+
+  """**BETA** Searches the content of the `Guideline`."""
+  contentSearch(
+    """**BETA** `GuidelineContentSearchInput` input argument."""
+    input: GuidelineContentSearchInput!
+  ): GuidelineContentSearchItems
+}
 
 type LibraryPage implements Node {
   """`LibraryPage` Id."""
@@ -1620,11 +1517,11 @@ type LibraryPage implements Node {
   """**BETA** `LibraryPage` `Collection` items list."""
   collections(
     """
-    How many `LibraryPageCollectionItems` to show per query. Min: 1, Max: 100.
+    **BETA** How many `LibraryPageCollectionItems` to show per query. Min: 1, Max: 100.
     """
     limit: Int = 25
 
-    """Current page number."""
+    """**BETA** Current page number."""
     page: Int = 1
   ): LibraryPageCollectionItems!
 
@@ -1641,3 +1538,2796 @@ type LibraryPage implements Node {
   ): LibraryPageAssetItems!
 }
 
+type GuidelineDesignSettings {
+  """**BETA** Type styles"""
+  typeStyles: [GuidelineDesignSettingsTypeStylesType]!
+
+  """**BETA** Button styles"""
+  buttonStyles: [GuidelineDesignSettingsButtonStyle]!
+
+  """**BETA** List styles"""
+  listStyles: GuidelineDesignSettingsListStyle!
+
+  """**BETA** Main Font Family"""
+  mainFontFamily: GuidelineDesignSettingsTypeStyleFontFamily!
+
+  """**BETA** Accent colors"""
+  accentColors: [GuidelineDesignSettingsAccentColor]!
+
+  """**BETA** Background colors"""
+  backgroundColors: [GuidelineDesignSettingsBackgroundColor]!
+}
+
+union GuidelineDesignSettingsTypeStylesType = GuidelineDesignSettingsBlockTypeStyle | GuidelineDesignSettingsInlineTypeStyle
+
+type GuidelineDesignSettingsBlockTypeStyle {
+  """
+  **BETA** The type style key, e.g.: "heading1"
+  """
+  key: String!
+
+  """**BETA** The font family"""
+  fontFamily: GuidelineDesignSettingsTypeStyleFontFamily
+
+  """
+  **BETA** The size of the font, e.g.: "12px", "24pt", "2em". Supported units: px, pt, pc, in, mm, cm, em, rem, %, vw, vh
+  """
+  fontSize: String!
+
+  """
+  **BETA** The weight of the font, e.g. "100", "200", "300", "400", "500", "600", "700", "800", "900"
+  """
+  fontWeight: String!
+
+  """
+  **BETA** The horizontal spacing behavior between text characters, e.g.: "normal", "0.1em" or "10px". Supported units: "px", "em", "rem", "%"
+  """
+  letterSpacing: String!
+
+  """**BETA** Line height"""
+  lineHeight: String!
+
+  """
+  **BETA** The top margin, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  marginTop: String!
+
+  """
+  **BETA** The bottom margin, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  marginBottom: String!
+
+  """**BETA** Whether the text is uppercase"""
+  isUppercase: Boolean!
+
+  """**BETA** Whether the text is italic"""
+  isItalic: Boolean!
+
+  """**BETA** Whether the text is underlined"""
+  isUnderline: Boolean!
+
+  """**BETA** The colors of the text"""
+  textColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+}
+
+type GuidelineDesignSettingsTypeStyleFontFamily {
+  """
+  **BETA** The name of the font family, e.g. "Arial"
+  """
+  name: String!
+
+  """
+  **BETA** The provider of the font family, e.g. "SYSTEM", "GOOGLE", "ADOBE" or "SELFHOSTED"
+  """
+  provider: String!
+}
+
+type GuidelineDesignSettingsTypeStyleTextColor {
+  """
+  **BETA** The color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  color: String!
+
+  """**BETA** The ID of the color scheme"""
+  colorSchemeId: String!
+
+  """**BETA** Whether the color scheme is the default"""
+  isDefault: Boolean!
+}
+
+type GuidelineDesignSettingsInlineTypeStyle {
+  """
+  **BETA** The type style key, e.g.: "heading1"
+  """
+  key: String!
+
+  """**BETA** The font family"""
+  fontFamily: GuidelineDesignSettingsTypeStyleFontFamily
+
+  """
+  **BETA** The size of the font, e.g.: "12px", "24pt", "2em". Supported units: px, pt, pc, in, mm, cm, em, rem, %, vw, vh
+  """
+  fontSize: String!
+
+  """
+  **BETA** The weight of the font, e.g. "100", "200", "300", "400", "500", "600", "700", "800", "900"
+  """
+  fontWeight: String!
+
+  """
+  **BETA** The horizontal spacing behavior between text characters, e.g.: "normal", "0.1em" or "10px". Supported units: "px", "em", "rem", "%"
+  """
+  letterSpacing: String!
+
+  """**BETA** Line height"""
+  lineHeight: String!
+
+  """**BETA** Whether the text is uppercase"""
+  isUppercase: Boolean!
+
+  """**BETA** Whether the text is italic"""
+  isItalic: Boolean!
+
+  """**BETA** Whether the text is underlined"""
+  isUnderline: Boolean!
+
+  """**BETA** The colors of the text"""
+  textColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+}
+
+type GuidelineDesignSettingsButtonStyle {
+  """
+  **BETA** The button style key, e.g.: "primary"
+  """
+  key: String!
+
+  """**BETA** The font family"""
+  fontFamily: GuidelineDesignSettingsTypeStyleFontFamily
+
+  """
+  **BETA** The size of the font, e.g.: "12px", "24pt", "2em". Supported units: px, pt, pc, in, mm, cm, em, rem, %, vw, vh
+  """
+  fontSize: String!
+
+  """
+  **BETA** The weight of the font, e.g. "100", "200", "300", "400", "500", "600", "700", "800", "900"
+  """
+  fontWeight: String!
+
+  """**BETA** Line height"""
+  lineHeight: String!
+
+  """
+  **BETA** The top padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingTop: String!
+
+  """
+  **BETA** The right padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingRight: String!
+
+  """
+  **BETA** The bottom padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingBottom: String!
+
+  """
+  **BETA** The left padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingLeft: String!
+
+  """
+  **BETA** The corner radius, e.g.: "10px". Supported units: "px", "pt", "pc", "em", "rem", "%"
+  """
+  cornerRadius: String!
+
+  """
+  **BETA** The width of the border, e.g.: "2px". Supported units: "px"
+  """
+  borderWidth: String!
+
+  """**BETA** Whether the button text is uppercase"""
+  isUppercase: Boolean!
+
+  """**BETA** Whether the button text is italic"""
+  isItalic: Boolean!
+
+  """**BETA** The text colors in the default state"""
+  defaultTextColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+
+  """**BETA** The background colors in the default state"""
+  defaultBackgroundColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+
+  """**BETA** The border colors in the default state"""
+  defaultBorderColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+
+  """**BETA** The text colors in the hover state"""
+  hoverTextColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+
+  """**BETA** The background colors in the hover state"""
+  hoverBackgroundColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+
+  """**BETA** The border colors in the hover state"""
+  hoverBorderColors: [GuidelineDesignSettingsTypeStyleTextColor]!
+}
+
+type GuidelineDesignSettingsListStyle {
+  """**BETA** The bullet list styles"""
+  bulletListStyles: [GuidelineDesignSettingsBulletListStyle]!
+
+  """**BETA** The numbered list styles"""
+  numberedListStyles: [GuidelineDesignSettingsNumberedListStyle]!
+}
+
+type GuidelineDesignSettingsBulletListStyle {
+  """**BETA** The indentation level of the list style"""
+  level: Int!
+
+  """**BETA** The shape of the bullet list item"""
+  shape: String!
+
+  """**BETA** The size of the bullet list item"""
+  size: String!
+
+  """**BETA** The colors of the bullet list styles"""
+  colors: [GuidelineDesignSettingsListStyleColor]!
+}
+
+type GuidelineDesignSettingsListStyleColor {
+  """
+  **BETA** The color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)" or null.
+  """
+  color: String
+
+  """**BETA** The ID of the color scheme"""
+  colorSchemeId: String!
+
+  """**BETA** Whether the color scheme is the default"""
+  isDefault: Boolean!
+}
+
+type GuidelineDesignSettingsNumberedListStyle {
+  """**BETA** The indentation level of the list style"""
+  level: Int!
+
+  """
+  **BETA** The numeral of the list style item, e.g. "decimal", "upper-alpha", "lower-alpha", "upper-roman", "lower-roman"
+  """
+  numeral: String!
+
+  """**BETA** The colors of the number list styles"""
+  colors: [GuidelineDesignSettingsListStyleColor]!
+}
+
+type GuidelineDesignSettingsAccentColor {
+  """
+  **BETA** The accent color key, e.g.: "warning"
+  """
+  key: String!
+
+  """**BETA** The colors of the accent color"""
+  colors: [GuidelineDesignSettingsColor]!
+}
+
+type GuidelineDesignSettingsColor {
+  """
+  **BETA** The color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  color: String!
+
+  """**BETA** The ID of the color scheme"""
+  colorSchemeId: String!
+
+  """**BETA** Whether the color scheme is the default"""
+  isDefault: Boolean!
+}
+
+type GuidelineDesignSettingsBackgroundColor {
+  """
+  **BETA** The color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)" or null
+  """
+  color: String
+
+  """**BETA** The ID of the color scheme"""
+  colorSchemeId: String!
+
+  """**BETA** Whether the color scheme is the default"""
+  isDefault: Boolean!
+}
+
+type GuidelineColorScheme {
+  """**BETA** The ID of the color scheme"""
+  id: String!
+
+  """**BETA** The name of the color scheme"""
+  name: String!
+
+  """**BETA** Whether the color scheme is the default"""
+  isDefault: Boolean!
+}
+
+type GuidelineNavigationItems {
+  """**BETA** The paginated list of `Guideline` navigation items."""
+  items: [UnionGuidelineCoverPageNavigationItemGuidelineDocumentGroupNavigationItemGuidelineDocumentLibraryNavigationItemGuidelineDocumentLinkNavigationItemGuidelineDocumentNavigationItem!]!
+
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+}
+
+union UnionGuidelineCoverPageNavigationItemGuidelineDocumentGroupNavigationItemGuidelineDocumentLibraryNavigationItemGuidelineDocumentLinkNavigationItemGuidelineDocumentNavigationItem = GuidelineCoverPageNavigationItem | GuidelineDocumentGroupNavigationItem | GuidelineDocumentLibraryNavigationItem | GuidelineDocumentLinkNavigationItem | GuidelineDocumentNavigationItem
+
+type GuidelineCoverPageNavigationItem {
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+}
+
+type GuidelineDocumentGroupNavigationItem {
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  isHiddenInNavigation: Boolean!
+
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  children(
+    """**BETA**"""
+    limit: Int = 100
+
+    """**BETA**"""
+    page: Int = 1
+  ): GuidelineDocumentGroupChildrenItems!
+}
+
+type GuidelineDocumentGroupChildrenItems {
+  """
+  **BETA** The paginated list of `GuidelineDocumentGroup` children navigation items.
+  """
+  items: [UnionGuidelineDocumentLibraryNavigationItemGuidelineDocumentLinkNavigationItemGuidelineDocumentNavigationItem!]!
+
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+}
+
+union UnionGuidelineDocumentLibraryNavigationItemGuidelineDocumentLinkNavigationItemGuidelineDocumentNavigationItem = GuidelineDocumentLibraryNavigationItem | GuidelineDocumentLinkNavigationItem | GuidelineDocumentNavigationItem
+
+type GuidelineDocumentLibraryNavigationItem {
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+
+  """**BETA**"""
+  isHiddenInNavigation: Boolean!
+}
+
+type GuidelineDocumentLinkNavigationItem {
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+
+  """**BETA**"""
+  openNewTab: Boolean!
+
+  """**BETA**"""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA**"""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """**BETA**"""
+  iconAssetId: ID
+
+  """**BETA**"""
+  iconFileId: String
+}
+
+enum GuidelineDocumentLinkDisplayMode {
+  ICON
+  TEXT
+  ICON_TEXT
+}
+
+enum GuidelineDocumentLinkIconPosition {
+  LEFT
+  RIGHT
+}
+
+type GuidelineDocumentNavigationItem {
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+
+  """**BETA**"""
+  isHiddenInNavigation: Boolean!
+
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  children(
+    """**BETA**"""
+    limit: Int = 100
+
+    """**BETA**"""
+    page: Int = 1
+  ): GuidelineDocumentChildrenItems!
+}
+
+type GuidelineDocumentChildrenItems {
+  """
+  **BETA** The paginated list of `GuidelineDocument` children navigation items.
+  """
+  items: [GuidelineDocumentChildNavigationItem!]!
+
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+}
+
+union GuidelineDocumentChildNavigationItem = GuidelineDocumentPageCategoryNavigationItem | GuidelineDocumentPageLinkNavigationItem | GuidelineDocumentPageNavigationItem
+
+type GuidelineDocumentPageCategoryNavigationItem {
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  children(
+    """**BETA**"""
+    limit: Int = 100
+
+    """**BETA**"""
+    page: Int = 1
+  ): GuidelineDocumentPageCategoryChildrenItems!
+}
+
+type GuidelineDocumentPageCategoryChildrenItems {
+  """
+  **BETA** The paginated list of `GuidelineDocumentPageCategory` children navigation items.
+  """
+  items: [GuidelineDocumentPageCategoryChildNavigationItem!]!
+
+  """Total amount of results."""
+  total: Int!
+
+  """Current page number."""
+  page: Int!
+
+  """Number of results per page."""
+  limit: Int!
+
+  """Indicates if a next page is available or not"""
+  hasNextPage: Boolean!
+}
+
+union GuidelineDocumentPageCategoryChildNavigationItem = GuidelineDocumentPageLinkNavigationItem | GuidelineDocumentPageNavigationItem
+
+type GuidelineDocumentPageLinkNavigationItem {
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+
+  """**BETA**"""
+  openNewTab: Boolean!
+
+  """**BETA**"""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA**"""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """**BETA**"""
+  iconAssetId: ID
+
+  """**BETA**"""
+  iconFileId: String
+}
+
+type GuidelineDocumentPageNavigationItem {
+  """**BETA**"""
+  id: ID!
+
+  """**BETA**"""
+  title: String!
+
+  """**BETA**"""
+  url: String!
+
+  """**BETA**"""
+  isHiddenInNavigation: Boolean!
+
+  """**BETA**"""
+  isPublished: Boolean!
+}
+
+"""Interface for all block types on a guideline page."""
+interface GuidelinePageBlockInterface {
+  """**BETA** The id of the `GuidelinePageBlock`."""
+  id: ID!
+
+  """
+  **BETA** The searchable content of the `GuidelinePageBlock`. When the block cannot be serialized, this field is `null`.
+  """
+  content: String
+
+  """**BETA** The url of the `GuidelinePageBlock`"""
+  url: Url!
+
+  """
+  **BETA** The timestamp of the most recent modification to the `GuidelinePageBlock`. If not modified, this represents the creation time.
+  """
+  modifiedAt: DateTime!
+
+  """**BETA** The settings of the `GuidelinePageBlock`."""
+  settings: JsonObject
+
+  """
+  **BETA** A list of `GuidelinePageBlockAssetSetting` used by this `GuidelinePageBlock`.
+  """
+  assetSettings(
+    """**BETA** Current page number."""
+    page: Int = 1
+
+    """**BETA** How many `GuidelinePageBlockAssetSetting` to show per query."""
+    limit: Int = 25
+  ): GuidelinePageBlockAssetSettingItems
+
+  """**BETA** The type of this `GuidelinePageBlock`."""
+  type: GuidelinePageBlockType!
+}
+
+input GuidelineContentSearchInput {
+  """**BETA** The term to search for"""
+  searchTerm: String!
+
+  """**BETA** Current page number."""
+  page: Int! = 1
+
+  """**BETA** How many results to return per page. Min: 1, Max: 100."""
+  limit: Int! = 25
+
+  """
+  **BETA** The locale tag ("de", "de-DE") to search in. If not provided, the guideline's default language will be used.
+  """
+  locale: String = null
+
+  """
+  **BETA** How close a hit must be to the search term before it is worth returning.
+  """
+  searchRelevance: SearchRelevance! = DEFAULT
+
+  """
+  **BETA** Which kinds of content to return. An empty list returns content of any kind.
+  """
+  contentTypes: [GuidelineContentSearchContentType!]! = []
+}
+
+"""
+How close a hit must be to the search term before it is worth returning.
+"""
+enum SearchRelevance {
+  """
+  The floor guideline search has always used, tuned for someone typing into the search box, where an
+  unrelated hit is more costly than a missing one. The default for every query that does not say
+  otherwise, so existing callers keep the behaviour they had.
+  """
+  DEFAULT
+
+  """
+  A markedly lower floor -- roughly a tenth of {@see self::DEFAULT}. For callers that would rather sift
+  loosely related content than miss it, such as gathering a broad candidate set to rank or summarise
+  themselves. Expect noticeably more hits, and noticeably weaker ones.
+  """
+  LOW
+}
+
+"""
+A kind of guideline content a `contentSearch` may be narrowed to. Each case corresponds to one member of
+the `GuidelineContentSearchResult` union.
+"""
+enum GuidelineContentSearchContentType {
+  PAGE
+  BLOCK
+  HEADING
+}
+
+type GuidelineContentSearchItems {
+  """
+  **BETA** The results, in the order the search engine ranked them, which is the order they are meant to be shown in.
+  """
+  items: [GuidelineContentSearchResult!]!
+
+  """
+  **BETA** Whether the search engine holds results beyond the requested page.
+  """
+  hasNextPage: Boolean!
+}
+
+type GuidelineContentSearchResult {
+  """**BETA** The guideline content that matched."""
+  content: GuidelineContentSearchResultContent!
+}
+
+union GuidelineContentSearchResultContent = GuidelinePage | GuidelinePageBlock | GuidelinePageHeading
+
+type BrandEssentialsColorRepresentations {
+  """**BETA** The RGBA representation of the color."""
+  rgba: BrandEssentialsRgbaColorRepresentation
+
+  """
+  **BETA** The HEX representation of the color, derived from its RGBA representation.
+  """
+  hex: BrandEssentialsHexColorRepresentation
+
+  """**BETA** The HSL representation of the color."""
+  hsl: BrandEssentialsHslColorRepresentation
+
+  """**BETA** The CMYK representation of the color."""
+  cmyk: BrandEssentialsCmykColorRepresentation
+
+  """**BETA** The CMYK Coated representation of the color."""
+  cmykCoated: BrandEssentialsCmykColorRepresentation
+
+  """**BETA** The CMYK Uncoated representation of the color."""
+  cmykUncoated: BrandEssentialsCmykColorRepresentation
+
+  """**BETA** The CMYK Newspaper representation of the color."""
+  cmykNewspaper: BrandEssentialsCmykColorRepresentation
+
+  """**BETA** The LAB representation of the color."""
+  lab: BrandEssentialsLabColorRepresentation
+
+  """**BETA** The Pantone representation of the color."""
+  pantone: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The Pantone Coated representation of the color."""
+  pantoneCoated: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The Pantone Uncoated representation of the color."""
+  pantoneUncoated: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The Pantone CP representation of the color."""
+  pantoneCp: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The Pantone Plastics representation of the color."""
+  pantonePlastics: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The Pantone Textile representation of the color."""
+  pantoneTextile: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The RAL representation of the color."""
+  ral: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The NCS representation of the color."""
+  ncs: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The HKS representation of the color."""
+  hks: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The 3M representation of the color."""
+  threeM: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The Oracal representation of the color."""
+  oracal: BrandEssentialsColorSystemRepresentation
+
+  """**BETA** The SCSS/LESS variable representation of the color."""
+  cssVariable: BrandEssentialsColorSystemRepresentation
+}
+
+type BrandEssentialsRgbaColorRepresentation {
+  """**BETA** The human readable name of the color representation."""
+  name: String!
+
+  """**BETA** The value of the color representation."""
+  value: BrandEssentialsRgbaColorValue
+}
+
+type BrandEssentialsRgbaColorValue {
+  """**BETA** Red component of the RGBA color space."""
+  red: Int!
+
+  """**BETA** Green component of the RGBA color space."""
+  green: Int!
+
+  """**BETA** Blue component of the RGBA color space."""
+  blue: Int!
+
+  """**BETA** Alpha component of the RGBA color space."""
+  alpha: Float!
+}
+
+type BrandEssentialsHexColorRepresentation {
+  """**BETA** The human readable name of the color representation."""
+  name: String!
+
+  """
+  **BETA** The value of the color representation, a hexadecimal color code in the uppercase form `#RRGGBB`, extended to `#RRGGBBAA` when the color is not fully opaque.
+  """
+  value: String
+}
+
+type BrandEssentialsHslColorRepresentation {
+  """**BETA** The human readable name of the color representation."""
+  name: String!
+
+  """**BETA** The value of the color representation."""
+  value: BrandEssentialsHslColorValue
+}
+
+type BrandEssentialsHslColorValue {
+  """**BETA** Hue component of the HSL color space."""
+  hue: Float!
+
+  """**BETA** Saturation component of the HSL color space."""
+  saturation: Float!
+
+  """**BETA** Lightness component of the HSL color space."""
+  lightness: Float!
+}
+
+type BrandEssentialsCmykColorRepresentation {
+  """**BETA** The human readable name of the color representation."""
+  name: String!
+
+  """**BETA** The value of the color representation."""
+  value: BrandEssentialsCmykColorValue
+}
+
+type BrandEssentialsCmykColorValue {
+  """**BETA** Cyan component of the CMYK color space."""
+  cyan: Float!
+
+  """**BETA** Magenta component of the CMYK color space."""
+  magenta: Float!
+
+  """**BETA** Yellow component of the CMYK color space."""
+  yellow: Float!
+
+  """**BETA** Black component of the CMYK color space."""
+  black: Float!
+}
+
+type BrandEssentialsLabColorRepresentation {
+  """**BETA** The human readable name of the color representation."""
+  name: String!
+
+  """**BETA** The value of the color representation."""
+  value: BrandEssentialsLabColorValue
+}
+
+type BrandEssentialsLabColorValue {
+  """**BETA** Lightness component of the LAB color space."""
+  lightness: Float!
+
+  """**BETA** A axis component of the LAB color space."""
+  aAxis: Float!
+
+  """**BETA** B axis component of the LAB color space."""
+  bAxis: Float!
+}
+
+type BrandEssentialsColorSystemRepresentation {
+  """**BETA** The human readable name of the color representation."""
+  name: String!
+
+  """
+  **BETA** The value of the color representation, the name the color carries in the external color system as authored by the brand, for example `2955 C` or `RAL 5002`. The format is not enforced.
+  """
+  value: String
+}
+
+type BrandEssentialsColorBlock implements GuidelinePageBlockInterface {
+  """**BETA** The id of the `GuidelinePageBlock`."""
+  id: ID!
+
+  """
+  **BETA** The searchable content of the `GuidelinePageBlock`. When the block cannot be serialized, this field is `null`.
+  """
+  content: String
+
+  """**BETA** The url of the `GuidelinePageBlock`"""
+  url: Url!
+
+  """
+  **BETA** The timestamp of the most recent modification to the `GuidelinePageBlock`. If not modified, this represents the creation time.
+  """
+  modifiedAt: DateTime!
+
+  """**BETA** The settings of the `GuidelinePageBlock`."""
+  settings: JsonObject
+
+  """
+  **BETA** A list of `GuidelinePageBlockAssetSetting` used by this `GuidelinePageBlock`.
+  """
+  assetSettings(
+    """**BETA** Current page number."""
+    page: Int = 1
+
+    """**BETA** How many `GuidelinePageBlockAssetSetting` to show per query."""
+    limit: Int = 25
+  ): GuidelinePageBlockAssetSettingItems
+
+  """**BETA** The type of this `GuidelinePageBlock`."""
+  type: GuidelinePageBlockType!
+}
+
+union GuidelineNavigationItem = GuidelineCoverPageNavigationItem | GuidelineDocumentGroupNavigationItem | GuidelineDocumentLibraryNavigationItem | GuidelineDocumentLinkNavigationItem | GuidelineDocumentNavigationItem | GuidelineDocumentPageCategoryNavigationItem | GuidelineDocumentPageLinkNavigationItem | GuidelineDocumentPageNavigationItem
+
+input UpdateGuidelineDesignSettingsTypeStyleInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Type Style` data."""
+  data: UpdateGuidelineDesignSettingsTypeStyleDataInput!
+}
+
+input UpdateGuidelineDesignSettingsTypeStyleDataInput {
+  """**BETA** Key of the `Type Style` to update."""
+  key: String!
+
+  """**BETA** The font family"""
+  fontFamily: GuidelineDesignSettingsTypeStyleFontFamilyInput
+
+  """
+  **BETA** The size of the font, e.g.: "12px", "24pt", "2em". Supported units: px, pt, pc, in, mm, cm, em, rem, %, vw, vh
+  """
+  fontSize: String!
+
+  """
+  **BETA** The weight of the font, e.g. "100", "200", "300", "400", "500", "600", "700", "800", "900"
+  """
+  fontWeight: String!
+
+  """
+  **BETA** The horizontal spacing behavior between text characters, e.g.: "normal", "0.1em" or "10px". Supported units: "px", "em", "rem", "%"
+  """
+  letterSpacing: String!
+
+  """**BETA** Line height"""
+  lineHeight: String!
+
+  """**BETA** Whether the text is uppercase"""
+  isUppercase: Boolean!
+
+  """**BETA** Whether the text is italic"""
+  isItalic: Boolean!
+
+  """**BETA** Whether the text is underlined"""
+  isUnderline: Boolean!
+
+  """
+  **BETA** The top margin, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  marginTop: String
+
+  """
+  **BETA** The bottom margin, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  marginBottom: String
+
+  """**BETA** Type of the `Type Style`."""
+  type: GuidelineDesignSettingsTypeStyleType!
+}
+
+input GuidelineDesignSettingsTypeStyleFontFamilyInput {
+  """
+  **BETA** The name of the font family, e.g. "Arial"
+  """
+  name: String!
+
+  """
+  **BETA** The provider of the font family, e.g. "SYSTEM", "GOOGLE", "ADOBE" or "SELFHOSTED"
+  """
+  provider: String!
+}
+
+"""List of possible `Type Style` types."""
+enum GuidelineDesignSettingsTypeStyleType {
+  INLINE
+  BLOCK
+}
+
+type UpdateGuidelineDesignSettingsTypeStyle {
+  """**BETA** `Type Style` details."""
+  typeStyle: GuidelineDesignSettingsTypeStylesType!
+}
+
+input UpdateGuidelineDesignSettingsTypeStyleColorInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+
+  """**BETA** `Type Style Color` data."""
+  data: UpdateGuidelineDesignSettingsTypeStyleColorDataInput!
+}
+
+input UpdateGuidelineDesignSettingsTypeStyleColorDataInput {
+  """**BETA** Key of the `Type Style` to update."""
+  key: String!
+
+  """
+  **BETA** The text color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  textColor: String!
+}
+
+type UpdateGuidelineDesignSettingsTypeStyleColor {
+  """**BETA** `Type Style` details."""
+  typeStyle: GuidelineDesignSettingsTypeStylesType!
+}
+
+input UpdateGuidelineDesignSettingsMainFontFamilyInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** Main Font Family"""
+  mainFontFamily: GuidelineDesignSettingsTypeStyleFontFamilyInput!
+}
+
+type UpdateGuidelineDesignSettingsMainFontFamily {
+  """**BETA** `Main Font Family` details."""
+  mainFontFamily: GuidelineDesignSettingsTypeStyleFontFamily!
+}
+
+input UpdateGuidelineDesignSettingsButtonStyleInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Button Style` data."""
+  data: UpdateGuidelineDesignSettingsButtonStyleDataInput!
+}
+
+input UpdateGuidelineDesignSettingsButtonStyleDataInput {
+  """**BETA** Key of the `Button Style` to update."""
+  key: String!
+
+  """**BETA** The font family"""
+  fontFamily: GuidelineDesignSettingsTypeStyleFontFamilyInput
+
+  """
+  **BETA** The size of the font, e.g.: "12px", "24pt", "2em". Supported units: px, pt, pc, in, mm, cm, em, rem, %, vw, vh
+  """
+  fontSize: String!
+
+  """
+  **BETA** The weight of the font, e.g. "100", "200", "300", "400", "500", "600", "700", "800", "900"
+  """
+  fontWeight: String!
+
+  """**BETA** Line height"""
+  lineHeight: String!
+
+  """**BETA** Whether the text is uppercase"""
+  isUppercase: Boolean!
+
+  """**BETA** Whether the text is italic"""
+  isItalic: Boolean!
+
+  """
+  **BETA** The top padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingTop: String
+
+  """
+  **BETA** The right padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingRight: String
+
+  """
+  **BETA** The bottom padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingBottom: String
+
+  """
+  **BETA** The left padding, e.g. "10px". Supported units: "px", "pt", "pc", "in", "mm", "cm", "em", "rem", "%", "vw", "vh"
+  """
+  paddingLeft: String
+
+  """
+  **BETA** The corner radius, e.g. "5px"
+  """
+  cornerRadius: String
+
+  """
+  **BETA** The border width, e.g. "5px"
+  """
+  borderWidth: String
+}
+
+type UpdateGuidelineDesignSettingsButtonStyle {
+  """**BETA** `Button Style` details."""
+  buttonStyle: GuidelineDesignSettingsButtonStyle!
+}
+
+input UpdateGuidelineDesignSettingsButtonStyleColorInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+
+  """**BETA** `Button Style Color` data."""
+  data: UpdateGuidelineDesignSettingsButtonStyleColorDataInput!
+}
+
+input UpdateGuidelineDesignSettingsButtonStyleColorDataInput {
+  """**BETA** Key of the `Button Style` to update."""
+  key: String!
+
+  """
+  **BETA** The text color in the default state in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  defaultTextColor: String!
+
+  """
+  **BETA** The background color in the default state in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  defaultBackgroundColor: String!
+
+  """
+  **BETA** The border color in the default state in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  defaultBorderColor: String!
+
+  """
+  **BETA** The text color in the hover state in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  hoverTextColor: String!
+
+  """
+  **BETA** The background color in the hover state in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  hoverBackgroundColor: String!
+
+  """
+  **BETA** The border color in the hover state in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  hoverBorderColor: String!
+}
+
+type UpdateGuidelineDesignSettingsButtonStyleColor {
+  """**BETA** `Button Style` details."""
+  buttonStyle: GuidelineDesignSettingsButtonStyle!
+}
+
+input UpdateGuidelineDesignSettingsBulletListStylesInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Bullet List Styles` data."""
+  data: [UpdateGuidelineDesignSettingsBulletListStylesDataInput]!
+}
+
+input UpdateGuidelineDesignSettingsBulletListStylesDataInput {
+  """**BETA** The indentation level of the bullet list item"""
+  level: Int!
+
+  """
+  **BETA** The shape of the bullet list item. Can be any unicode character.
+  """
+  shape: String!
+
+  """
+  **BETA** The size of the bullet list item. Can be "auto" or any numeric value with a px or em unit.
+  """
+  size: String!
+}
+
+type UpdateGuidelineDesignSettingsBulletListStyles {
+  """**BETA** `Bullet List Styles` details."""
+  bulletListStyles: [GuidelineDesignSettingsBulletListStyle]!
+}
+
+input UpdateGuidelineDesignSettingsBulletListStyleColorsInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Color scheme` Id."""
+  colorSchemeId: String!
+
+  """**BETA** `Bullet List Style Colors` data."""
+  data: [UpdateGuidelineDesignSettingsBulletListStyleColorsDataInput]!
+}
+
+input UpdateGuidelineDesignSettingsBulletListStyleColorsDataInput {
+  """**BETA** The indentation level of the bullet list item"""
+  level: Int!
+
+  """
+  **BETA** The color of the bullet list item. Must be a RGB or RGBA string, e.g. "rgb(255, 255, 255)" or "rgba(255, 255, 255, 1)" or null.
+  """
+  color: String
+}
+
+type UpdateGuidelineDesignSettingsBulletListStyleColors {
+  """**BETA** `Bullet List Styles` details."""
+  bulletListStyles: [GuidelineDesignSettingsBulletListStyle]!
+}
+
+input UpdateGuidelineDesignSettingsNumberedListStylesInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Numbered List Styles` data."""
+  data: [UpdateGuidelineDesignSettingsNumberedListStylesDataInput]!
+}
+
+input UpdateGuidelineDesignSettingsNumberedListStylesDataInput {
+  """**BETA** The indentation level of the numbered list item"""
+  level: Int!
+
+  """
+  **BETA** The numeral of the numbered list item. Can be "decimal", "upper-alpha", "lower-alpha", "upper-roman" or "lower-roman"
+  """
+  numeral: String!
+}
+
+type UpdateGuidelineDesignSettingsNumberedListStyles {
+  """**BETA** `Numbered List Styles` details."""
+  numberedListStyles: [GuidelineDesignSettingsNumberedListStyle]!
+}
+
+input UpdateGuidelineDesignSettingsNumberedListStyleColorsInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Color scheme` Id."""
+  colorSchemeId: String!
+
+  """**BETA** `Numbered List Style Colors` data."""
+  data: [UpdateGuidelineDesignSettingsNumberedListStyleColorsDataInput]!
+}
+
+input UpdateGuidelineDesignSettingsNumberedListStyleColorsDataInput {
+  """**BETA** The indentation level of the numbered list item"""
+  level: Int!
+
+  """
+  **BETA** The color of the numbered list item. Must be a RGB or RGBA string, e.g. "rgb(255, 255, 255)" or "rgba(255, 255, 255, 1)" or null.
+  """
+  color: String
+}
+
+type UpdateGuidelineDesignSettingsNumberedListStyleColors {
+  """**BETA** `Numbered List Styles` details."""
+  numberedListStyles: [GuidelineDesignSettingsNumberedListStyle]!
+}
+
+input UpdateGuidelineDesignSettingsAccentColorInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+
+  """**BETA** `Accent Color` data."""
+  data: UpdateGuidelineDesignSettingsAccentColorDataInput!
+}
+
+input UpdateGuidelineDesignSettingsAccentColorDataInput {
+  """**BETA** Key of the `Accent Color` to update."""
+  key: String!
+
+  """
+  **BETA** The color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)"
+  """
+  color: String!
+}
+
+type UpdateGuidelineDesignSettingsAccentColor {
+  """**BETA** `Accent Color` details."""
+  accentColor: GuidelineDesignSettingsAccentColor!
+}
+
+input UpdateGuidelineDesignSettingsBackgroundColorInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+
+  """**BETA** `Background Color` data."""
+  data: UpdateGuidelineDesignSettingsBackgroundColorDataInput!
+}
+
+input UpdateGuidelineDesignSettingsBackgroundColorDataInput {
+  """
+  **BETA** The background color in rgb/rgba format, e.g.: "rgb(255,255,255)" or "rgba(255,255,255,0.5)" or null
+  """
+  backgroundColor: String
+}
+
+type UpdateGuidelineDesignSettingsBackgroundColor {
+  """**BETA** The background colors."""
+  backgroundColors: [GuidelineDesignSettingsBackgroundColor]!
+}
+
+input CreateColorSchemeInput {
+  """**BETA** `Guideline` Id."""
+  guidelineId: ID!
+
+  """**BETA** `Color Scheme` data."""
+  data: CreateColorSchemeDataInput!
+}
+
+input CreateColorSchemeDataInput {
+  """**BETA** The name of the new color scheme"""
+  name: String!
+}
+
+type CreateColorScheme {
+  """**BETA** The color scheme."""
+  colorScheme: GuidelineColorScheme!
+}
+
+input ChangeDefaultColorSchemeInput {
+  """**BETA** The ID of the `Color Scheme` that should be set as default."""
+  colorSchemeId: ID!
+}
+
+type ChangeDefaultColorScheme {
+  """**BETA** The color scheme that has been set as default."""
+  colorScheme: GuidelineColorScheme!
+}
+
+input UpdateColorSchemeInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+
+  """**BETA** `Color Scheme` data."""
+  data: UpdateColorSchemeDataInput!
+}
+
+input UpdateColorSchemeDataInput {
+  """**BETA** The new color scheme name"""
+  name: String!
+}
+
+type UpdateColorScheme {
+  """**BETA** The updated color scheme."""
+  colorScheme: GuidelineColorScheme!
+}
+
+input DeleteColorSchemeInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+}
+
+type DeleteColorScheme {
+  """**BETA** The ID of the deleted `Color Scheme`"""
+  colorSchemeId: String!
+}
+
+input DuplicateColorSchemeInput {
+  """**BETA** `Color Scheme` Id."""
+  colorSchemeId: ID!
+}
+
+type DuplicateColorScheme {
+  """**BETA** The duplicated color scheme."""
+  colorScheme: GuidelineColorScheme!
+}
+
+input UpdateGuidelinePageBlockSettingsInput {
+  """
+  **BETA** The `id` of the `GuidelinePageBlock` which should be modified.
+  """
+  id: ID!
+
+  """
+  **BETA** The locale tag ("de", "de-DE") in which the settings of the `GuidelinePageBlock` should be updated. It is optional and when not provided, the settings will be updated in the main language.
+  """
+  locale: String
+
+  """
+  **BETA** The `language` in which the settings of the `GuidelinePageBlock` should be updated. It is optional and when not provided, the settings will be updated in the main language.
+  """
+  language: LanguageCode
+
+  """
+  **BETA** The `settings` of the `GuidelinePageBlock` which should be updated. The settings must be provided as a JSON string.
+  """
+  settings: JsonObject!
+}
+
+type UpdateGuidelinePageBlockSettings {
+  """**BETA** The `GuidelinePageBlock` which settings were updated."""
+  block: GuidelinePageBlock!
+}
+
+"""Input for creating a guideline document page category."""
+input CreateGuidelineDocumentPageCategoryInput {
+  """**BETA** The ID of the document the page category is created in."""
+  parentId: ID!
+
+  """**BETA** The title of the document page category."""
+  title: String!
+}
+
+type CreateGuidelineDocumentPageCategory {
+  """**BETA** The ID of the created document page category."""
+  id: ID!
+
+  """**BETA** The title of the created document page category."""
+  title: String
+}
+
+"""Input for updating a guideline document page category."""
+input UpdateGuidelineDocumentPageCategoryInput {
+  """**BETA** The ID of the guideline document page category to update."""
+  id: ID!
+
+  """**BETA** The new title of the document page category."""
+  title: String!
+
+  """
+  **BETA** Language code the title is written in. Omit it (or pass the default language) to update the base title; pass a non-default language to update that translation.
+  """
+  language: String = null
+}
+
+type UpdateGuidelineDocumentPageCategory {
+  """**BETA** The ID of the updated document page category."""
+  id: ID!
+
+  """**BETA** The title of the document page category after the update."""
+  title: String
+}
+
+"""Input for deleting a guideline document page category."""
+input DeleteGuidelineDocumentPageCategoryInput {
+  """**BETA** The ID of the guideline document page category to delete."""
+  id: ID!
+
+  """
+  **BETA** When true (the default), deletion fails if the page category still contains pages. Set to false to delete the page category even when it still contains those items.
+  """
+  failIfHasChildren: Boolean! = true
+}
+
+type DeleteGuidelineDocumentPageCategory {
+  """**BETA** The ID of the deleted document page category."""
+  id: ID!
+}
+
+"""Input for creating a guideline document page link."""
+input CreateGuidelineDocumentPageLinkInput {
+  """
+  **BETA** The ID of the entity to create the link in (GuidelineDocument or GuidelineDocumentPageCategory).
+  """
+  parentId: ID!
+
+  """**BETA** The title of the link."""
+  title: String!
+
+  """**BETA** The link URL."""
+  url: String!
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean!
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode = null
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition = null
+
+  """
+  **BETA** Icon taken from an asset ID. Mutually exclusive with `iconFileId`.
+  """
+  iconAssetId: ID = null
+
+  """
+  **BETA** Icon taken from an uploaded file id. Mutually exclusive with `iconAssetId`.
+  """
+  iconFileId: String = null
+}
+
+type CreateGuidelineDocumentPageLink {
+  """**BETA** The ID of the created document page link."""
+  id: ID!
+
+  """**BETA** The title of the created document page link."""
+  title: String
+
+  """**BETA** The link URL of the created document page link."""
+  url: String
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean!
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """**BETA** Icon asset ID, if the icon comes from an asset."""
+  iconAssetId: ID
+
+  """**BETA** Icon file id, if the icon comes from an uploaded file."""
+  iconFileId: String
+}
+
+"""
+Input for updating a guideline document page link. Omitted fields are left unchanged. Only `iconAssetId` and `iconFileId` accept `null`, which removes the icon.
+"""
+input UpdateGuidelineDocumentPageLinkInput {
+  """**BETA** The ID of the guideline document page link to update."""
+  id: ID!
+
+  """
+  **BETA** Language code the title is written in. Only meaningful together with `title`. Omit it (or pass the default language) to update the base title; pass a non-default language to update that translation.
+  """
+  language: String = null
+
+  """**BETA** The new title of the link."""
+  title: String
+
+  """**BETA** The link URL."""
+  url: String
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """
+  **BETA** Icon taken from an asset id; `null` clears the icon. Mutually exclusive with `iconFileId`.
+  """
+  iconAssetId: ID
+
+  """
+  **BETA** Icon taken from an uploaded file id; `null` clears the icon. Mutually exclusive with `iconAssetId`.
+  """
+  iconFileId: String
+}
+
+type UpdateGuidelineDocumentPageLink {
+  """**BETA** The ID of the updated document page link."""
+  id: ID!
+
+  """**BETA** The title of the link after the update."""
+  title: String
+
+  """**BETA** The link URL after the update."""
+  url: String
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean!
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """**BETA** Icon asset ID, if the icon comes from an asset."""
+  iconAssetId: ID
+
+  """**BETA** Icon file id, if the icon comes from an uploaded file."""
+  iconFileId: String
+}
+
+"""Input for deleting a guideline document page link."""
+input DeleteGuidelineDocumentPageLinkInput {
+  """**BETA** The ID of the guideline document page link to delete."""
+  id: ID!
+}
+
+type DeleteGuidelineDocumentPageLink {
+  """**BETA** The ID of the deleted document page link."""
+  id: ID!
+}
+
+"""Input for creating a guideline document library."""
+input CreateGuidelineDocumentLibraryInput {
+  """
+  **BETA** The ID of the entity to create the document library in (Guideline or Document Group).
+  """
+  parentId: ID!
+
+  """**BETA** The title of the document library."""
+  title: String!
+
+  """**BETA** The library ID"""
+  libraryId: ID!
+
+  """**BETA** The heading of the document library."""
+  heading: String = null
+
+  """**BETA** The subheading of the document library."""
+  subheading: String = null
+}
+
+type CreateGuidelineDocumentLibrary {
+  """**BETA** The ID of the created document library."""
+  id: ID!
+
+  """**BETA** The title of the created document"""
+  title: String
+
+  """**BETA** The heading of the created document"""
+  heading: String!
+
+  """**BETA** The subheading of the created document"""
+  subheading: String!
+}
+
+"""Input for updating a guideline document library."""
+input UpdateGuidelineDocumentLibraryInput {
+  """**BETA** The ID of the guideline document library to update."""
+  id: ID!
+
+  """**BETA** The new title of the document library."""
+  title: String!
+
+  """
+  **BETA** Language code the title is written in. Omit it (or pass the default language) to update the base title; pass a non-default language to update that translation.
+  """
+  language: String = null
+}
+
+type UpdateGuidelineDocumentLibrary {
+  """**BETA** The ID of the updated document library."""
+  id: ID!
+
+  """**BETA** The title of the document library after the update."""
+  title: String
+}
+
+"""Input for deleting a guideline document library."""
+input DeleteGuidelineDocumentLibraryInput {
+  """**BETA** The ID of the guideline document to delete."""
+  id: ID!
+}
+
+type DeleteGuidelineDocumentLibrary {
+  """**BETA** The ID of the deleted document library."""
+  id: ID!
+}
+
+"""Input for showing a guideline document library in the navigation."""
+input ShowGuidelineDocumentLibraryInNavigationInput {
+  """
+  **BETA** The ID of the guideline document library to show in the navigation.
+  """
+  id: ID!
+}
+
+type ShowGuidelineDocumentLibraryInNavigation {
+  """
+  **BETA** The ID of the guideline document library shown in the navigation.
+  """
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document library is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for hiding a guideline document library from the navigation."""
+input HideGuidelineDocumentLibraryFromNavigationInput {
+  """
+  **BETA** The ID of the guideline document library to hide from the navigation.
+  """
+  id: ID!
+}
+
+type HideGuidelineDocumentLibraryFromNavigation {
+  """
+  **BETA** The ID of the guideline document library hidden from the navigation.
+  """
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document library is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for creating a guideline document page."""
+input CreateGuidelineDocumentPageInput {
+  """
+  **BETA** The ID of the parent where guideline document page should be created in. Can be either a GuidelineDocument or GuidelineDocumentPageCategory
+  """
+  parentId: ID!
+
+  """**BETA** The title of the guideline document page id."""
+  title: String!
+}
+
+type CreateGuidelineDocumentPage {
+  """**BETA** The ID of the created guideline document page."""
+  id: ID!
+
+  """
+  **BETA** The ID of the document the guideline document page is created in.
+  """
+  documentId: ID!
+
+  """**BETA** The title of the guideline document page id."""
+  title: String!
+
+  """
+  **BETA** The ID of the category the guideline document page is created in.
+  """
+  categoryId: ID
+}
+
+"""
+Input for updating a guideline document page. Omitted fields are left unchanged.
+"""
+input UpdateGuidelineDocumentPageInput {
+  """**BETA** The ID of the guideline document page to update."""
+  id: ID!
+
+  """
+  **BETA** Language code the title is written in. Only meaningful together with `title`. Omit it (or pass the default language) to update the base title; pass a non-default language to update that translation.
+  """
+  language: String = null
+
+  """**BETA** The new title of the document page."""
+  title: String
+
+  """**BETA** The new heading of the document page."""
+  heading: String
+
+  """**BETA** The new subheading of the document page."""
+  subheading: String
+}
+
+type UpdateGuidelineDocumentPage {
+  """**BETA** The ID of the updated document page."""
+  id: ID!
+
+  """**BETA** The title of the document page after the update."""
+  title: String
+
+  """**BETA** The heading of the document page after the update."""
+  heading: String
+
+  """**BETA** The subheading of the document page after the update."""
+  subheading: String
+}
+
+"""Input for deleting a guideline document page."""
+input DeleteGuidelineDocumentPageInput {
+  """**BETA** The ID of the guideline document page to delete."""
+  id: ID!
+
+  """
+  **BETA** When true (the default), deletion fails if the page still contains content blocks. Set to false to delete the page even when it still contains those items.
+  """
+  failIfHasChildren: Boolean! = true
+}
+
+type DeleteGuidelineDocumentPage {
+  """**BETA** The ID of the deleted document page."""
+  id: ID!
+}
+
+"""Input for duplicating a guideline document page."""
+input DuplicateGuidelineDocumentPageInput {
+  """**BETA** The ID of the guideline document page to duplicate."""
+  id: ID!
+}
+
+type DuplicateGuidelineDocumentPage {
+  """**BETA** The ID of the duplicated guideline document page."""
+  id: ID!
+
+  """**BETA** The title of the duplicated guideline document page."""
+  title: String!
+}
+
+"""Input for publishing a guideline document page."""
+input PublishGuidelineDocumentPageInput {
+  """**BETA** The ID of the guideline document page to publish."""
+  id: ID!
+}
+
+type PublishGuidelineDocumentPage {
+  """**BETA** The ID of the published guideline document page."""
+  id: ID!
+
+  """**BETA** Whether or not the guideline document page is published."""
+  isPublished: Boolean!
+}
+
+"""Input for unpublishing a guideline document page."""
+input UnpublishGuidelineDocumentPageInput {
+  """**BETA** The ID of the guideline document page to unpublish."""
+  id: ID!
+}
+
+type UnpublishGuidelineDocumentPage {
+  """**BETA** The ID of the unpublished guideline document page."""
+  id: ID!
+
+  """**BETA** Whether or not the guideline document page is published."""
+  isPublished: Boolean!
+}
+
+"""
+Input for moving a guideline document page to a different document and/or category.
+"""
+input MoveGuidelineDocumentPageInput {
+  """**BETA** The ID of the guideline document page to move."""
+  id: ID!
+
+  """
+  **BETA** The ID of the parent to move the guideline document page to. Can be either a GuidelineDocument or a GuidelineDocumentPageCategory
+  """
+  targetParentId: ID!
+
+  """
+  **BETA** The sort position of the guideline document page among its new siblings. Omit it to place it last.
+  """
+  sort: Int = null
+}
+
+type MoveGuidelineDocumentPage {
+  """**BETA** The ID of the moved guideline document page."""
+  id: ID!
+}
+
+"""Input for showing a guideline document page in the navigation."""
+input ShowGuidelineDocumentPageInNavigationInput {
+  """
+  **BETA** The ID of the guideline document page to show in the navigation.
+  """
+  id: ID!
+}
+
+type ShowGuidelineDocumentPageInNavigation {
+  """
+  **BETA** The ID of the guideline document page shown in the navigation.
+  """
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document page is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for hiding a guideline document page from the navigation."""
+input HideGuidelineDocumentPageFromNavigationInput {
+  """
+  **BETA** The ID of the guideline document page to hide from the navigation.
+  """
+  id: ID!
+}
+
+type HideGuidelineDocumentPageFromNavigation {
+  """
+  **BETA** The ID of the guideline document page hidden from the navigation.
+  """
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document group is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for creating a guideline document group."""
+input CreateGuidelineDocumentGroupInput {
+  """
+  **BETA** The ID of the entity to create the document group in (Guideline).
+  """
+  parentId: ID!
+
+  """**BETA** The title of the document group."""
+  title: String!
+}
+
+type CreateGuidelineDocumentGroup {
+  """**BETA** The ID of the created document group."""
+  id: ID!
+
+  """**BETA** The title of the created document group."""
+  title: String
+}
+
+"""Input for updating a guideline document group."""
+input UpdateGuidelineDocumentGroupInput {
+  """**BETA** The ID of the guideline document group to update."""
+  id: ID!
+
+  """**BETA** The new title of the document group."""
+  title: String!
+
+  """
+  **BETA** Language code the name is written in. Omit it (or pass the default language) to update the base name; pass a non-default language to update that translation.
+  """
+  language: String = null
+}
+
+type UpdateGuidelineDocumentGroup {
+  """**BETA** The ID of the updated document group."""
+  id: ID!
+
+  """**BETA** The title of the document group after the update."""
+  title: String
+}
+
+"""Input for deleting a guideline document group."""
+input DeleteGuidelineDocumentGroupInput {
+  """**BETA** The ID of the guideline document group to delete."""
+  id: ID!
+
+  """
+  **BETA** When true (the default), deletion fails if the group still contains documents, libraries or links. Set to false to delete the group even when it still contains those items.
+  """
+  failIfHasChildren: Boolean! = true
+}
+
+type DeleteGuidelineDocumentGroup {
+  """**BETA** The ID of the deleted document group."""
+  id: ID!
+}
+
+"""Input for showing a guideline document group in the navigation."""
+input ShowGuidelineDocumentGroupInNavigationInput {
+  """
+  **BETA** The ID of the guideline document group to show in the navigation.
+  """
+  id: ID!
+}
+
+type ShowGuidelineDocumentGroupInNavigation {
+  """
+  **BETA** The ID of the guideline document group shown in the navigation.
+  """
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document group is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for hiding a guideline document group from the navigation."""
+input HideGuidelineDocumentGroupFromNavigationInput {
+  """
+  **BETA** The ID of the guideline document group to hide from the navigation.
+  """
+  id: ID!
+}
+
+type HideGuidelineDocumentGroupFromNavigation {
+  """
+  **BETA** The ID of the guideline document group hidden from the navigation.
+  """
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document group is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for creating a guideline document."""
+input CreateGuidelineDocumentInput {
+  """
+  **BETA** The ID of the entity to create the document in (Guideline or Document Group).
+  """
+  parentId: ID!
+
+  """**BETA** The title of the document."""
+  title: String!
+}
+
+type CreateGuidelineDocument {
+  """**BETA** The ID of the created document."""
+  id: ID!
+
+  """**BETA** The title of the created document."""
+  title: String
+}
+
+"""Input for updating a guideline document."""
+input UpdateGuidelineDocumentInput {
+  """**BETA** The ID of the guideline document to update."""
+  id: ID!
+
+  """**BETA** The new title of the document."""
+  title: String!
+
+  """
+  **BETA** Language code the title is written in. Omit it (or pass the default language) to update the base title; pass a non-default language to update that translation.
+  """
+  language: String = null
+}
+
+type UpdateGuidelineDocument {
+  """**BETA** The ID of the updated document."""
+  id: ID!
+
+  """**BETA** The title of the document after the update."""
+  title: String
+}
+
+"""Input for deleting a guideline document."""
+input DeleteGuidelineDocumentInput {
+  """**BETA** The ID of the guideline document to delete."""
+  id: ID!
+
+  """
+  **BETA** When true (the default), deletion fails if the document still contains page categories or pages. Set to false to delete the document even when it still contains those items.
+  """
+  failIfHasChildren: Boolean! = true
+}
+
+type DeleteGuidelineDocument {
+  """**BETA** The ID of the deleted document."""
+  id: ID!
+}
+
+"""Input for showing a guideline document in the navigation."""
+input ShowGuidelineDocumentInNavigationInput {
+  """**BETA** The ID of the guideline document to show in the navigation."""
+  id: ID!
+}
+
+type ShowGuidelineDocumentInNavigation {
+  """**BETA** The ID of the guideline document shown in the navigation."""
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for hiding a guideline document from the navigation."""
+input HideGuidelineDocumentFromNavigationInput {
+  """**BETA** The ID of the guideline document to hide from the navigation."""
+  id: ID!
+}
+
+type HideGuidelineDocumentFromNavigation {
+  """**BETA** The ID of the guideline document hidden from the navigation."""
+  id: ID!
+
+  """
+  **BETA** Whether or not the guideline document is hidden in navigation.
+  """
+  isHiddenInNavigation: Boolean!
+}
+
+"""Input for create a guideline document link"""
+input CreateGuidelineDocumentLinkInput {
+  """
+  **BETA** The parent ID to create the link in (Guideline or Document Group)
+  """
+  parentId: ID!
+
+  """**BETA** The title of the link."""
+  title: String!
+
+  """**BETA** The link URL"""
+  url: String!
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean!
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode = null
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition = null
+
+  """
+  **BETA** Icon taken from an asset ID; `null` clears the icon. Mutually exclusive with `iconFileId`.
+  """
+  iconAssetId: ID = null
+
+  """
+  **BETA** Icon taken from an uploaded file id; `null` clears the icon. Mutually exclusive with `iconAssetId`.
+  """
+  iconFileId: String = null
+}
+
+type CreateGuidelineDocumentLink {
+  """**BETA** The link document's ID"""
+  id: ID!
+
+  """**BETA** The title of the link."""
+  title: String!
+
+  """**BETA** The link URL"""
+  url: String!
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean!
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """**BETA** Icon asset ID, if the icon comes from an asset."""
+  iconAssetId: ID
+
+  """**BETA** Icon file id, if the icon comes from an uploaded file."""
+  iconFileId: String
+}
+
+"""
+Input for updating a guideline document link. Omitted fields are left unchanged. Only `iconAssetId` and `iconFileId` accept `null`, which removes the icon.
+"""
+input UpdateGuidelineDocumentLinkInput {
+  """**BETA** The ID of the guideline document link to update."""
+  id: ID!
+
+  """
+  **BETA** Language code the title is written in. Only meaningful together with `title`. Omit it (or pass the default language) to update the base title; pass a non-default language to update that translation.
+  """
+  language: String = null
+
+  """**BETA** The new title of the link."""
+  title: String
+
+  """**BETA** The link URL."""
+  url: String
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """
+  **BETA** Icon taken from an asset id; `null` clears the icon. Mutually exclusive with `iconFileId`.
+  """
+  iconAssetId: ID
+
+  """
+  **BETA** Icon taken from an uploaded file id; `null` clears the icon. Mutually exclusive with `iconAssetId`.
+  """
+  iconFileId: String
+}
+
+type UpdateGuidelineDocumentLink {
+  """**BETA** The ID of the updated document link."""
+  id: ID!
+
+  """**BETA** The title of the link after the update."""
+  title: String
+
+  """**BETA** The link URL after the update."""
+  url: String
+
+  """**BETA** Whether the link opens in a new tab."""
+  openNewTab: Boolean!
+
+  """**BETA** How the link is displayed."""
+  displayMode: GuidelineDocumentLinkDisplayMode
+
+  """**BETA** Position of the icon relative to the label."""
+  iconPosition: GuidelineDocumentLinkIconPosition
+
+  """**BETA** Icon asset ID, if the icon comes from an asset."""
+  iconAssetId: ID
+
+  """**BETA** Icon file id, if the icon comes from an uploaded file."""
+  iconFileId: String
+}
+
+"""Input for deleting a guideline document link."""
+input DeleteGuidelineDocumentLinkInput {
+  """**BETA** The ID of the guideline document link to delete."""
+  id: ID!
+}
+
+type DeleteGuidelineDocumentLink {
+  """**BETA** The ID of the deleted document link."""
+  id: ID!
+}
+
+input CreateGuidelinePageBlockInput {
+  """
+  **BETA** The `id` of the `GuidelinePageBlockType` of the block to create.
+  """
+  blockTypeId: ID!
+
+  """
+  **BETA** The `settings` of the block, as defined by the block type's `settingsSchema`. Only api-writable settings may be provided; required fields must be present.
+  """
+  settings: JsonObject!
+
+  """
+  **BETA** The `id` of the `GuidelinePageSection` to create the block in.
+  """
+  sectionId: ID!
+
+  """
+  **BETA** The element after which the block is created. Omit to create it first in the section.
+  """
+  afterElementId: ID = null
+}
+
+type CreateGuidelinePageBlock {
+  """**BETA** The `GuidelinePageBlock` that was created."""
+  block: GuidelinePageBlock!
+}
+
+input CreateGuidelinePageHeadingInput {
+  """
+  **BETA** The `id` of the `GuidelinePageSection` on which the `GuidelinePageHeading` should be created.
+  """
+  sectionId: ID!
+
+  """
+  **BETA** The `title` for the `GuidelinePageHeading` that should be created.
+  """
+  title: String! = ""
+
+  """
+  **BETA** If given, the `GuidelinePageHeading` is created directly after this element, which must be in the same `GuidelinePageSection` as `sectionId`. When omitted, the `GuidelinePageHeading` is created in the first position of the `GuidelinePageSection`.
+  """
+  afterElementId: ID
+}
+
+type CreateGuidelinePageHeading {
+  """**BETA** The `GuidelinePageHeading` that was created."""
+  heading: GuidelinePageHeading!
+}
+
+input DeleteGuidelinePageHeadingInput {
+  """**BETA** The `id` of the `GuidelinePageHeading` to delete."""
+  id: ID!
+}
+
+type DeleteGuidelinePageHeading {
+  """**BETA** The id of the deleted `GuidelinePageHeading`."""
+  id: ID!
+}
+
+input UpdateGuidelinePageHeadingInput {
+  """
+  **BETA** The `id` of the `GuidelinePageHeading` that should be updated.
+  """
+  id: ID!
+
+  """**BETA** `GuidelinePageHeading` data."""
+  data: UpdateGuidelinePageHeadingDataInput!
+
+  """
+  **BETA** Language code the `title` is written in. Omit it to update the title in the main language.
+  """
+  language: LanguageCode = null
+
+  """
+  **BETA** The locale tag ("de", "de-DE") the `title` is written in. Omit it to update the title in the main language.
+  """
+  locale: String = null
+}
+
+input UpdateGuidelinePageHeadingDataInput {
+  """**BETA** The `title` of the `GuidelinePageHeading` that should be set."""
+  title: String!
+}
+
+type UpdateGuidelinePageHeading {
+  """**BETA** The `GuidelinePageHeading` that was modified."""
+  heading: GuidelinePageHeading!
+}
+
+input CreateGuidelinePageSectionInput {
+  """
+  **BETA** The `id` of `GuidelinePage` on which the `GuidelinePageSection` should be inserted.
+  """
+  pageId: ID!
+
+  """
+  **BETA** The `id` of the `GuidelinePageSection` after which the newly created `GuidelinePageSection` should be inserted. If null or undefined, the `GuidelinePageSection` will be inserted at the beginning of the `GuidelinePage`.
+  """
+  afterGuidelinePageSectionId: ID
+}
+
+type CreateGuidelinePageSection {
+  """**BETA** The `GuidelinePageSection` that was just created."""
+  section: GuidelinePageSection!
+}
+
+input UpdateGuidelinePageSectionInput {
+  """
+  **BETA** The `id` of the `GuidelinePageSection` that should be updated.
+  """
+  id: ID!
+
+  """**BETA** The properties of the section that should be updated."""
+  data: UpdateGuidelinePageSectionDataInput!
+
+  """
+  **BETA** The locale tag ("de", "de-DE") in which the `GuidelinePageSection` should be updated. Is only respected when using a translatable field, like f.e. `label`.
+  """
+  locale: String
+}
+
+input UpdateGuidelinePageSectionDataInput {
+  """**BETA** The `label` of the section."""
+  label: String
+
+  """
+  **BETA** The `columnProportions` for the 24-column layout should be set for the section.
+  """
+  columnProportions: [Int!]
+
+  """**BETA** The `alignment` of the content in the section."""
+  alignment: String
+
+  """
+  **BETA** The `maxWidth` of the section. Needs to be a value including one of the allowed units. (px,vw,rem,%,vh)
+  """
+  maxWidth: String
+
+  """
+  **BETA** The `verticalPadding` of the section. Needs to be a value including one of the allowed units. (px,vw,rem,%,vh)
+  """
+  verticalPadding: String
+
+  """
+  **BETA** The `horizontalPadding` of the section. Needs to be a value including one of the allowed units. (px,vw,rem,%,vh)
+  """
+  horizontalPadding: String
+
+  """
+  **BETA** The `verticalGutter` of the section. Needs to be a value including one of the allowed units. (px,vw,rem,%,vh)
+  """
+  verticalGutter: String
+
+  """
+  **BETA** The `horizontalGutter` of the section. Needs to be a value including one of the allowed units. (px,vw,rem,%,vh)
+  """
+  horizontalGutter: String
+
+  """
+  **BETA** The id of the color scheme that will be applied to this `GuidelinePageSection`.
+  """
+  colorSchemeId: String
+
+  """**BETA** The `backgroundFit` of the section."""
+  backgroundFit: GuidelinePageSectionBackgroundFit
+
+  """**BETA** Whether the section should have a border or not."""
+  hasBorder: Boolean
+
+  """**BETA** The style of the border."""
+  borderStyle: GuidelinePageSectionBorderStyle
+
+  """**BETA** The width of the border."""
+  borderWidth: String
+
+  """**BETA** The color of the border."""
+  borderColor: RgbaColorInput
+
+  """
+  **BETA** The `borderRadius` of the section. Needs to be a value including one of the allowed units. (px,vw,rem,%,vh)
+  """
+  borderRadius: String
+}
+
+"""The fit mode for a background image in a guideline page section."""
+enum GuidelinePageSectionBackgroundFit {
+  """The background image will fill the section, potentially cropping it."""
+  FILL
+
+  """The background image will be resized to fit the section."""
+  FIT
+}
+
+"""
+The style of the border for a guideline page section. Possible values are: solid, dotted, dashed.
+"""
+enum GuidelinePageSectionBorderStyle {
+  """A solid line border."""
+  SOLID
+
+  """A dotted line border."""
+  DOTTED
+
+  """A dashed line border."""
+  DASHED
+}
+
+type UpdateGuidelinePageSection {
+  """**BETA** The `Section` that was modified."""
+  section: GuidelinePageSection!
+}
+
+input DeleteGuidelinePageSectionInput {
+  """
+  **BETA** The `id` of the `GuidelinePageSection` that should be deleted.
+  """
+  id: ID!
+}
+
+union DeleteGuidelinePageSection = DeleteGuidelinePageSectionSuccessful | DeleteGuidelinePageSectionReferenced
+
+type DeleteGuidelinePageSectionSuccessful {
+  """**BETA** The id of the `Section` that was deleted."""
+  id: ID!
+}
+
+type DeleteGuidelinePageSectionReferenced {
+  """
+  **BETA** The references of the `Section` that should have been deleted.
+  """
+  references: [GuidelinePageBlockLocation!]!
+}
+
+type GuidelinePageBlockLocation {
+  """**BETA** The absolute url of the `GuidelinePageBlockLocation`."""
+  url: Url!
+
+  """**BETA** `GuidelinePageBlockLocation` location path."""
+  path: [String!]!
+}
+
+input CreateBrandEssentialsColorPaletteInput {
+  """**BETA** The Id of the `Brand`."""
+  brandId: ID!
+
+  """**BETA** The name of the color palette."""
+  name: String!
+
+  """**BETA** The description of the color palette."""
+  description: String
+}
+
+type CreateBrandEssentialsColorPalette {
+  """**BETA** The newly created color palette."""
+  colorPalette: BrandEssentialsColorPalette!
+}
+
+input UpdateBrandEssentialsColorPaletteInput {
+  """**BETA** The Id of the color palette."""
+  paletteId: ID!
+
+  """**BETA** The name of the color palette."""
+  name: String
+
+  """**BETA** The description of the color palette."""
+  description: String
+
+  """
+  **BETA** Color representations to hide for this palette. Omit to leave unchanged.
+  """
+  hiddenColorRepresentationKeys: [BrandEssentialsColorRepresentationKey!]
+}
+
+"""
+A color representation. Each value maps to the `BrandEssentialsColorRepresentations` field with the same name in camelCase.
+"""
+enum BrandEssentialsColorRepresentationKey {
+  RGBA
+  HEX
+  HSL
+  CMYK
+  CMYK_COATED
+  CMYK_UNCOATED
+  CMYK_NEWSPAPER
+  LAB
+  PANTONE
+  PANTONE_COATED
+  PANTONE_UNCOATED
+  PANTONE_CP
+  PANTONE_PLASTICS
+  PANTONE_TEXTILE
+  RAL
+  NCS
+  HKS
+  THREE_M
+  ORACAL
+  CSS_VARIABLE
+}
+
+type UpdateBrandEssentialsColorPalette {
+  """**BETA** The updated color palette."""
+  colorPalette: BrandEssentialsColorPalette!
+}
+
+input DeleteBrandEssentialsColorPaletteInput {
+  """**BETA** The Id of the color palette to delete."""
+  paletteId: ID!
+}
+
+type DeleteBrandEssentialsColorPalette {
+  """**BETA** The Id of the deleted color palette."""
+  id: ID!
+}
+
+input CreateBrandEssentialsColorInput {
+  """**BETA** The Id of the color palette."""
+  colorPaletteId: ID!
+
+  """**BETA** The name of the color."""
+  name: String!
+
+  """**BETA** The description of the color."""
+  description: String
+
+  """**BETA** The color representations."""
+  representations: BrandEssentialsColorRepresentationsInput!
+}
+
+input BrandEssentialsColorRepresentationsInput {
+  """**BETA** The RGBA representation of the color."""
+  rgba: BrandEssentialsRgbaColorRepresentationValueInput!
+
+  """**BETA** The HSL representation of the color."""
+  hsl: BrandEssentialsHslColorRepresentationValueInput
+
+  """**BETA** The CMYK representation of the color."""
+  cmyk: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The CMYK Coated representation of the color."""
+  cmykCoated: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The CMYK Uncoated representation of the color."""
+  cmykUncoated: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The CMYK Newspaper representation of the color."""
+  cmykNewspaper: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The LAB representation of the color."""
+  lab: BrandEssentialsLabColorRepresentationValueInput
+
+  """**BETA** The Pantone representation of the color."""
+  pantone: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Coated representation of the color."""
+  pantoneCoated: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Uncoated representation of the color."""
+  pantoneUncoated: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone CP representation of the color."""
+  pantoneCp: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Plastics representation of the color."""
+  pantonePlastics: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Textile representation of the color."""
+  pantoneTextile: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The RAL representation of the color."""
+  ral: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The NCS representation of the color."""
+  ncs: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The HKS representation of the color."""
+  hks: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The 3M representation of the color."""
+  threeM: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Oracal representation of the color."""
+  oracal: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The SCSS/LESS variable representation of the color."""
+  cssVariable: BrandEssentialsColorSystemRepresentationValueInput
+}
+
+input BrandEssentialsRgbaColorRepresentationValueInput {
+  """**BETA** Red component of the RGBA color space."""
+  red: Int!
+
+  """**BETA** Green component of the RGBA color space."""
+  green: Int!
+
+  """**BETA** Blue component of the RGBA color space."""
+  blue: Int!
+
+  """**BETA** Alpha component of the RGBA color space."""
+  alpha: Float!
+}
+
+input BrandEssentialsHslColorRepresentationValueInput {
+  """**BETA** Hue component of the HSL color space."""
+  hue: Float!
+
+  """**BETA** Saturation component of the HSL color space."""
+  saturation: Float!
+
+  """**BETA** Lightness component of the HSL color space."""
+  lightness: Float!
+}
+
+input BrandEssentialsCmykColorRepresentationValueInput {
+  """**BETA** Cyan component of the CMYK color space."""
+  cyan: Float!
+
+  """**BETA** Magenta component of the CMYK color space."""
+  magenta: Float!
+
+  """**BETA** Yellow component of the CMYK color space."""
+  yellow: Float!
+
+  """**BETA** Black component of the CMYK color space."""
+  black: Float!
+}
+
+input BrandEssentialsLabColorRepresentationValueInput {
+  """**BETA** Lightness component of the LAB color space."""
+  lightness: Float!
+
+  """**BETA** A axis component of the LAB color space."""
+  aAxis: Float!
+
+  """**BETA** B axis component of the LAB color space."""
+  bAxis: Float!
+}
+
+input BrandEssentialsColorSystemRepresentationValueInput {
+  """**BETA** Color value of the color system."""
+  colorValue: String!
+}
+
+type CreateBrandEssentialsColor {
+  """**BETA** The newly created color."""
+  color: BrandEssentialsColor!
+}
+
+input UpdateBrandEssentialsColorInput {
+  """**BETA** The Id of the color."""
+  colorId: ID!
+
+  """
+  **BETA** The name of the color. Omit or pass `null` to leave it unchanged; it cannot be set to an empty string.
+  """
+  name: String
+
+  """**BETA** The description of the color."""
+  description: String
+
+  """
+  **BETA** The color representations, in the shape that supports partial updates (`rgba` may be omitted to leave it unchanged). Omit or pass `null` to leave them unchanged.
+  """
+  representations: UpdateBrandEssentialsColorRepresentationsInput
+}
+
+input UpdateBrandEssentialsColorRepresentationsInput {
+  """
+  **BETA** The RGBA representation of the color. Omit to leave it unchanged; it cannot be removed.
+  """
+  rgba: BrandEssentialsRgbaColorRepresentationValueInput
+
+  """**BETA** The HSL representation of the color."""
+  hsl: BrandEssentialsHslColorRepresentationValueInput
+
+  """**BETA** The CMYK representation of the color."""
+  cmyk: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The CMYK Coated representation of the color."""
+  cmykCoated: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The CMYK Uncoated representation of the color."""
+  cmykUncoated: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The CMYK Newspaper representation of the color."""
+  cmykNewspaper: BrandEssentialsCmykColorRepresentationValueInput
+
+  """**BETA** The LAB representation of the color."""
+  lab: BrandEssentialsLabColorRepresentationValueInput
+
+  """**BETA** The Pantone representation of the color."""
+  pantone: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Coated representation of the color."""
+  pantoneCoated: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Uncoated representation of the color."""
+  pantoneUncoated: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone CP representation of the color."""
+  pantoneCp: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Plastics representation of the color."""
+  pantonePlastics: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Pantone Textile representation of the color."""
+  pantoneTextile: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The RAL representation of the color."""
+  ral: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The NCS representation of the color."""
+  ncs: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The HKS representation of the color."""
+  hks: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The 3M representation of the color."""
+  threeM: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The Oracal representation of the color."""
+  oracal: BrandEssentialsColorSystemRepresentationValueInput
+
+  """**BETA** The SCSS/LESS variable representation of the color."""
+  cssVariable: BrandEssentialsColorSystemRepresentationValueInput
+}
+
+type UpdateBrandEssentialsColor {
+  """**BETA** The updated color."""
+  color: BrandEssentialsColor!
+}
+
+input DeleteBrandEssentialsColorInput {
+  """**BETA** The Id of the color to delete."""
+  colorId: ID!
+}
+
+type DeleteBrandEssentialsColor {
+  """**BETA** The Id of the deleted color."""
+  id: ID!
+}
+
+input MoveBrandEssentialsColorInput {
+  """**BETA** The Id of the color to move."""
+  colorId: ID!
+
+  """**BETA** The Id of the target color palette."""
+  colorPaletteId: ID!
+}
+
+type MoveBrandEssentialsColor {
+  """**BETA** The moved color."""
+  color: BrandEssentialsColor!
+}
+
+input RepositionBrandEssentialsColorInput {
+  """**BETA** The Id of the color to reposition."""
+  colorId: ID!
+
+  """**BETA** The new position of the color within its palette (0-based)."""
+  newPosition: Int!
+}
+
+type RepositionBrandEssentialsColor {
+  """**BETA** The color palette with the repositioned color."""
+  colorPalette: BrandEssentialsColorPalette!
+}
+
+input InstallBrandEssentialsSelfhostedFontFormatsInput {
+  """**BETA** The Id of the brand to install selfhosted font formats to."""
+  brandId: ID!
+
+  """**BETA** The selfhosted font formats to install."""
+  formats: [InstallBrandEssentialsSelfhostedFontFormatInput!]!
+}
+
+input InstallBrandEssentialsSelfhostedFontFormatInput {
+  """
+  **BETA** The file Id of the font format to install. The font family name, weight and italic style are read from the font file itself.
+  """
+  fileId: ID!
+}
+
+type InstallBrandEssentialsSelfhostedFontFormats {
+  """**BETA** The font families the installed font formats were added to."""
+  fontFamilies: [BrandEssentialsFontFamily!]!
+
+  """
+  **BETA** The font formats that were not installed, one entry per skipped file Id.
+  """
+  errors: [InstallBrandEssentialsSelfhostedFontFormatError!]!
+}
+
+type InstallBrandEssentialsSelfhostedFontFormatError {
+  """**BETA** The file Id of the font format that could not be installed."""
+  fileId: ID!
+
+  """
+  **BETA** The machine readable reason why the font format could not be installed.
+  """
+  code: InstallBrandEssentialsSelfhostedFontFormatErrorCode!
+
+  """**BETA** A human readable description of the reason."""
+  message: String!
+}
+
+"""The reason why a selfhosted font format could not be installed."""
+enum InstallBrandEssentialsSelfhostedFontFormatErrorCode {
+  """The font style and format is already installed for the brand."""
+  ALREADY_INSTALLED
+
+  """The referenced font file does not exist."""
+  FILE_NOT_FOUND
+
+  """The referenced file is not a supported font file."""
+  VALIDATION_FAILED
+
+  """The font metadata could not be read from the referenced font file."""
+  PARSING_FAILED
+}
+
+input RemoveBrandEssentialsFontFamilyInput {
+  """**BETA** The Id of the font family to remove."""
+  fontFamilyId: ID!
+}
+
+type RemoveBrandEssentialsFontFamily {
+  """**BETA** The Id of the removed font family."""
+  id: ID!
+}
+
+input RemoveBrandEssentialsFontStyleInput {
+  """**BETA** The Id of the font family to remove the font style from."""
+  fontFamilyId: ID!
+
+  """**BETA** The weight of the font style to remove."""
+  weight: Int!
+
+  """**BETA** Whether the font style to remove is italic."""
+  isItalic: Boolean!
+}
+
+type RemoveBrandEssentialsFontStyle {
+  """
+  **BETA** The updated font family, or `null` if the last style was removed.
+  """
+  fontFamily: BrandEssentialsFontFamily
+}

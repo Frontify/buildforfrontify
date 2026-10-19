@@ -123,8 +123,8 @@ Required scopes are documented per query/mutation in the SDL (e.g.
   [`../frontify-auth-integration/SKILL.md`](../frontify-auth-integration/SKILL.md)
 - Apps using AppBridge `executeGraphql` →
   [`../frontify-auth-app/SKILL.md`](../frontify-auth-app/SKILL.md)
-- Custom Blocks → [`../frontify-auth-block/SKILL.md`](../frontify-auth-block/SKILL.md)
-- Themes → [`../frontify-auth-theme/SKILL.md`](../frontify-auth-theme/SKILL.md)
+- Custom Blocks have **no** GraphQL method on their bridge →
+  [`../frontify-custom-block/references/custom-block-api.md` § 8](../frontify-custom-block/references/custom-block-api.md#8-constraints-and-limitations)
 
 ### Global IDs
 
@@ -658,10 +658,9 @@ change:
 - For calling GraphQL from inside an App via the AppBridge →
   [`../frontify-auth-app/SKILL.md`](../frontify-auth-app/SKILL.md)
   (or the App skill itself: [`../frontify-app/SKILL.md`](../frontify-app/SKILL.md))
-- For Custom Blocks calling GraphQL through the bridge →
-  [`../frontify-auth-block/SKILL.md`](../frontify-auth-block/SKILL.md)
-- For Themes calling GraphQL through the bridge →
-  [`../frontify-auth-theme/SKILL.md`](../frontify-auth-theme/SKILL.md)
+- For Custom Blocks: `AppBridgeBlock` has no GraphQL method, so do not write
+  `appBridge.executeGraphql…` in a block →
+  [`../frontify-custom-block/references/custom-block-api.md` § 8](../frontify-custom-block/references/custom-block-api.md#8-constraints-and-limitations)
 - For transforming `previewUrl` / `dynamicPreviewUrl` returned from
   asset queries (resize, crop, focus, format conversion, srcset, PDF
   rendering, etc.) →

@@ -70,8 +70,7 @@ upstream concerns this skill assumes are handled:
 - **Frontify CLI install** — install with `npm install -g @frontify/frontify-cli`.
 - **Build validation** — run `npx tsc --noEmit` and `npx eslint src` during
   iteration and before deployment.
-- **Shared resource map** — when to load `frontify-auth-theme`,
-  `frontify-graphql`, `frontify-deployment`. (Note: `frontify-fondue` is **not**
+- **Shared resource map** — when to load `frontify-graphql`, `frontify-deployment`. (Note: `frontify-fondue` is **not**
   used inside themes — see Rule B3 in `references/platform-rules.md`.)
 
 For an **existing** Theme project (debugging, extending, deploying), you can
@@ -270,9 +269,6 @@ matching shared-resource skill:
   [`references/scaffolding.md`](references/scaffolding.md) covers the
   `frontify-cli deploy` / token-based deploy basics; the deployment skill
   covers the broader pipeline story.
-- **Auth questions specific to Themes** (the AppBridge sandbox model, what
-  the runtime gets for free, what's not reachable) →
-  [`../frontify-auth-theme/SKILL.md`](../frontify-auth-theme/SKILL.md).
 - **OAuth scopes for token-based deployment**
   (`basic:read`, `blocks:read`, `blocks:write`) and any auth question about
   external tooling that talks to Frontify from outside the AppBridge sandbox

@@ -575,10 +575,11 @@ appBridge.dispatch({
 |------|-----------|
 | **Manifest** | A block with value settings and no `settingsSchema` is rejected at Marketplace submission |
 | **Isolation** | Each block runs in its own React instance — no shared state with other blocks on the page |
-| **Authentication** | No tokens, no OAuth — the host injects the session. Never attempt to handle auth yourself |
+| **Authentication** | No tokens, no OAuth — the host injects the session. Never attempt to handle auth yourself. Blocks declare no scopes; they run with the viewing user's permissions |
 | **Secrets in settings** | Settings values are visible in the rendered page source. Never store API keys, tokens, or credentials in block settings |
-| **External HTTP** | Plain `fetch()` is fine for public/no-auth endpoints. Credentialed third-party calls require a server-side proxy (see `../frontify-auth-block/SKILL.md`) |
-| **GraphQL** | All Frontify GraphQL calls must go through the AppBridge, never via direct `fetch` to `/graphql` |
+| **External HTTP** | Plain `fetch()` is fine for public/no-auth endpoints. Credentialed third-party calls require a server-side proxy |
+| **GraphQL** | `AppBridgeBlock` has **no** GraphQL method (verified in app-bridge 3.12.10 and 4.0.0-alpha.69). `executeGraphql` and its variants are App-only (`@frontify/app-bridge-app`); don't copy them into a block. Read data through the hooks in §5. If a block needs data they don't cover (e.g. "newest assets in library X"), tell the user and agree an alternative: let the editor choose assets (`assetInput` / `useAssetChooser`), build an App instead, or use your own backend |
+| **Deprecated bridge methods** | Check a method's JSDoc in `node_modules/@frontify/app-bridge/dist/AppBridgeBlock.d.ts` for `@deprecated` before using it. `getBlockId()` is deprecated and threw in a real block; use `appBridge.context('blockId').get()` |
 | **CSS scoping** | All styles must be scoped to a unique root class — especially required for Marketplace blocks |
 | **Node version** | Build tooling requires Node 22.14+ |
 | **TypeScript** | All block code must be TypeScript (`tsconfig.json` is part of the scaffold) |

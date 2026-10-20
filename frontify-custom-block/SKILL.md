@@ -83,7 +83,12 @@ for confirmation on every detail.
 
 ### Scaffold a new block
 
-The official way to create a block is through the Frontify CLI:
+**Never create a Content Block project by hand.** Don't write `package.json`, `tsconfig.json`,
+`manifest.json` or `src/*` from scratch, and don't guess dependency names or versions. The CLI
+template pins the right Brand SDK and tooling versions; hand-written projects drift from it and
+fail `verify-manifest` or the build.
+
+Scaffold only through the Frontify CLI:
 
 ```bash
 npx @frontify/frontify-cli@latest create
@@ -92,14 +97,16 @@ npx @frontify/frontify-cli@latest create
 This launches an interactive prompt that asks for a name, CSS framework preference (Tailwind,
 CSS Modules, or none), and other options. It then generates the full project.
 
-Alternatively, use the `scripts/scaffold.sh` helper in this skill directory, which wraps
-the CLI call with prerequisite checking and prints helpful next steps:
+Or use the `scripts/scaffold.sh` helper in this skill directory, which wraps the CLI call with
+prerequisite checking and prints helpful next steps:
 
 ```bash
 bash scripts/scaffold.sh
 ```
 
-### Generated structure
+Both are interactive. If you can't drive the prompts from this environment, give the user the
+command to run and wait. Don't write the project files yourself. Continue once the project
+directory exists.
 
 ### Canonical `manifest.json`
 
@@ -132,6 +139,10 @@ Write this minimum for any new block:
   nested inside `switch.on` or `sectionHeading.blocks` still gets a top-level property.
 
 Full rules and the setting-type mapping: [references/settings-schema.md](references/settings-schema.md).
+
+### Generated structure
+
+What the CLI generates, for orientation only — not a template to recreate by hand:
 
 ```
 my-block/

@@ -88,7 +88,8 @@ for confirmation on every detail.
 template pins the right Brand SDK and tooling versions; hand-written projects drift from it and
 fail `verify-manifest` or the build.
 
-Scaffold only through the Frontify CLI:
+Scaffold only from the Frontify CLI, either interactively (below) or by copying its bundled
+templates when there is no TTY:
 
 ```bash
 npx @frontify/frontify-cli@latest create
@@ -104,9 +105,52 @@ prerequisite checking and prints helpful next steps:
 bash scripts/scaffold.sh
 ```
 
-Both are interactive. If you can't drive the prompts from this environment, give the user the
-command to run and wait. Don't write the project files yourself. Continue once the project
-directory exists.
+Both are interactive and need a TTY. When one is available, prefer them.
+
+### Scaffold a new block: non-interactive (agent / CI)
+
+The `create` prompts can't be driven without a TTY (there are no flags for name or styling). In a
+sandbox, container, or CI agent, copy the CLI's own project templates instead. They are the
+canonical, tool-maintained source and ship inside the installed `@frontify/frontify-cli` package,
+one per styling choice:
+
+- `templates/content-block-tailwind/`
+- `templates/content-block-css/`
+- `templates/content-block-css-modules/`
+
+Install the CLI locally so the path exists (don't rely on the `npx` cache, its path changes), then
+copy the template that matches the styling choice:
+
+```bash
+mkdir -p /tmp/frontify-cli && cd /tmp/frontify-cli && npm init -y >/dev/null
+npm i @frontify/frontify-cli
+cp -R node_modules/@frontify/frontify-cli/templates/content-block-css <path>/<block-name>
+```
+
+Then, in the new project:
+
+1. Set `name` in `package.json`.
+2. Set `appId` in `manifest.json`. The template ships `"<Your app ID>"` as a placeholder.
+3. Add `settingsSchema` to `manifest.json`. The template doesn't include it; see the next section.
+4. Create `.gitignore` with these lines. `create` writes it itself because the templates don't
+   include one:
+
+   ```
+   node_modules
+   dist
+   .idea
+   .vscode
+   ```
+5. Install and sanity-check:
+
+```bash
+cd <block-name>
+npm install
+npm run typecheck   # tsc --noEmit
+```
+
+Copy only from the CLI's templates. Don't write the project files yourself, and don't change the
+dependency versions the template pins.
 
 ### Canonical `manifest.json`
 

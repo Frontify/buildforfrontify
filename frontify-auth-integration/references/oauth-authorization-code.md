@@ -9,12 +9,12 @@ browser, mobile, native) **must** use **PKCE**.
 
 | Endpoint | HTTP | URL |
 |----------|------|-----|
-| Authorization | `GET` | `https://<domain>/api/oauth/authorize` |
-| Access Token | `POST` | `https://<domain>/api/oauth/accesstoken` |
-| Refresh | `POST` | `https://<domain>/api/oauth/refresh` |
-| Revoke | `POST` | `https://<domain>/api/oauth/revoke` |
+| Authorization | `GET` | `https://{domain}/api/oauth/authorize` |
+| Access Token | `POST` | `https://{domain}/api/oauth/accesstoken` |
+| Refresh | `POST` | `https://{domain}/api/oauth/refresh` |
+| Revoke | `POST` | `https://{domain}/api/oauth/revoke` |
 
-`<domain>` is the customer's Frontify domain. A given OAuth 2 Client is
+`{domain}` is the customer's Frontify domain. A given OAuth 2 Client is
 **only valid for the account where it was registered** — for multi-account
 SaaS, contact `developer@frontify.com`.
 
@@ -66,13 +66,13 @@ Redirect the user's browser to `/api/oauth/authorize`.
 Confidential client (no PKCE):
 
 ```
-https://<domain>/api/oauth/authorize?response_type=code&client_id={ID}&redirect_uri={URI}&scope={scope}&state={STATE}
+https://{domain}/api/oauth/authorize?response_type=code&client_id={ID}&redirect_uri={URI}&scope={scope}&state={STATE}
 ```
 
 Public client (with PKCE):
 
 ```
-https://<domain>/api/oauth/authorize?response_type=code&client_id={ID}&scope={scope}&state={STATE}&code_challenge={SECRET}&code_challenge_method=S256&redirect_uri={URI}
+https://{domain}/api/oauth/authorize?response_type=code&client_id={ID}&scope={scope}&state={STATE}&code_challenge={SECRET}&code_challenge_method=S256&redirect_uri={URI}
 ```
 
 ### PKCE primer
@@ -106,7 +106,7 @@ this is a CSRF protection.
 
 ## Step 3 — Exchange the code for tokens
 
-`POST https://<domain>/api/oauth/accesstoken` with form-data or JSON body.
+`POST https://{domain}/api/oauth/accesstoken` with form-data or JSON body.
 
 | Param | Required | Sample | Notes |
 |-------|----------|--------|-------|
@@ -145,7 +145,7 @@ between one week and three months. Don't hard-code; trust `expires_in`.
 ## Step 4 — Call the API
 
 ```http
-POST https://<domain>/graphql
+POST https://{domain}/graphql
 Authorization: Bearer ey5811sfghAffastta
 Content-Type: application/json
 ```
@@ -158,7 +158,7 @@ curl -X POST \
   -F refresh_token=ey5811sfghA895Xtta \
   -F client_id={clientId} \
   -F scope=basic:read+basic:write \
-  https://<domain>/api/oauth/refresh
+  https://{domain}/api/oauth/refresh
 # Add: -F client_secret={secret}    (confidential clients only)
 ```
 
@@ -175,7 +175,7 @@ Refresh response is the same shape as the initial token exchange. Two rules:
 curl -X POST \
   -F token=ey5811sfghA895Xtta \
   -F token_type_hint=access_token \
-  https://<domain>/api/oauth/revoke
+  https://{domain}/api/oauth/revoke
 ```
 
 `token_type_hint` is `access_token` or `refresh_token` (or null — Frontify

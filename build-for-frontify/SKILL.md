@@ -146,7 +146,7 @@ External / script  →  ../frontify-auth-integration/SKILL.md
   model and (for Apps) a `secrets[]` + `executeSecureRequest` mechanism.
 - **External integrations** (backends, CI jobs, OAuth client apps, Service
   Apps, personal developer tokens) handle raw bearer tokens against
-  `https://<domain>/api/oauth/*` — load `frontify-auth-integration` for any
+  `https://{domain}/api/oauth/*` — load `frontify-auth-integration` for any
   caller that hits `/graphql` directly.
 - **Hybrid case**: an App that calls a third-party API with secrets is **still
   an App** — load `frontify-auth-app` (specifically its

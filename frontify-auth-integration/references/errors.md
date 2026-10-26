@@ -16,7 +16,7 @@ The request didn't carry a usable token, or the token is expired/revoked.
 - Token has expired (`expires_in` elapsed)
 - Token was revoked (manually, by a successful refresh, or by admin
   de-authorization)
-- Token belongs to a different Frontify account than the `<domain>` on the
+- Token belongs to a different Frontify account than the `{domain}` on the
   request URL — tokens are account-scoped
 
 **Resolution**

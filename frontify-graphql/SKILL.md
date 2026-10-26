@@ -2,7 +2,7 @@
 name: frontify-graphql
 description: >
   Query and mutate Frontify data through the Public GraphQL API at
-  `POST https://<domain>/graphql`. ALWAYS apply this skill when writing
+  `POST https://{domain}/graphql`. ALWAYS apply this skill when writing
   any Frontify query or mutation, when calling `executeGraphql` from an
   App, when asking what data Frontify exposes, or when a Frontify query
   returns errors / null / unexpected shapes — even if the user does not

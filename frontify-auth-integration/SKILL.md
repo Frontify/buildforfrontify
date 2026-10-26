@@ -2,7 +2,7 @@
 name: frontify-auth-integration
 description: >
   Authenticate external Frontify integrations against
-  `https://<domain>/api/oauth/*` with the `Authorization: Bearer` header.
+  `https://{domain}/api/oauth/*` with the `Authorization: Bearer` header.
   ALWAYS apply this skill when calling Frontify GraphQL from a backend,
   script, or CLI (Node, Python, Go, GitHub Action, Lambda, Cloud Run);
   setting up a Service App, OAuth 2 client, or personal developer token;
@@ -32,7 +32,7 @@ authentication modes are available:
 |------|---------|-------------------------|
 | **Service App** *(recommended for production M2M)* | Machine-to-machine, non-OAuth integrations, backends, CI jobs | OAuth 2.0 **client credentials** grant against `/api/oauth/accesstoken` |
 | **OAuth 2.0 Client** | Public/third-party apps acting **on behalf of a user** | Authorization-code flow with **PKCE** (mandatory for public clients) |
-| **Personal developer token** | Local dev, testing, CI, **setting up Service Apps** | Direct-URL only at `https://<domain>/oauth-access-token`. The page is **not linked from any UI menu** — older Frontify docs reference a profile-icon / Applications path that no longer exists. |
+| **Personal developer token** | Local dev, testing, CI, **setting up Service Apps** | Direct-URL only at `https://{domain}/oauth-access-token`. The page is **not linked from any UI menu** — older Frontify docs reference a profile-icon / Applications path that no longer exists. |
 
 Personal developer tokens are **not recommended for production**.
 
@@ -118,15 +118,15 @@ Applications settings page. Configure: Redirect URL, scopes, and toggle
 
 | Endpoint | Method | URL |
 |----------|--------|-----|
-| Authorize | `GET` | `https://<domain>/api/oauth/authorize` |
-| Access Token | `POST` | `https://<domain>/api/oauth/accesstoken` |
-| Refresh | `POST` | `https://<domain>/api/oauth/refresh` |
-| Revoke | `POST` | `https://<domain>/api/oauth/revoke` |
+| Authorize | `GET` | `https://{domain}/api/oauth/authorize` |
+| Access Token | `POST` | `https://{domain}/api/oauth/accesstoken` |
+| Refresh | `POST` | `https://{domain}/api/oauth/refresh` |
+| Revoke | `POST` | `https://{domain}/api/oauth/revoke` |
 
 Authorize URL (private/confidential client):
 
 ```
-https://<domain>/api/oauth/authorize
+https://{domain}/api/oauth/authorize
   ?response_type=code
   &client_id={ID}
   &redirect_uri={URI}
@@ -137,7 +137,7 @@ https://<domain>/api/oauth/authorize
 Authorize URL (public client with PKCE — **mandatory** for SPAs):
 
 ```
-https://<domain>/api/oauth/authorize
+https://{domain}/api/oauth/authorize
   ?response_type=code
   &client_id={ID}
   &redirect_uri={URI}
@@ -212,7 +212,7 @@ Use the token directly in the bearer header:
 curl -H "Authorization: Bearer cmFCUDPv...mru4" \
   -H "Content-Type: application/json" \
   -d '{"query":"{ currentUser { id email } }"}' \
-  https://<domain>/graphql
+  https://{domain}/graphql
 ```
 
 ### 5 — Refresh and revoke
@@ -225,7 +225,7 @@ curl -X POST \
   -F refresh_token={refresh_token} \
   -F client_id={clientId} \
   -F scope=basic:read \
-  https://<domain>/api/oauth/refresh
+  https://{domain}/api/oauth/refresh
 # Add: -F client_secret={secret}   (confidential clients only)
 ```
 
@@ -238,7 +238,7 @@ new access + refresh pair. Refresh tokens are single-use.
 curl -X POST \
   -F token=ey5811sfghA895Xtta \
   -F token_type_hint=access_token \
-  https://<domain>/api/oauth/revoke
+  https://{domain}/api/oauth/revoke
 ```
 
 `token_type_hint` is `access_token` or `refresh_token`. If `NULL`, Frontify

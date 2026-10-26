@@ -38,7 +38,7 @@ The auth surface for an App developer is therefore four things:
 
 If the user is building something that runs **outside** the Frontify
 Platform — a backend script, CI job, OAuth client, or anything talking
-directly to `https://<domain>/graphql` with a bearer token — stop and load
+directly to `https://{domain}/graphql` with a bearer token — stop and load
 `../frontify-auth-integration/SKILL.md` instead.
 
 ---
@@ -91,7 +91,7 @@ const { data, errors } = await appBridge.api({
 to Frontify GraphQL — it resolves the full `{ data, errors }` envelope. A
 shorter `executeGraphQl` also exists but is **deprecated**: it resolves
 only the `data` object (so top-level GraphQL `errors` are dropped). Either
-way, do not call `https://<domain>/graphql` directly with `fetch` — the App
+way, do not call `https://{domain}/graphql` directly with `fetch` — the App
 has no token, and you'd be re-implementing what AppBridge already provides
 safely.
 

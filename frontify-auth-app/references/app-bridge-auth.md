@@ -147,7 +147,7 @@ is **deprecated**: it resolves only the `data` object, so top-level GraphQL
 side; the App never sees a token. For data-modeling guidance, load
 `../frontify-graphql/SKILL.md`.
 
-> **Do not** call `https://<domain>/graphql` directly with `fetch` — there
+> **Do not** call `https://{domain}/graphql` directly with `fetch` — there
 > is no token to put in the header, and the host already provides this
 > method safely.
 

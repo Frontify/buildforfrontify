@@ -113,12 +113,12 @@ credentials.
 ## Endpoints at a glance
 
 ```
-POST  https://<domain>/graphql                  # the API itself
-GET   https://<domain>/api/oauth/authorize      # OAuth 2 — start auth code flow
-POST  https://<domain>/api/oauth/accesstoken    # exchange code OR client credentials
-POST  https://<domain>/api/oauth/refresh        # refresh OAuth user token
-POST  https://<domain>/api/oauth/revoke         # revoke any token
-       https://<domain>/oauth-access-token      # personal developer tokens — direct URL only, NOT linked from any UI menu
+POST  https://{domain}/graphql                  # the API itself
+GET   https://{domain}/api/oauth/authorize      # OAuth 2 — start auth code flow
+POST  https://{domain}/api/oauth/accesstoken    # exchange code OR client credentials
+POST  https://{domain}/api/oauth/refresh        # refresh OAuth user token
+POST  https://{domain}/api/oauth/revoke         # revoke any token
+       https://{domain}/oauth-access-token      # personal developer tokens — direct URL only, NOT linked from any UI menu
 ```
 
 A given OAuth 2 Client or personal token is **scoped to a single Frontify

@@ -83,7 +83,13 @@ for confirmation on every detail.
 
 ### Scaffold a new block
 
-The official way to create a block is through the Frontify CLI:
+**Never create a Content Block project by hand.** Don't write `package.json`, `tsconfig.json`,
+`manifest.json` or `src/*` from scratch, and don't guess dependency names or versions. The CLI
+template pins the right Brand SDK and tooling versions; hand-written projects drift from it and
+fail `verify-manifest` or the build.
+
+Scaffold only from the Frontify CLI, either interactively (below) or by copying its bundled
+templates when there is no TTY:
 
 ```bash
 npx @frontify/frontify-cli@latest create
@@ -92,14 +98,59 @@ npx @frontify/frontify-cli@latest create
 This launches an interactive prompt that asks for a name, CSS framework preference (Tailwind,
 CSS Modules, or none), and other options. It then generates the full project.
 
-Alternatively, use the `scripts/scaffold.sh` helper in this skill directory, which wraps
-the CLI call with prerequisite checking and prints helpful next steps:
+Or use the `scripts/scaffold.sh` helper in this skill directory, which wraps the CLI call with
+prerequisite checking and prints helpful next steps:
 
 ```bash
 bash scripts/scaffold.sh
 ```
 
-### Generated structure
+Both are interactive and need a TTY. When one is available, prefer them.
+
+### Scaffold a new block: non-interactive (agent / CI)
+
+The `create` prompts can't be driven without a TTY (there are no flags for name or styling). In a
+sandbox, container, or CI agent, copy the CLI's own project templates instead. They are the
+canonical, tool-maintained source and ship inside the installed `@frontify/frontify-cli` package,
+one per styling choice:
+
+- `templates/content-block-tailwind/`
+- `templates/content-block-css/`
+- `templates/content-block-css-modules/`
+
+Install the CLI locally so the path exists (don't rely on the `npx` cache, its path changes), then
+copy the template that matches the styling choice:
+
+```bash
+mkdir -p /tmp/frontify-cli && cd /tmp/frontify-cli && npm init -y >/dev/null
+npm i @frontify/frontify-cli
+cp -R node_modules/@frontify/frontify-cli/templates/content-block-css <path>/<block-name>
+```
+
+Then, in the new project:
+
+1. Set `name` in `package.json`.
+2. Set `appId` in `manifest.json`. The template ships `"<Your app ID>"` as a placeholder.
+3. Add `settingsSchema` to `manifest.json`. The template doesn't include it; see the next section.
+4. Create `.gitignore` with these lines. `create` writes it itself because the templates don't
+   include one:
+
+   ```
+   node_modules
+   dist
+   .idea
+   .vscode
+   ```
+5. Install and sanity-check:
+
+```bash
+cd <block-name>
+npm install
+npm run typecheck   # tsc --noEmit
+```
+
+Copy only from the CLI's templates. Don't write the project files yourself, and don't change the
+dependency versions the template pins.
 
 ### Canonical `manifest.json`
 
@@ -132,6 +183,10 @@ Write this minimum for any new block:
   nested inside `switch.on` or `sectionHeading.blocks` still gets a top-level property.
 
 Full rules and the setting-type mapping: [references/settings-schema.md](references/settings-schema.md).
+
+### Generated structure
+
+What the CLI generates, for orientation only — not a template to recreate by hand:
 
 ```
 my-block/

@@ -503,7 +503,8 @@ The CLI authenticates one of two ways — it does **not** read
 `FRONTIFY_*` environment variables:
 
 - **Interactive:** `frontify-cli login` runs a browser OAuth flow and
-  stores the session, so subsequent `deploy` / `publish` /
+  stores the session (stop the local dev server first — `login` does not
+  work while it is running), so subsequent `deploy` / `publish` /
   `verify-manifest` commands need no credentials on the command line.
 - **Non-interactive (CI / agent):** pass `--instance <url>` and
   `--token <token>` explicitly on each `deploy` / `publish` /

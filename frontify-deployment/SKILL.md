@@ -65,7 +65,10 @@ Three ways to authenticate the CLI:
 
 1. **Interactive login (developer machine)** —
    `npx frontify-cli login --instance "https://<YOUR-INSTANCE>.frontify.com"`;
-   browser opens; CLI stores a session.
+   browser opens; CLI stores a session. **`login` does not work while a
+   local dev server (`npm run serve` / `frontify-cli serve`) is running** —
+   this applies to Apps, Custom Blocks and Themes alike. Stop the server,
+   log in, then restart it if needed (or log in before starting it).
 2. **Personal access token (CI / agent-driven)** — generate as above,
    then pass `--instance` + `--token` on each `deploy` / `publish` /
    `verify-manifest` command (see below).
@@ -83,6 +86,8 @@ Credentials come from one of two places:
 - **Interactive** — `frontify-cli login` runs a browser OAuth flow and
   stores the session (via `conf`), so subsequent `deploy` / `publish` /
   `verify-manifest` commands need no credentials on the command line.
+  Stop any running local dev server before logging in; `login` fails
+  while it is running.
 - **CI / non-interactive** — pass `--instance` and `--token` explicitly on
   each command:
 
@@ -96,6 +101,11 @@ Keep the token in a secrets manager and pass it via `--token`, or avoid
 the flag entirely with `frontify-cli login`. `INSTANCE_URL` is the one
 login-related env var the CLI honours — the default instance for
 `frontify-cli login`.
+
+### Entry file (`--entryPath`)
+
+`serve` and `deploy` default to `src/index.ts` as the entry. For a project whose entry is something different, pass `--entryPath <path>` (`-e`) to both commands. Applies to
+Apps, Custom Blocks and Themes alike.
 
 ### Network egress
 
@@ -271,14 +281,12 @@ shared CLI flow above (`deploy`, optional `publish`) applies.
 
 ## Deploying a Theme
 
-Theme-specific deploy procedure is **not yet documented** in v1 of this
-skill set. The shared mechanics above (token, env vars, build gates,
-egress, placeholder rule, leak hygiene) all apply. Marketplace publish
-fields and any theme-specific install behavior remain a known gap —
-do not fabricate steps; flag the gap to the user and confirm the
-deploy target with them before proceeding.
-
-Cross-link: `../frontify-theme/SKILL.md`.
+The theme-specific procedure lives in `../frontify-theme/SKILL.md` §
+Marketplace deployment: the manifest takes only `appType` and `appId` (no
+`title`) and the staging workaround uses a separate Marketplace App ID.
+The shared mechanics above (token, build gates,
+egress, placeholder rule, leak hygiene) all apply. Required token scopes for
+a theme deploy: `basic:read`, `blocks:read`, `blocks:write`.
 
 ---
 
@@ -288,7 +296,7 @@ Cross-link: `../frontify-theme/SKILL.md`.
 |---|---|
 | App-specific Marketplace flow & post-deploy upgrade behavior | `../frontify-app/SKILL.md` |
 | Custom block dry-run validation & block testing flow | `../frontify-custom-block/SKILL.md` |
-| Theme deployment (gap — see note above) | `../frontify-theme/SKILL.md` |
+| Theme-specific deploy flow (manifest, staging, publish) | `../frontify-theme/SKILL.md` |
 | Backend deploy (Docker, AWS Lambda, GitHub Actions OIDC) | `../frontify-app-backend/SKILL.md` + `../frontify-app-reference/SKILL.md` (`docs/07-deployment-pipeline.md`, `templates/backend/dockerfile-lambda/`, `templates/backend/github-actions/`) |
 | Personal-access-token deep-dive (expiry, scopes, rotation, errors) | `../frontify-auth-integration/references/personal-tokens.md` |
 | OAuth flows for backends that aren't using static client credentials | `../frontify-auth-integration/SKILL.md` |

@@ -12,6 +12,14 @@ Before jumping to a specific symptom, ask the user (or check yourself):
 
 Then match the symptom below.
 
+## Symptom: "Local Theme Development" doesn't appear in the Marketplace
+
+Dev mode isn't enabled on the account. Ask in the Frontify Friends Slack community to have it enabled for the account URL.
+
+## Symptom: `frontify-cli` command not found
+
+The CLI isn't installed globally. Use `npx @frontify/frontify-cli@latest <command>` or the scripts in `package.json`.
+
 ## Symptom: Local dev server starts but the guideline doesn't connect
 
 **Likely causes:**
@@ -117,6 +125,8 @@ Then match the symptom below.
 - `manifest.json` still has the placeholder `<ADD_YOUR_MARKETPLACE_APP_ID_HERE>`. Replace it with your real Marketplace App ID.
 - Auth token is missing required scopes. The deploy flow needs `basic:read`, `blocks:read`, and `blocks:write`.
 - You're deploying against the wrong instance (`--instance` flag mismatch with the instance where the app id lives).
+- `frontify-cli login` hangs or fails because the local dev server is still running (applies to all extension types, not just themes). Stop `npm run serve`, log in, then deploy (restart the server afterwards if needed).
+- `deploy` rejects `manifest.json` because of extra fields. The theme manifest only accepts `appType` and `appId`; remove `title` and anything else.
 
 ## Symptom: Deploy succeeds but changes don't show up in the guideline
 

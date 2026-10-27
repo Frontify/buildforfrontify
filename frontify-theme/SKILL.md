@@ -55,7 +55,7 @@ of named variants.
 > Note: Unlike Custom Blocks and Apps, the Frontify CLI does **not** have a
 > `theme create` command. The canonical scaffolding path is to download the
 > official Boilerplate Theme and customise from there — see
-> [`references/scaffolding.md`](references/scaffolding.md).
+> [Project setup](#project-setup) below.
 
 ---
 
@@ -87,9 +87,9 @@ action differs sharply between them:
    project yet. Common signals: "I want to build a theme for X", "how do I get
    started", "set up a new Frontify theme", or there's no `manifest.json` /
    `frontify-cli` setup visible.
-   → Read [`references/scaffolding.md`](references/scaffolding.md) for the
-   setup flow, then [`references/architecture.md`](references/architecture.md)
-   to understand what you're building.
+   → Follow [Project setup](#project-setup) below, then read
+   [`references/architecture.md`](references/architecture.md) to understand
+   what you're building.
 
 2. **Iterating** — the user has a working theme and wants to add features,
    change behavior, or refine settings. Common signals: they reference
@@ -112,7 +112,7 @@ action differs sharply between them:
    "Content is empty", "I get a type error on ThemeProps", "the dev server
    connects but nothing renders".
    → Go straight to [`references/debugging.md`](references/debugging.md). It
-   is organised by symptom.
+   is organised by symptom and also covers setup and deploy failures.
 
 4. **Rule / constraint / "is this allowed"** — the user is asking whether
    something is supported, what Frontify requires, or what will happen if they
@@ -130,6 +130,167 @@ action differs sharply between them:
 If the user's intent is ambiguous, ask a single clarifying question — don't
 guess, because scaffolding, debugging, and rule advice have very different
 shapes.
+
+---
+
+## Project setup
+
+How to go from zero to a locally running theme connected to a real
+guideline. There is no `theme create` command, so you start from the
+Boilerplate Theme.
+
+### Prerequisites
+
+1. **Node.js and the Frontify CLI** — see the orchestrator for versions and
+   install. Without a global install, use `npx @frontify/frontify-cli@latest`.
+2. **React Developer Tools** — optional, but very helpful for debugging.
+3. **Development mode enabled on the Frontify account.** This is the
+   easy-to-miss one. Frontify's team has to turn it on — join the
+   [Frontify Friends Slack community](https://frontify-friends.slack.com/)
+   and ask them to enable dev mode for the account URL. Without it, the
+   "Local Theme Development" app does not appear in the Marketplace and
+   local development cannot work.
+
+### 1. Install "Local Theme Development" in the guideline
+
+1. Open `https://{YOUR_DOMAIN}/marketplace/type/theme` and install
+   **Local Theme Development**.
+2. Open the guideline to develop against → **Theme Settings** →
+   **Layout and navigation** → **Theme chooser** → select
+   **Local Theme Development**.
+3. Enter the dev server port (default `5600`) and keep the tab open; you
+   click **Connect** in step 4.
+
+### 2. Get the boilerplate
+
+The Boilerplate Theme is a separate download (Frontify developer docs →
+"Sample Code"). Unzip or clone it into the project directory.
+
+```
+boilerplate-theme/
+├── manifest.json              # appType: "theme", appId: placeholder
+├── package.json               # scripts: serve, deploy, typecheck, test
+├── src/
+│   ├── index.ts               # defineTheme({ templates: { cover, documentPage, library } })
+│   ├── FrontifyClassicTheme.tsx
+│   ├── CoverPage.tsx, DocumentPage.tsx, LibraryPage.tsx
+│   ├── settings.tsx, defaults.ts, types.ts
+│   ├── components/            # Header, Navigation, Sidebar, Logo, LanguageSwitch
+│   └── helpers/               # small focused utility functions
+```
+
+Rename the folder and update `package.json` `name`. Keep the
+`/* (c) Copyright Frontify Ltd., all rights reserved. */` headers if you
+build on Frontify code, or replace them with the user's own.
+
+The boilerplate ships TypeScript, Vitest (`@testing-library/react` +
+`happy-dom`), ESLint (`@frontify/eslint-config-react`), Prettier and
+Tailwind with a `th-` prefix to avoid clashing with platform styles. Keep
+these unless there is a strong reason to change them. Components that talk
+to `appBridge` benefit from a mock bridge; see `setupTests.ts` in the
+boilerplate.
+
+### 3. Install dependencies and start the dev server
+
+```bash
+npm install
+npm run serve
+```
+
+The output shows `Local: http://localhost:5600/`. The port defaults to
+`5600` but the server picks another if it is in use — note the actual one.
+
+### 4. Connect the guideline
+
+In the guideline tab from step 1, enter the port (if not `5600`) and click
+**Connect**. The guideline now renders your local theme and hot-reloads on
+save.
+
+### First-run sanity checks
+
+If it connects but nothing renders, check these before assuming something
+deeper is wrong:
+
+- `src/index.ts` exports a `defineTheme(...)` default.
+- All three templates (`cover`, `documentPage`, `library`) have a `default`
+  variant. A missing one falls through silently.
+- `<Content />` is rendered inside the `documentPage` variant.
+- The guideline actually has published content. An empty guideline looks
+  like a broken theme.
+- The browser console shows no React errors from the theme.
+
+For connection and white-page failures see
+[`references/debugging.md`](references/debugging.md).
+
+---
+
+## Marketplace deployment
+
+Deploying makes the theme available on the Frontify instance; publishing
+lists it on the Marketplace. CLI authentication, token handling, build gates
+and token-leak hygiene are shared across extension types and live in
+[`../frontify-deployment/SKILL.md`](../frontify-deployment/SKILL.md) — read
+that first. The theme-specific parts are below.
+
+### Prerequisites checklist
+
+- [ ] A theme entry exists in the Marketplace (created by the user in the
+      UI) and its **Marketplace App ID** (also called Theme ID) is copied
+      from the theme details page.
+- [ ] `manifest.json` has that real id. The manifest accepts only `appType`
+      and `appId` — **no `title`** or other metadata. Name and description
+      are edited in the Marketplace UI.
+
+      ```json
+      {
+        "appType": "theme",
+        "appId": "{YOUR_MARKETPLACE_APP_ID}"
+      }
+      ```
+
+- [ ] No `<…>` placeholder such as `<ADD_YOUR_MARKETPLACE_APP_ID_HERE>`
+      remains in `manifest.json`.
+- [ ] `npx tsc --noEmit` and `npx eslint src` are clean.
+- [ ] **The local dev server is stopped.** `frontify-cli login` does not work
+      while `npm run serve` is running (true for every extension type, see
+      the deployment skill). Stop the server, log in, then restart it
+      afterwards if needed.
+
+### Deploy
+
+```bash
+npx @frontify/frontify-cli@latest login --instance=your.domain.com
+npx @frontify/frontify-cli@latest deploy
+```
+
+`login` opens a browser OAuth flow. For CI, or when the user prefers a
+token, pass `--instance` and `--token` on `deploy` instead; the token needs
+the scopes `basic:read`, `blocks:read` and `blocks:write`. See
+[`../frontify-deployment/SKILL.md`](../frontify-deployment/SKILL.md) for how
+to generate the token and keep it out of history and logs.
+
+### Staging
+
+Frontify does not support publishing a test-only version of a theme: once
+deployed, everyone using that theme gets the new version. Workaround: create
+a **separate Marketplace App ID for staging**, deploy the test build under
+that id, assign it only to test guidelines, then deploy again under the
+production id once validated.
+
+### Publish to the Marketplace (user-discretion)
+
+Publishing lists the theme for other Frontify customers, so do it only when
+the user asks. In the Marketplace on the instance: find the theme → enter
+edit mode → **Publish**.
+
+### Install and select the theme
+
+1. Install the theme from the Marketplace.
+2. Open a guideline → **Theme Settings** → **Theme chooser** → pick the
+   theme.
+
+If changes don't show up after a deploy, see
+[`references/debugging.md`](references/debugging.md).
 
 ---
 
@@ -240,13 +401,9 @@ Load these as the situation calls for — don't read all of them upfront:
   constraint. Rule IDs are stable references: V* (validity), B* (baseline),
   D* (domain), F* (feature gating), L* (limitations), R* (release),
   P* (design principles).
-- [`references/scaffolding.md`](references/scaffolding.md) — Local setup
-  from zero: Node/CLI prerequisites, dev-mode activation, boilerplate
-  download, manifest wiring, port connection, deployment. Read this for any
-  "getting started" or "why won't my theme connect" situation.
 - [`references/debugging.md`](references/debugging.md) — Symptom-indexed
-  failure modes and diagnostic steps. Start here whenever something is
-  broken.
+  failure modes and diagnostic steps, including setup (dev server won't
+  connect) and deploy failures. Start here whenever something is broken.
 - [`references/boilerplate-snippets.md`](references/boilerplate-snippets.md)
   — Ready-to-adapt code patterns from the official boilerplate: Header,
   Navigation, Sidebar, Logo, LanguageSwitch, settings definitions. Pull
@@ -266,9 +423,9 @@ matching shared-resource skill:
   `dynamicPreviewUrl` can be transformed via the Media Processing CDN.
 - **Deployment, OAuth tokens, CI/CD pipelines, Marketplace publishing
   workflow** → [`../frontify-deployment/SKILL.md`](../frontify-deployment/SKILL.md).
-  [`references/scaffolding.md`](references/scaffolding.md) covers the
-  `frontify-cli deploy` / token-based deploy basics; the deployment skill
-  covers the broader pipeline story.
+  [Marketplace deployment](#marketplace-deployment) above covers the
+  theme-specific parts; the deployment skill covers CLI auth, tokens and
+  the broader pipeline story.
 - **OAuth scopes for token-based deployment**
   (`basic:read`, `blocks:read`, `blocks:write`) and any auth question about
   external tooling that talks to Frontify from outside the AppBridge sandbox

@@ -388,6 +388,9 @@ The scaffold does not include a pre-wired unit test setup. For a typical block:
    ```
    This validates the bundle without actually publishing.
 
+   If you authenticate with `frontify-cli login`, stop the local dev server first —
+   `login` does not work while it is running (see `../frontify-deployment/SKILL.md`).
+
 ---
 
 ## CSS scoping

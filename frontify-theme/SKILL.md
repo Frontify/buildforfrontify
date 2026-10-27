@@ -52,6 +52,13 @@ Three template types exist and all three must be exported: `cover`,
 `documentPage`, `library`. Each can have a `default` variant plus any number
 of named variants.
 
+The CLI looks for the entry file at `src/index.ts` by default, for both
+`serve` and `deploy`. Keep `defineTheme(...)` in `src/index.ts` and put JSX
+in other files (as the boilerplate does). If the entry has to be for example
+`src/index.tsx`, pass `--entryPath src/index.tsx` to `serve` and `deploy`
+(or bake it into the `package.json` scripts), otherwise the CLI points at a
+file that doesn't exist.
+
 > Note: Unlike Custom Blocks and Apps, the Frontify CLI does **not** have a
 > `theme create` command. The canonical scaffolding path is to download the
 > official Boilerplate Theme and customise from there — see
@@ -250,6 +257,8 @@ that first. The theme-specific parts are below.
 
 - [ ] No `<…>` placeholder such as `<ADD_YOUR_MARKETPLACE_APP_ID_HERE>`
       remains in `manifest.json`.
+- [ ] The entry file is `src/index.ts`, or `--entryPath` is passed to
+      `deploy` (and `serve`) when it is `src/index.tsx`.
 - [ ] `npx tsc --noEmit` and `npx eslint src` are clean.
 - [ ] **The local dev server is stopped.** `frontify-cli login` does not work
       while `npm run serve` is running (true for every extension type, see

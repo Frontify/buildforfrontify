@@ -118,6 +118,13 @@ The CLI isn't installed globally. Use `npx @frontify/frontify-cli@latest <comman
 
 - Feature isn't enabled for this guideline. Check `useEnabledFeatures(appBridge).includes('AI_BRAND_ASSISTANT')` before rendering the trigger, and hide the button when the feature is absent rather than dispatching into the void. *(Rule F1.)*
 
+## Symptom: `frontify-cli serve` or `deploy` can't find the entry file
+
+**Likely causes:**
+
+- The entry is something different than `src/index.ts`. The CLI defaults to `src/index.ts`. In case for e.g. `src/index.tsx`, pass `--entryPath src/index.tsx` to both commands (or set it in the `package.json` scripts), or move `defineTheme(...)` into a plain `src/index.ts` and keep JSX in other files.
+- The entry lives somewhere other than `src/`. Pass its path with `--entryPath`.
+
 ## Symptom: `frontify-cli deploy` fails with an authentication or app-id error
 
 **Likely causes:**

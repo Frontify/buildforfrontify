@@ -102,6 +102,11 @@ the flag entirely with `frontify-cli login`. `INSTANCE_URL` is the one
 login-related env var the CLI honours — the default instance for
 `frontify-cli login`.
 
+### Entry file (`--entryPath`)
+
+`serve` and `deploy` default to `src/index.ts` as the entry. For a project whose entry is something different, pass `--entryPath <path>` (`-e`) to both commands. Applies to
+Apps, Custom Blocks and Themes alike.
+
 ### Network egress
 
 `frontify-cli` `login`, `deploy`, and `publish` require outbound HTTPS to

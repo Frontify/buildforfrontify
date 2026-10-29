@@ -1,9 +1,8 @@
-# Frontify GraphQL — Brands, Libraries & Workspace
-# Brand, Library, WorkspaceProject, Collection, Folder, Account,
+# Frontify GraphQL — Brands, Libraries, Workspaces & Accounts
+# Brand, Library (+ Media/Logo/Icon/Document), Workspace, Collection, Folder, Account,
 # user/collaborator types, and related query/mutation types.
 
 union AccountCollaborator = AccountUser | UserGroup
-
 
 type UserItems {
   """Total amount of results."""
@@ -21,7 +20,6 @@ type UserItems {
   """`User` items list."""
   items: [User]
 }
-
 
 """`FolderInterface` for `Folder` returnable types."""
 interface Folder {
@@ -83,7 +81,6 @@ interface Folder {
   ): AssetItems!
 }
 
-
 """`LibraryInterface` for `Library` returnable types."""
 interface Library {
   """`Library` Id."""
@@ -96,9 +93,9 @@ interface Library {
   color: RgbaColor
 
   """
-  **DEPRECATED** Amount of `Assets` contained in this `Library`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  **DEPRECATED** Amount of `Assets` contained in this `Library`. This field will be removed. Use `assets.total` instead. | Date: 2024-07-01
   """
-  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets.total` instead. | Date: 2024-07-01")
 
   """
   **DEPRECATED** Retrieve list of all `MetadataFields` belonging to this `Library`. This field will be removed. Use `customMetadataProperties` instead. | Date: 2026-07-01
@@ -143,8 +140,31 @@ interface Library {
 
   """List of `CustomMetadataProperty` items belonging to a `Library`."""
   customMetadataProperties: [CustomMetadataProperty!]!
-}
 
+  """
+  Search this `Library`'s/`Workspace`'s `Assets` with fully typed filters. Backed by our search index rather than the primary database — results are eventually consistent, so an asset just created, edited, or deleted can take a few minutes (up to around 10) to be reflected.
+  """
+  searchAssets(
+    """"""
+    input: AssetSearchInput!
+  ): LibrarySearchAssetsResult!
+
+  """
+  Fetch `Assets` in this `Library` by their externalId. Requires edit access to the `Library`.
+  """
+  assetsByExternalId(
+    """The externalId of the `Assets` to fetch."""
+    externalId: ID!
+
+    """How many `Assets` to return per page. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """
+    Opaque cursor from a previous page's `nextCursor`; omit for the first page.
+    """
+    cursor: String = null
+  ): LibraryAssetsByExternalIdResult!
+}
 
 type Account implements Node {
   """`Account` Id."""
@@ -188,8 +208,16 @@ type Account implements Node {
     """**BETA** Current page number."""
     page: Int = 1
   ): TargetItems
-}
 
+  """**BETA** Retrieve `Catalog` list for `Account` ID."""
+  catalogs(
+    """**BETA** Number of items to return per page."""
+    limit: Int = 25
+
+    """**BETA** Page number to return."""
+    page: Int = 1
+  ): CatalogItems!
+}
 
 type AccountUser implements Node & User {
   """`AccountUser` Id."""
@@ -204,7 +232,6 @@ type AccountUser implements Node & User {
   """`AccountUser` avatar."""
   avatar: Url
 }
-
 
 type Brand implements Node {
   """`Brand` Id."""
@@ -270,6 +297,11 @@ type Brand implements Node {
 
     """Current page number."""
     page: Int = 1
+
+    """
+    **BETA** The locale tag ("de", "de-DE") in which the Guidelines should be delivered. This field must be set at the highest level in the GraphQL hierarchy. If the requested locale is unavailable, the default language will be used as a fallback.
+    """
+    locale: String
   ): GuidelineItems
 
   """`Brand` `CustomMetadataProperty` items list."""
@@ -317,9 +349,7 @@ type Brand implements Node {
   ): BrandEnhancedSearchItems
 }
 
-
 union Project = MediaLibrary | IconLibrary | LogoLibrary | DocumentLibrary | Workspace
-
 
 type Collection implements Node {
   """`Collection` Id."""
@@ -349,7 +379,6 @@ type Collection implements Node {
   currentUserPermissions: CollectionUserPermissions!
 }
 
-
 type UserGroup implements Node {
   """`UserGroup` Id."""
   id: ID!
@@ -367,7 +396,6 @@ type UserGroup implements Node {
   ): UserItems
 }
 
-
 type Workspace implements Node {
   """`Library`/`Workspace` Id."""
   id: ID!
@@ -379,9 +407,9 @@ type Workspace implements Node {
   color: RgbaColor
 
   """
-  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets.total` instead. | Date: 2024-07-01
   """
-  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets.total` instead. | Date: 2024-07-01")
 
   """Search or list `Assets` in the `Library`/`Workspace`."""
   assets(
@@ -422,8 +450,15 @@ type Workspace implements Node {
   List of `CustomMetadataProperty` items and values associated to `Workspace`.
   """
   customMetadata: [CustomMetadata!]!
-}
 
+  """
+  Search this `Library`'s/`Workspace`'s `Assets` with fully typed filters. Backed by our search index rather than the primary database — results are eventually consistent, so an asset just created, edited, or deleted can take a few minutes (up to around 10) to be reflected.
+  """
+  searchAssets(
+    """"""
+    input: AssetSearchInput!
+  ): LibrarySearchAssetsResult!
+}
 
 input AddCollectionAssetsInput {
   """`Collection` Id."""
@@ -435,12 +470,10 @@ input AddCollectionAssetsInput {
   assetIds: [ID!]!
 }
 
-
 type AddCollectionAssets {
   """`Collection` details."""
   collection: Collection
 }
-
 
 input CreateCollectionInput {
   """
@@ -452,12 +485,10 @@ input CreateCollectionInput {
   name: String!
 }
 
-
 type CreateCollection {
   """The newly created `Collection` details."""
   collection: Collection!
 }
-
 
 input CreateFolderInput {
   """
@@ -472,12 +503,10 @@ input CreateFolderInput {
   description: String
 }
 
-
 type CreateFolder {
   """The newly created `Folder`."""
   folder: Folder
 }
-
 
 input CreateLicenseInput {
   """`Library` Id."""
@@ -496,12 +525,10 @@ input CreateLicenseInput {
   requireConsensus: Boolean = false
 }
 
-
 type CreateLicense {
   """`License` details."""
   license: License!
 }
-
 
 input CreateWorkspaceProjectInput {
   """Id of the `Brand` where `Project` should be inserted."""
@@ -511,18 +538,15 @@ input CreateWorkspaceProjectInput {
   name: String!
 }
 
-
 type CreateWorkspaceProject {
   """`WorkspaceProject` details."""
   project: Workspace!
 }
 
-
 input DeleteCollectionInput {
   """`Collection` Id."""
   collectionId: ID!
 }
-
 
 type DeleteCollection {
   """The Id of the deleted `Collection`."""
@@ -534,30 +558,25 @@ type DeleteCollection {
   collection: Collection! @deprecated(reason: "This field will be removed. Use `id` instead. | Date: 2024-01-01")
 }
 
-
 input DeleteFoldersInput {
   """Ids of the `Folders` to delete."""
   ids: [ID!]!
 }
-
 
 type DeleteFolders {
   """List of the deleted `Folder` ids."""
   ids: [ID!]
 }
 
-
 input DeleteLicenseInput {
   """Id of the `License` to delete."""
   id: ID!
 }
 
-
 type DeleteLicense {
   """The Id of the deleted `License`."""
   id: ID!
 }
-
 
 input InviteProjectUserInput {
   """Id of the `Project` you want to invite `User` to."""
@@ -576,7 +595,6 @@ input InviteProjectUserInput {
   validTo: DateTime
 }
 
-
 """List of possible `Project` permission levels."""
 enum ProjectPermission {
   EDIT
@@ -586,12 +604,10 @@ enum ProjectPermission {
   TRANSLATE
 }
 
-
 type InviteProjectUser {
   """`Project` where `User` was invited to."""
   project: Project
 }
-
 
 input MoveFoldersInput {
   """Ids of the `Folder` items to be moved."""
@@ -603,12 +619,10 @@ input MoveFoldersInput {
   destinationId: ID!
 }
 
-
 type MoveFolders {
   """List of moved `Folder` ids."""
   ids: [ID!]
 }
-
 
 input RemoveCollectionAssetsInput {
   """`Collection` Id."""
@@ -618,12 +632,10 @@ input RemoveCollectionAssetsInput {
   assetIds: [ID!]!
 }
 
-
 type RemoveCollectionAssets {
   """`Collection` details."""
   collection: Collection
 }
-
 
 input SetCollectionAssetsInput {
   """`Collection` Id."""
@@ -635,12 +647,10 @@ input SetCollectionAssetsInput {
   assetIds: [ID!]!
 }
 
-
 type SetCollectionAssets {
   """`Collection` details."""
   collection: Collection
 }
-
 
 input UpdateCollectionInput {
   """`Collection` Id."""
@@ -650,18 +660,15 @@ input UpdateCollectionInput {
   data: UpdateCollectionDataInput!
 }
 
-
 input UpdateCollectionDataInput {
   """Name of the `Collection`."""
   name: String!
 }
 
-
 type UpdateCollection {
   """`Collection` details."""
   collection: Collection!
 }
-
 
 input UpdateFolderInput {
   """`Folder` Id."""
@@ -671,7 +678,6 @@ input UpdateFolderInput {
   data: UpdateFolderDataInput!
 }
 
-
 input UpdateFolderDataInput {
   """`Folder` name or display name."""
   name: String
@@ -680,12 +686,10 @@ input UpdateFolderDataInput {
   description: String
 }
 
-
 type UpdateFolder {
   """`Folder` details."""
   folder: Folder
 }
-
 
 input CreateBrandInput {
   """`Brand` name."""
@@ -695,24 +699,20 @@ input CreateBrandInput {
   color: RgbaColorInput
 }
 
-
 type CreateBrand {
   """The newly created `Brand`."""
   brand: Brand!
 }
-
 
 input DeleteBrandInput {
   """`Brand` id."""
   id: ID!
 }
 
-
 type DeleteBrand {
   """The deleted `Brand` id."""
   id: ID!
 }
-
 
 input UpdateBrandInput {
   """`Brand` id."""
@@ -722,7 +722,6 @@ input UpdateBrandInput {
   data: UpdateBrandDataInput!
 }
 
-
 input UpdateBrandDataInput {
   """`Brand` name."""
   name: String
@@ -731,12 +730,10 @@ input UpdateBrandDataInput {
   color: RgbaColorInput
 }
 
-
 type UpdateBrand {
   """The updated `Brand`."""
   brand: Brand!
 }
-
 
 input AddLibraryAssetTargetsInput {
   """
@@ -748,12 +745,10 @@ input AddLibraryAssetTargetsInput {
   targetIds: [ID!]!
 }
 
-
 type AddLibraryAssetTargets {
   """**BETA** The assets affected by the mutation."""
   assets: [Asset!]!
 }
-
 
 input RemoveLibraryAssetTargetsInput {
   """
@@ -765,12 +760,10 @@ input RemoveLibraryAssetTargetsInput {
   targetIds: [ID!]!
 }
 
-
 type RemoveLibraryAssetTargets {
   """**BETA** The assets affected by the mutation."""
   assets: [Asset!]!
 }
-
 
 input SetLibraryAssetTargetsInput {
   """
@@ -782,12 +775,10 @@ input SetLibraryAssetTargetsInput {
   targetIds: [ID!]!
 }
 
-
 type SetLibraryAssetTargets {
   """**BETA** The assets affected by the mutation."""
   assets: [Asset!]!
 }
-
 
 type SubFolder implements Node & Folder {
   """`SubFolder` Id."""
@@ -848,7 +839,6 @@ type SubFolder implements Node & Folder {
   ): AssetItems!
 }
 
-
 type SubFolderItems {
   """Total amount of results."""
   total: Int!
@@ -865,7 +855,6 @@ type SubFolderItems {
   """List of type `SubFolder`"""
   items: [SubFolder]
 }
-
 
 type FolderItems {
   """Total amount of results."""
@@ -884,12 +873,10 @@ type FolderItems {
   items: [Folder]
 }
 
-
 input FolderAssetQueryInput {
   """**BETA** Sort order of matched results."""
   sortBy: AssetQueryFilterSortType
 }
-
 
 type MediaLibrary implements Node & Library {
   """`Library`/`Workspace` Id."""
@@ -902,9 +889,9 @@ type MediaLibrary implements Node & Library {
   color: RgbaColor
 
   """
-  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets.total` instead. | Date: 2024-07-01
   """
-  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets.total` instead. | Date: 2024-07-01")
 
   """Search or list `Assets` in the `Library`/`Workspace`."""
   assets(
@@ -951,14 +938,36 @@ type MediaLibrary implements Node & Library {
     """Current page number."""
     page: Int = 1
   ): CollectionItems!
-}
 
+  """
+  Fetch `Assets` in this `Library` by their externalId. Requires edit access to the `Library`.
+  """
+  assetsByExternalId(
+    """The externalId of the `Assets` to fetch."""
+    externalId: ID!
+
+    """How many `Assets` to return per page. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """
+    Opaque cursor from a previous page's `nextCursor`; omit for the first page.
+    """
+    cursor: String = null
+  ): LibraryAssetsByExternalIdResult!
+
+  """
+  Search this `Library`'s/`Workspace`'s `Assets` with fully typed filters. Backed by our search index rather than the primary database — results are eventually consistent, so an asset just created, edited, or deleted can take a few minutes (up to around 10) to be reflected.
+  """
+  searchAssets(
+    """"""
+    input: AssetSearchInput!
+  ): LibrarySearchAssetsResult!
+}
 
 input AssetQueryInFolderInput {
   """`Folder` Id."""
   id: ID!
 }
-
 
 type CollectionItems {
   """Total amount of results."""
@@ -977,12 +986,10 @@ type CollectionItems {
   items: [Collection]
 }
 
-
 input LibraryCollectionQueryInput {
   """Limit the result set by the search term."""
   term: String
 }
-
 
 type CollectionUserPermissions {
   """Check if the current user can add `Assets` in this `Collection`."""
@@ -991,7 +998,6 @@ type CollectionUserPermissions {
   """Check if the current user can remove `Assets` from this `Collection`."""
   canRemoveAssets: Boolean!
 }
-
 
 type LibraryRootFolder {
   """
@@ -1029,7 +1035,6 @@ type LibraryRootFolder {
   ): AssetItems!
 }
 
-
 type LibraryCollaborators {
   """`LibraryCollaboratorUserItems` list."""
   users(
@@ -1042,7 +1047,6 @@ type LibraryCollaborators {
     page: Int = 1
   ): LibraryCollaboratorUserItems!
 }
-
 
 type LibraryCollaboratorUserItems {
   """Total amount of results."""
@@ -1066,7 +1070,6 @@ type LibraryCollaboratorUserItems {
   edges: [LibraryCollaboratorUserEdge!]!
 }
 
-
 type LibraryCollaboratorUserEdge {
   """
   `User` that has the least required permissions to collaborate on a `Library`.
@@ -1076,7 +1079,6 @@ type LibraryCollaboratorUserEdge {
   """`User` role in the `Library`."""
   role: String!
 }
-
 
 type LibraryUserPermissions {
   """
@@ -1095,7 +1097,6 @@ type LibraryUserPermissions {
   canCreateCollections: Boolean!
 }
 
-
 type IconLibrary implements Node & Library {
   """`Library`/`Workspace` Id."""
   id: ID!
@@ -1107,9 +1108,9 @@ type IconLibrary implements Node & Library {
   color: RgbaColor
 
   """
-  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets.total` instead. | Date: 2024-07-01
   """
-  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets.total` instead. | Date: 2024-07-01")
 
   """Search or list `Assets` in the `Library`/`Workspace`."""
   assets(
@@ -1156,8 +1157,31 @@ type IconLibrary implements Node & Library {
     """Current page number."""
     page: Int = 1
   ): CollectionItems!
-}
 
+  """
+  Fetch `Assets` in this `Library` by their externalId. Requires edit access to the `Library`.
+  """
+  assetsByExternalId(
+    """The externalId of the `Assets` to fetch."""
+    externalId: ID!
+
+    """How many `Assets` to return per page. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """
+    Opaque cursor from a previous page's `nextCursor`; omit for the first page.
+    """
+    cursor: String = null
+  ): LibraryAssetsByExternalIdResult!
+
+  """
+  Search this `Library`'s/`Workspace`'s `Assets` with fully typed filters. Backed by our search index rather than the primary database — results are eventually consistent, so an asset just created, edited, or deleted can take a few minutes (up to around 10) to be reflected.
+  """
+  searchAssets(
+    """"""
+    input: AssetSearchInput!
+  ): LibrarySearchAssetsResult!
+}
 
 type LogoLibrary implements Node & Library {
   """`Library`/`Workspace` Id."""
@@ -1170,9 +1194,9 @@ type LogoLibrary implements Node & Library {
   color: RgbaColor
 
   """
-  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets.total` instead. | Date: 2024-07-01
   """
-  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets.total` instead. | Date: 2024-07-01")
 
   """Search or list `Assets` in the `Library`/`Workspace`."""
   assets(
@@ -1219,8 +1243,31 @@ type LogoLibrary implements Node & Library {
     """Current page number."""
     page: Int = 1
   ): CollectionItems!
-}
 
+  """
+  Fetch `Assets` in this `Library` by their externalId. Requires edit access to the `Library`.
+  """
+  assetsByExternalId(
+    """The externalId of the `Assets` to fetch."""
+    externalId: ID!
+
+    """How many `Assets` to return per page. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """
+    Opaque cursor from a previous page's `nextCursor`; omit for the first page.
+    """
+    cursor: String = null
+  ): LibraryAssetsByExternalIdResult!
+
+  """
+  Search this `Library`'s/`Workspace`'s `Assets` with fully typed filters. Backed by our search index rather than the primary database — results are eventually consistent, so an asset just created, edited, or deleted can take a few minutes (up to around 10) to be reflected.
+  """
+  searchAssets(
+    """"""
+    input: AssetSearchInput!
+  ): LibrarySearchAssetsResult!
+}
 
 type DocumentLibrary implements Node & Library {
   """`Library`/`Workspace` Id."""
@@ -1233,9 +1280,9 @@ type DocumentLibrary implements Node & Library {
   color: RgbaColor
 
   """
-  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01
+  **DEPRECATED** Amount of `Assets` contained in the `Library`/`Workspace`. This field will be removed. Use `assets.total` instead. | Date: 2024-07-01
   """
-  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets`.`total` instead. | Date: 2024-07-01")
+  assetCount: Int @deprecated(reason: "This field will be removed. Use `assets.total` instead. | Date: 2024-07-01")
 
   """Search or list `Assets` in the `Library`/`Workspace`."""
   assets(
@@ -1282,8 +1329,31 @@ type DocumentLibrary implements Node & Library {
     """Current page number."""
     page: Int = 1
   ): CollectionItems!
-}
 
+  """
+  Fetch `Assets` in this `Library` by their externalId. Requires edit access to the `Library`.
+  """
+  assetsByExternalId(
+    """The externalId of the `Assets` to fetch."""
+    externalId: ID!
+
+    """How many `Assets` to return per page. Min: 1, Max: 100."""
+    limit: Int = 25
+
+    """
+    Opaque cursor from a previous page's `nextCursor`; omit for the first page.
+    """
+    cursor: String = null
+  ): LibraryAssetsByExternalIdResult!
+
+  """
+  Search this `Library`'s/`Workspace`'s `Assets` with fully typed filters. Backed by our search index rather than the primary database — results are eventually consistent, so an asset just created, edited, or deleted can take a few minutes (up to around 10) to be reflected.
+  """
+  searchAssets(
+    """"""
+    input: AssetSearchInput!
+  ): LibrarySearchAssetsResult!
+}
 
 type UserGroupItems {
   """Total amount of results."""
@@ -1302,7 +1372,6 @@ type UserGroupItems {
   items: [UserGroup]
 }
 
-
 input AccountQueryInput {
   """Search term used to retrieve matched results."""
   term: String
@@ -1313,7 +1382,6 @@ input AccountQueryInput {
   """Use filters to reduce the set of matched results."""
   filter: AccountQueryFilterInput
 }
-
 
 """
 Search sorting option. Defines how the search results should be sorted.
@@ -1329,12 +1397,10 @@ enum AccountQuerySortByInput {
   OLDEST
 }
 
-
 input AccountQueryFilterInput {
   """Specify the sources to search in."""
   sources: [AccountQuerySourceInput!]
 }
-
 
 input AccountQuerySourceInput {
   """Specify the source type to search in."""
@@ -1345,7 +1411,6 @@ input AccountQuerySourceInput {
   """
   ids: [ID!]
 }
-
 
 """Search sources option. Defines the location of the search results."""
 enum AccountQuerySourceTypeInput {
@@ -1358,7 +1423,6 @@ enum AccountQuerySourceTypeInput {
   """Search for the results in the `LibraryPages`."""
   LIBRARY_PAGES
 }
-
 
 type AccountSearchItems {
   """Total amount of results."""
@@ -1377,9 +1441,7 @@ type AccountSearchItems {
   items: [AccountSearchResult]
 }
 
-
 union AccountSearchResult = Audio | Document | EmbeddedContent | File | Image | Video
-
 
 type TargetItems {
   """Total amount of results."""
@@ -1398,7 +1460,6 @@ type TargetItems {
   items: [Target]
 }
 
-
 """Different `Project` types"""
 enum ProjectType {
   DOCUMENT_LIBRARY
@@ -1407,7 +1468,6 @@ enum ProjectType {
   MEDIA_LIBRARY
   WORKSPACE
 }
-
 
 type WorkspaceRootFolder {
   """
@@ -1445,7 +1505,6 @@ type WorkspaceRootFolder {
   ): AssetItems!
 }
 
-
 type WorkspaceCollaborators {
   """`WorkspaceCollaboratorUserItems` list."""
   users(
@@ -1458,7 +1517,6 @@ type WorkspaceCollaborators {
     page: Int = 1
   ): WorkspaceCollaboratorUserItems!
 }
-
 
 type WorkspaceCollaboratorUserItems {
   """Total amount of results."""
@@ -1482,7 +1540,6 @@ type WorkspaceCollaboratorUserItems {
   edges: [WorkspaceProjectCollaboratorUserEdge!]!
 }
 
-
 type WorkspaceProjectCollaboratorUserEdge {
   """
   `User` that has the least required permissions to collaborate on a `WorkspaceProject`.
@@ -1492,7 +1549,6 @@ type WorkspaceProjectCollaboratorUserEdge {
   """`User` role in the `WorkspaceProject`."""
   role: String!
 }
-
 
 type WorkspaceUserPermissions {
   """
@@ -1506,12 +1562,10 @@ type WorkspaceUserPermissions {
   canViewCollaborators: Boolean!
 }
 
-
 input LibraryQueryInput {
   """**BETA** Sort order of the `Library` query result set."""
   sortBy: LibraryQuerySort
 }
-
 
 """Query sorting option. Defines how the search results should be sorted."""
 enum LibraryQuerySort {
@@ -1521,7 +1575,6 @@ enum LibraryQuerySort {
   """Sorts the results by the oldest entry`."""
   OLDEST
 }
-
 
 type LibraryItems {
   """Total amount of results."""
@@ -1540,7 +1593,6 @@ type LibraryItems {
   items: [Library]
 }
 
-
 input WorkspaceProjectQueryInput {
   """**BETA** Limit the result set based on `WorkspaceProject` state."""
   state: WorkspaceProjectStateFilter = ALL
@@ -1549,14 +1601,12 @@ input WorkspaceProjectQueryInput {
   sortBy: WorkspaceProjectQuerySort
 }
 
-
 """`WorkspaceProject` state filter."""
 enum WorkspaceProjectStateFilter {
   ALL
   ACTIVE
   ARCHIVED
 }
-
 
 """Query sorting option. Defines how the search results should be sorted."""
 enum WorkspaceProjectQuerySort {
@@ -1572,7 +1622,6 @@ enum WorkspaceProjectQuerySort {
   """Sorts the results by the oldest activity entry."""
   OLDEST_ACTIVITY
 }
-
 
 type WorkspaceItems {
   """Total amount of results."""
@@ -1591,7 +1640,6 @@ type WorkspaceItems {
   items: [Workspace]
 }
 
-
 """List of possible `Library` types."""
 enum LibraryType {
   ICON_LIBRARY
@@ -1599,7 +1647,6 @@ enum LibraryType {
   LOGO_LIBRARY
   DOCUMENT_LIBRARY
 }
-
 
 input BrandQueryInput {
   """Search term used to retrieve matched results."""
@@ -1611,7 +1658,6 @@ input BrandQueryInput {
   """Use filters to reduce the set of matched results."""
   filter: BrandQueryFilterInput
 }
-
 
 """
 Search sorting option. Defines how the search results should be sorted.
@@ -1626,7 +1672,6 @@ enum BrandQuerySortByInput {
   """Sort the results by oldest."""
   OLDEST
 }
-
 
 """Search sources option. Defines the location of the search results."""
 enum BrandSearchQuerySource {
@@ -1643,7 +1688,6 @@ enum BrandSearchQuerySource {
   LIBRARY_VIEWS
 }
 
-
 input BrandQueryFilterInput {
   """Filter set of the matched results by single tag or list of tags."""
   hasTags: [String]
@@ -1655,7 +1699,6 @@ input BrandQueryFilterInput {
   externalId: ID
 }
 
-
 input BrandQuerySourceInput {
   """Specify the source type to search in."""
   type: BrandQuerySourceTypeInput!
@@ -1665,7 +1708,6 @@ input BrandQuerySourceInput {
   """
   ids: [ID!]
 }
-
 
 """Search sources option. Defines the location of the search results."""
 enum BrandQuerySourceTypeInput {
@@ -1678,7 +1720,6 @@ enum BrandQuerySourceTypeInput {
   """Search for the results in the `LibraryPages`."""
   LIBRARY_PAGES
 }
-
 
 type BrandSearchItems {
   """Total amount of results."""
@@ -1700,9 +1741,7 @@ type BrandSearchItems {
   edges: [BrandSearchResultEdge]
 }
 
-
 union BrandSearchResult = Audio | Document | EmbeddedContent | File | Image | Video
-
 
 type BrandSearchResultEdge {
   """`BrandSearchResult` title."""
@@ -1711,7 +1750,6 @@ type BrandSearchResultEdge {
   """`BrandSearchResult` node."""
   node: BrandSearchResult
 }
-
 
 type BrandEnhancedSearchItems {
   """Current page number."""
@@ -1729,7 +1767,6 @@ type BrandEnhancedSearchItems {
   """List of `BrandSearchResult` edges."""
   edges: [BrandSearchResultEdge]
 }
-
 
 type ProjectWebhook implements Node & Webhook {
   """`Webhook` Id."""
@@ -1756,4 +1793,3 @@ type ProjectWebhook implements Node & Webhook {
   """**BETA** Version number of the `Webhook`."""
   version: Int!
 }
-

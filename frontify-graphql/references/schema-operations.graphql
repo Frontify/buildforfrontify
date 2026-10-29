@@ -70,6 +70,11 @@ type RootQuery {
     **BETA** Specifies the language in which the GuidelinePage should be delivered. If the requested language is unavailable, the default language will be used as a fallback.
     """
     language: LanguageCode
+
+    """
+    **BETA** The locale tag ("de", "de-DE") in which the GuidelinePage should be delivered. If the requested locale is unavailable, the default language will be used as a fallback.
+    """
+    locale: String
   ): GuidelinePage
 
   """Retrieve `Node` details by Id."""
@@ -78,14 +83,8 @@ type RootQuery {
     id: ID!
   ): Node
 
-  """**BETA** Retrieve the account-bound ServiceApps"""
-  serviceApps(
-    """**BETA**"""
-    limit: Int = 25
-
-    """**BETA**"""
-    page: Int = 1
-  ): ServiceAppItems
+  """Retrieve the account-bound ServiceApps"""
+  serviceApps(limit: Int = 25, page: Int = 1): ServiceAppItems
 
   """Retrieve `WebhookItems` related to current `Account`."""
   webhooks(
@@ -95,8 +94,49 @@ type RootQuery {
     """Current page number."""
     page: Int = 1
   ): WebhookItems
-}
 
+  """**BETA** Retrieve a `Catalog` by its id."""
+  catalog(
+    """**BETA** `Catalog` id."""
+    id: ID!
+  ): Catalog
+
+  """**BETA** Retrieve a `CatalogSelection` by its id."""
+  catalogSelection(
+    """**BETA** `CatalogSelection` id."""
+    id: ID!
+  ): CatalogSelection
+
+  """**BETA** Retrieve a `GuidelinePageBlock` by its id."""
+  guidelinePageBlock(
+    """**BETA** The id of the `GuidelinePageBlock` to retrieve."""
+    id: ID!
+
+    """
+    **BETA** The locale tag ("de", "de-DE") in which the GuidelinePageBlock should be delivered. If the requested locale is unavailable, the default language will be used as a fallback.
+    """
+    locale: String
+
+    """
+    **BETA** Specifies the language in which the GuidelinePageBlock should be delivered. If the requested language is unavailable, the default language will be used as a fallback.
+    """
+    language: LanguageCode
+  ): GuidelinePageBlockInterface
+
+  """
+  **BETA** Retrieve a single `Guideline` navigation item by the Id of any navigation item type. Returns `null` when the
+  item does not exist or is not visible to the requester.
+  """
+  guidelineNavigationItem(
+    """**BETA** Id of any `Guideline` navigation item."""
+    id: ID!
+
+    """
+    **BETA** Language code the navigation item is read in, e.g. `EN` or `DE`.
+    """
+    language: String = null
+  ): GuidelineNavigationItem
+}
 
 type RootMutation {
   """
@@ -300,7 +340,7 @@ type RootMutation {
   ): DeleteAsset
 
   """
-  Delete an existing `Attachment`. Requires `basic:write` scope to be accessible and depending on the `Attachment` type, either `Portal` or `Asset` permission level `EDIT`.
+  Delete an existing `Attachment`. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
   """
   deleteAttachment(
     """`DeleteAttachment` input argument."""
@@ -659,7 +699,6 @@ type RootMutation {
 
   """
   Upload a new file. Requires `basic:write` scope to be accessible
-  
   Creates a temporary unique file Id and returns presigned URLs for uploading a binary file in multiple parts.
   After the upload is completed, this Id can be used (**once only**) to permanently link the file to a specific type (e.g., Asset, Attachment, Revision) via another mutation.
   
@@ -675,7 +714,7 @@ type RootMutation {
   ): UploadFile
 
   """
-  Cancels `CreativeJobs` by provided parameters. `CreativeJob` can be canceled prior to the `RENDERING` status. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  Cancels `CreativeJobs` by provided parameters. `CreativeJob` can be canceled until it has finished. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
   """
   cancelExportCreatives(
     """`CancelExportCreatives` input argument."""
@@ -726,15 +765,15 @@ type RootMutation {
     input: PublishMarketplaceAppInput!
   ): PublishMarketplaceApp
 
-  """**BETA** Creates a ServiceApp following the ClientCredentials flow"""
+  """Creates a ServiceApp following the ClientCredentials flow"""
   createServiceApp(
-    """**BETA** The input required to create a ServiceApp"""
+    """The input required to create a ServiceApp"""
     input: CreateServiceAppInput!
   ): CreateServiceApp
 
-  """**BETA** Removes a ServiceApp"""
+  """Removes a ServiceApp"""
   deleteServiceApp(
-    """**BETA** The input for removing a ServiceApp"""
+    """The input for removing a ServiceApp"""
     input: DeleteServiceAppInput!
   ): DeleteServiceApp
 
@@ -746,9 +785,9 @@ type RootMutation {
     input: InstallProjectWebhookInput!
   ): InstallProjectWebhook
 
-  """**BETA** `configureProjectWebhook` mutation field"""
+  """`configureProjectWebhook` mutation field"""
   configureProjectWebhook(
-    """**BETA** `configureProjectWebhook ` input argument."""
+    """`configureProjectWebhook ` input argument."""
     input: ConfigureProjectWebhookInput!
   ): ConfigureProjectWebhook
 
@@ -759,5 +798,602 @@ type RootMutation {
     """`UninstallWebhook` input argument."""
     input: UninstallWebhookInput!
   ): UninstallWebhook
-}
 
+  """
+  Create a new `AssetVariant`. Only supported for assets in icon and logo libraries. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  createAssetVariant(
+    """`CreateAssetVariant` input argument."""
+    input: CreateAssetVariantInput!
+  ): CreateAssetVariant
+
+  """
+  Delete an existing `AssetVariant`. Only supported for assets in icon and logo libraries. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  deleteAssetVariant(
+    """`DeleteAssetVariant` input argument."""
+    input: DeleteAssetVariantInput!
+  ): DeleteAssetVariant
+
+  """
+  Replace an existing `AssetVariant`. Only supported for assets in icon and logo libraries. Requires `basic:write` scope to be accessible and `Asset` permission level `EDIT`.
+  """
+  replaceAssetVariant(
+    """`ReplaceAssetVariant` input argument."""
+    input: ReplaceAssetVariantInput!
+  ): ReplaceAssetVariant
+
+  """**BETA** Create a new brand essentials color palette."""
+  createBrandEssentialsColorPalette(
+    """**BETA** `CreateBrandEssentialsColorPaletteInputType` input argument."""
+    input: CreateBrandEssentialsColorPaletteInput!
+  ): CreateBrandEssentialsColorPalette
+
+  """**BETA** Update a brand essentials color palette."""
+  updateBrandEssentialsColorPalette(
+    """**BETA** `UpdateBrandEssentialsColorPaletteInputType` input argument."""
+    input: UpdateBrandEssentialsColorPaletteInput!
+  ): UpdateBrandEssentialsColorPalette
+
+  """**BETA** Delete a brand essentials color palette."""
+  deleteBrandEssentialsColorPalette(
+    """**BETA** `DeleteBrandEssentialsColorPaletteInputType` input argument."""
+    input: DeleteBrandEssentialsColorPaletteInput!
+  ): DeleteBrandEssentialsColorPalette
+
+  """**BETA** Create a new brand essentials color."""
+  createBrandEssentialsColor(
+    """**BETA** `CreateBrandEssentialsColorInputType` input argument."""
+    input: CreateBrandEssentialsColorInput!
+  ): CreateBrandEssentialsColor
+
+  """**BETA** Update a brand essentials color."""
+  updateBrandEssentialsColor(
+    """**BETA** `UpdateBrandEssentialsColorInputType` input argument."""
+    input: UpdateBrandEssentialsColorInput!
+  ): UpdateBrandEssentialsColor
+
+  """**BETA** Delete a brand essentials color."""
+  deleteBrandEssentialsColor(
+    """**BETA** `DeleteBrandEssentialsColorInputType` input argument."""
+    input: DeleteBrandEssentialsColorInput!
+  ): DeleteBrandEssentialsColor
+
+  """**BETA** Move a brand essentials color to a different palette."""
+  moveBrandEssentialsColor(
+    """**BETA** `MoveBrandEssentialsColorInputType` input argument."""
+    input: MoveBrandEssentialsColorInput!
+  ): MoveBrandEssentialsColor
+
+  """**BETA** Reposition a brand essentials color within its palette."""
+  repositionBrandEssentialsColor(
+    """**BETA** `RepositionBrandEssentialsColorInputType` input argument."""
+    input: RepositionBrandEssentialsColorInput!
+  ): RepositionBrandEssentialsColor
+
+  """
+  **BETA** Install selfhosted font formats to a brand. The font family name, weight and italic style are read from each font file, and files that cannot be installed are reported in `errors` instead of failing the whole mutation.
+  """
+  installBrandEssentialsSelfhostedFontFormats(
+    """
+    **BETA** `InstallBrandEssentialsSelfhostedFontFormatsInput` input argument.
+    """
+    input: InstallBrandEssentialsSelfhostedFontFormatsInput!
+  ): InstallBrandEssentialsSelfhostedFontFormats
+
+  """**BETA** Remove a brand essentials font family."""
+  removeBrandEssentialsFontFamily(
+    """**BETA** `RemoveBrandEssentialsFontFamilyInputType` input argument."""
+    input: RemoveBrandEssentialsFontFamilyInput!
+  ): RemoveBrandEssentialsFontFamily
+
+  """**BETA** Remove a font style from a brand essentials font family."""
+  removeBrandEssentialsFontStyle(
+    """**BETA** `RemoveBrandEssentialsFontStyleInputType` input argument."""
+    input: RemoveBrandEssentialsFontStyleInput!
+  ): RemoveBrandEssentialsFontStyle
+
+  """**BETA** Creates a new `Catalog`."""
+  createCatalog(
+    """**BETA** `CreateCatalogInputType` input argument."""
+    input: CreateCatalogInput!
+  ): CreateCatalog
+
+  """**BETA** Updates an existing `Catalog`."""
+  updateCatalog(
+    """**BETA** `UpdateCatalogInputType` input argument."""
+    input: UpdateCatalogInput!
+  ): UpdateCatalog
+
+  """**BETA** Removes a `Catalog`."""
+  removeCatalog(
+    """**BETA** `RemoveCatalogInputType` input argument."""
+    input: RemoveCatalogInput!
+  ): RemoveCatalog
+
+  """**BETA** Creates a new `CatalogColumn`."""
+  createCatalogColumn(
+    """**BETA** `CreateCatalogColumnInputType` input argument."""
+    input: CreateCatalogColumnInput!
+  ): CreateCatalogColumn
+
+  """**BETA** Updates a `CatalogColumn`."""
+  updateCatalogColumn(
+    """**BETA** `UpdateCatalogColumnInputType` input argument."""
+    input: UpdateCatalogColumnInput!
+  ): UpdateCatalogColumn
+
+  """**BETA** Removes multiple `CatalogColumn`s in a single operation."""
+  removeCatalogColumns(
+    """**BETA** `RemoveCatalogColumnsInputType` input argument."""
+    input: RemoveCatalogColumnsInput!
+  ): RemoveCatalogColumns
+
+  """**BETA** Moves a `CatalogColumn` to a new position."""
+  moveCatalogColumn(
+    """**BETA** `MoveCatalogColumnInputType` input argument."""
+    input: MoveCatalogColumnInput!
+  ): MoveCatalogColumn
+
+  """**BETA** Duplicates a `CatalogColumn` with its `CatalogCell` values."""
+  duplicateCatalogColumn(
+    """**BETA** `DuplicateCatalogColumnInputType` input argument."""
+    input: DuplicateCatalogColumnInput!
+  ): DuplicateCatalogColumn
+
+  """**BETA** Clears all `CatalogCell` values of a `CatalogColumn`."""
+  clearCatalogColumn(
+    """**BETA** `ClearCatalogColumnInputType` input argument."""
+    input: ClearCatalogColumnInput!
+  ): ClearCatalogColumn
+
+  """
+  **BETA** Sets a `CatalogColumn` as the primary key column for its `Catalog`.
+  """
+  setCatalogColumnAsPrimary(
+    """**BETA** `SetCatalogColumnAsPrimaryInputType` input argument."""
+    input: SetCatalogColumnAsPrimaryInput!
+  ): SetCatalogColumnAsPrimary
+
+  """**BETA** Creates a new `CatalogRow`."""
+  createCatalogRow(
+    """**BETA** `CreateCatalogRowInputType` input argument."""
+    input: CreateCatalogRowInput!
+  ): CreateCatalogRow
+
+  """**BETA** Removes multiple `CatalogRow`s."""
+  removeCatalogRows(
+    """**BETA** `RemoveCatalogRowsInputType` input argument."""
+    input: RemoveCatalogRowsInput!
+  ): RemoveCatalogRows
+
+  """**BETA** Moves a `CatalogRow` to a new position."""
+  moveCatalogRow(
+    """**BETA** `MoveCatalogRowInputType` input argument."""
+    input: MoveCatalogRowInput!
+  ): MoveCatalogRow
+
+  """**BETA** Duplicates a `CatalogRow` with its `CatalogCell` values."""
+  duplicateCatalogRow(
+    """**BETA** `DuplicateCatalogRowInputType` input argument."""
+    input: DuplicateCatalogRowInput!
+  ): DuplicateCatalogRow
+
+  """**BETA** Clears all `CatalogCell` values of a `CatalogRow`."""
+  clearCatalogRow(
+    """**BETA** `ClearCatalogRowInputType` input argument."""
+    input: ClearCatalogRowInput!
+  ): ClearCatalogRow
+
+  """
+  **BETA** Sets multiple `CatalogCell` values. Each entry specifies either a `text` or a `link` cell. All cells must belong to the same catalog.
+  """
+  setCatalogCells(
+    """**BETA** `SetCatalogCellsInputType` input argument."""
+    input: SetCatalogCellsInput!
+  ): SetCatalogCells
+
+  """**BETA** Ingests rows into a `Catalog` using an upsert approach."""
+  ingestCatalogRows(
+    """**BETA** `IngestCatalogRowsInputType` input argument."""
+    input: IngestCatalogRowsInput!
+  ): IngestCatalogRows
+
+  """**BETA** Update an existing `Type Style` of a `Guideline`."""
+  updateGuidelineDesignSettingsTypeStyle(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsTypeStyleInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsTypeStyleInput!
+  ): UpdateGuidelineDesignSettingsTypeStyle
+
+  """**BETA** Update an existing `Type Style Color` of a `Color Scheme`."""
+  updateGuidelineDesignSettingsTypeStyleColor(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsTypeStyleColorInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsTypeStyleColorInput!
+  ): UpdateGuidelineDesignSettingsTypeStyleColor
+
+  """**BETA** Update an existing `Main Font Family` of a `Guideline`."""
+  updateGuidelineDesignSettingsMainFontFamily(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsMainFontFamilyInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsMainFontFamilyInput!
+  ): UpdateGuidelineDesignSettingsMainFontFamily
+
+  """**BETA** Update an existing `Button Style` of a `Guideline`."""
+  updateGuidelineDesignSettingsButtonStyle(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsButtonStyleInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsButtonStyleInput!
+  ): UpdateGuidelineDesignSettingsButtonStyle
+
+  """**BETA** Update an existing `Button Style Color` of a `Color Scheme`."""
+  updateGuidelineDesignSettingsButtonStyleColor(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsButtonStyleColorInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsButtonStyleColorInput!
+  ): UpdateGuidelineDesignSettingsButtonStyleColor
+
+  """**BETA** Update existing `Bullet List Styles` of a `Guideline`."""
+  updateGuidelineDesignSettingsBulletListStyles(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsBulletListStylesType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsBulletListStylesInput!
+  ): UpdateGuidelineDesignSettingsBulletListStyles
+
+  """**BETA** Update existing `Bullet List Style Colors` of a `Guideline`."""
+  updateGuidelineDesignSettingsBulletListStyleColors(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsBulletListStyleColorsType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsBulletListStyleColorsInput!
+  ): UpdateGuidelineDesignSettingsBulletListStyleColors
+
+  """**BETA** Update existing `Numbered List Styles` of a `Guideline`."""
+  updateGuidelineDesignSettingsNumberedListStyles(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsNumberedListStylesType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsNumberedListStylesInput!
+  ): UpdateGuidelineDesignSettingsNumberedListStyles
+
+  """
+  **BETA** Update existing `Numbered List Style Colors` of a `Guideline`.
+  """
+  updateGuidelineDesignSettingsNumberedListStyleColors(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsNumberedListStyleColorsType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsNumberedListStyleColorsInput!
+  ): UpdateGuidelineDesignSettingsNumberedListStyleColors
+
+  """**BETA** Update an existing `Accent Color` of a `Color Scheme`."""
+  updateGuidelineDesignSettingsAccentColor(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsAccentColorInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsAccentColorInput!
+  ): UpdateGuidelineDesignSettingsAccentColor
+
+  """**BETA** Update the `Background Color` of a `Color Scheme`."""
+  updateGuidelineDesignSettingsBackgroundColor(
+    """
+    **BETA** `UpdateGuidelineDesignSettingsBackgroundColorInputType` input argument.
+    """
+    input: UpdateGuidelineDesignSettingsBackgroundColorInput!
+  ): UpdateGuidelineDesignSettingsBackgroundColor
+
+  """**BETA** Create a new `Color Scheme`."""
+  createColorScheme(
+    """**BETA** `CreateColorSchemeInputType` input argument."""
+    input: CreateColorSchemeInput!
+  ): CreateColorScheme
+
+  """**BETA** Change the default color scheme of a guideline."""
+  changeDefaultColorScheme(
+    """**BETA** `ChangeDefaultColorSchemeInputType` input argument."""
+    input: ChangeDefaultColorSchemeInput!
+  ): ChangeDefaultColorScheme
+
+  """**BETA** Update a `Color Scheme`."""
+  updateColorScheme(
+    """**BETA** `UpdateColorSchemeInputType` input argument."""
+    input: UpdateColorSchemeInput!
+  ): UpdateColorScheme
+
+  """**BETA** Delete a `Color Scheme`."""
+  deleteColorScheme(
+    """**BETA** `DeleteColorSchemeInputType` input argument."""
+    input: DeleteColorSchemeInput!
+  ): DeleteColorScheme
+
+  """**BETA** Duplicate a `Color Scheme`."""
+  duplicateColorScheme(
+    """**BETA** `DuplicateColorSchemeInputType` input argument."""
+    input: DuplicateColorSchemeInput!
+  ): DuplicateColorScheme
+
+  """
+  **BETA** Updates the settings of a `GuidelinePageBlock` in the specified language. Only fields provided in the input are modified.
+  """
+  updateGuidelinePageBlockSettings(
+    """**BETA** `UpdateGuidelinePageBlockSettingsInput` input argument."""
+    input: UpdateGuidelinePageBlockSettingsInput!
+  ): UpdateGuidelinePageBlockSettings
+
+  """
+  **BETA** Dispatch an automation action event for a workflow step. Requires `basic:write` scope to be accessible.
+  The action's outcome is reported through the workflow lifecycle events; `status` tells whether that already
+  happened (`PROCESSED`) or follows once the queued action has been applied (`QUEUED`).
+  """
+  dispatchAutomationAction(
+    """**BETA** `dispatchAutomationAction` input argument."""
+    input: DispatchAutomationActionInput!
+  ): DispatchAutomationAction
+
+  """**BETA**"""
+  createGuidelineDocumentPageCategory(
+    """**BETA**"""
+    input: CreateGuidelineDocumentPageCategoryInput!
+  ): CreateGuidelineDocumentPageCategory
+
+  """**BETA**"""
+  updateGuidelineDocumentPageCategory(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentPageCategoryInput!
+  ): UpdateGuidelineDocumentPageCategory
+
+  """**BETA**"""
+  deleteGuidelineDocumentPageCategory(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentPageCategoryInput!
+  ): DeleteGuidelineDocumentPageCategory
+
+  """**BETA**"""
+  createGuidelineDocumentPageLink(
+    """**BETA**"""
+    input: CreateGuidelineDocumentPageLinkInput!
+  ): CreateGuidelineDocumentPageLink
+
+  """**BETA**"""
+  updateGuidelineDocumentPageLink(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentPageLinkInput!
+  ): UpdateGuidelineDocumentPageLink
+
+  """**BETA**"""
+  deleteGuidelineDocumentPageLink(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentPageLinkInput!
+  ): DeleteGuidelineDocumentPageLink
+
+  """**BETA**"""
+  createGuidelineDocumentLibrary(
+    """**BETA**"""
+    input: CreateGuidelineDocumentLibraryInput!
+  ): CreateGuidelineDocumentLibrary
+
+  """**BETA**"""
+  updateGuidelineDocumentLibrary(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentLibraryInput!
+  ): UpdateGuidelineDocumentLibrary
+
+  """**BETA**"""
+  deleteGuidelineDocumentLibrary(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentLibraryInput!
+  ): DeleteGuidelineDocumentLibrary
+
+  """**BETA**"""
+  showGuidelineDocumentLibraryInNavigation(
+    """**BETA**"""
+    input: ShowGuidelineDocumentLibraryInNavigationInput!
+  ): ShowGuidelineDocumentLibraryInNavigation
+
+  """**BETA**"""
+  hideGuidelineDocumentLibraryFromNavigation(
+    """**BETA**"""
+    input: HideGuidelineDocumentLibraryFromNavigationInput!
+  ): HideGuidelineDocumentLibraryFromNavigation
+
+  """**BETA**"""
+  createGuidelineDocumentPage(
+    """**BETA**"""
+    input: CreateGuidelineDocumentPageInput!
+  ): CreateGuidelineDocumentPage
+
+  """**BETA**"""
+  updateGuidelineDocumentPage(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentPageInput!
+  ): UpdateGuidelineDocumentPage
+
+  """**BETA**"""
+  deleteGuidelineDocumentPage(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentPageInput!
+  ): DeleteGuidelineDocumentPage
+
+  """**BETA**"""
+  duplicateGuidelineDocumentPage(
+    """**BETA**"""
+    input: DuplicateGuidelineDocumentPageInput!
+  ): DuplicateGuidelineDocumentPage
+
+  """**BETA**"""
+  publishGuidelineDocumentPage(
+    """**BETA**"""
+    input: PublishGuidelineDocumentPageInput!
+  ): PublishGuidelineDocumentPage
+
+  """**BETA**"""
+  unpublishGuidelineDocumentPage(
+    """**BETA**"""
+    input: UnpublishGuidelineDocumentPageInput!
+  ): UnpublishGuidelineDocumentPage
+
+  """**BETA**"""
+  moveGuidelineDocumentPage(
+    """**BETA**"""
+    input: MoveGuidelineDocumentPageInput!
+  ): MoveGuidelineDocumentPage
+
+  """**BETA**"""
+  showGuidelineDocumentPageInNavigation(
+    """**BETA**"""
+    input: ShowGuidelineDocumentPageInNavigationInput!
+  ): ShowGuidelineDocumentPageInNavigation
+
+  """**BETA**"""
+  hideGuidelineDocumentPageFromNavigation(
+    """**BETA**"""
+    input: HideGuidelineDocumentPageFromNavigationInput!
+  ): HideGuidelineDocumentPageFromNavigation
+
+  """**BETA**"""
+  createGuidelineDocumentGroup(
+    """**BETA**"""
+    input: CreateGuidelineDocumentGroupInput!
+  ): CreateGuidelineDocumentGroup
+
+  """**BETA**"""
+  updateGuidelineDocumentGroup(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentGroupInput!
+  ): UpdateGuidelineDocumentGroup
+
+  """**BETA**"""
+  deleteGuidelineDocumentGroup(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentGroupInput!
+  ): DeleteGuidelineDocumentGroup
+
+  """**BETA**"""
+  showGuidelineDocumentGroupInNavigation(
+    """**BETA**"""
+    input: ShowGuidelineDocumentGroupInNavigationInput!
+  ): ShowGuidelineDocumentGroupInNavigation
+
+  """**BETA**"""
+  hideGuidelineDocumentGroupFromNavigation(
+    """**BETA**"""
+    input: HideGuidelineDocumentGroupFromNavigationInput!
+  ): HideGuidelineDocumentGroupFromNavigation
+
+  """**BETA**"""
+  createGuidelineDocument(
+    """**BETA**"""
+    input: CreateGuidelineDocumentInput!
+  ): CreateGuidelineDocument
+
+  """**BETA**"""
+  updateGuidelineDocument(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentInput!
+  ): UpdateGuidelineDocument
+
+  """**BETA**"""
+  deleteGuidelineDocument(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentInput!
+  ): DeleteGuidelineDocument
+
+  """**BETA**"""
+  showGuidelineDocumentInNavigation(
+    """**BETA**"""
+    input: ShowGuidelineDocumentInNavigationInput!
+  ): ShowGuidelineDocumentInNavigation
+
+  """**BETA**"""
+  hideGuidelineDocumentFromNavigation(
+    """**BETA**"""
+    input: HideGuidelineDocumentFromNavigationInput!
+  ): HideGuidelineDocumentFromNavigation
+
+  """**BETA**"""
+  createGuidelineDocumentLink(
+    """**BETA**"""
+    input: CreateGuidelineDocumentLinkInput!
+  ): CreateGuidelineDocumentLink
+
+  """**BETA**"""
+  updateGuidelineDocumentLink(
+    """**BETA**"""
+    input: UpdateGuidelineDocumentLinkInput!
+  ): UpdateGuidelineDocumentLink
+
+  """**BETA**"""
+  deleteGuidelineDocumentLink(
+    """**BETA**"""
+    input: DeleteGuidelineDocumentLinkInput!
+  ): DeleteGuidelineDocumentLink
+
+  """
+  **BETA** Creates a new `GuidelinePageBlock`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createGuidelinePageBlock(
+    """**BETA** `CreateGuidelinePageBlock` input argument."""
+    input: CreateGuidelinePageBlockInput!
+  ): CreateGuidelinePageBlock
+
+  """
+  **BETA** Creates a new `GuidelinePageHeading`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  createGuidelinePageHeading(
+    """**BETA** `CreateGuidelinePageHeading` input argument."""
+    input: CreateGuidelinePageHeadingInput!
+  ): CreateGuidelinePageHeading
+
+  """
+  **BETA** Deletes a `GuidelinePageHeading` by the given id. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`.
+  """
+  deleteGuidelinePageHeading(
+    """**BETA** `DeleteGuidelinePageHeading` input argument."""
+    input: DeleteGuidelinePageHeadingInput!
+  ): DeleteGuidelinePageHeading
+
+  """
+  **BETA** Updates the properties of an existing `GuidelinePageHeading`. Requires `basic:write` scope to be accessible and `Project` permission level `EDIT`, or `TRANSLATE` when a `locale` or `language` is given.
+  """
+  updateGuidelinePageHeading(
+    """**BETA** `UpdateGuidelinePageHeading` input argument."""
+    input: UpdateGuidelinePageHeadingInput!
+  ): UpdateGuidelinePageHeading
+
+  """
+  **BETA** Creates a new `GuidelinePageSection`, either on top of a page or after a given section.
+  """
+  createGuidelinePageSection(
+    """**BETA** `CreateGuidelinePageSectionInput` input argument."""
+    input: CreateGuidelinePageSectionInput!
+  ): CreateGuidelinePageSection
+
+  """**BETA** Updates the properties of an existing `GuidelinePageSection`."""
+  updateGuidelinePageSection(
+    """**BETA** `UpdateGuidelinePageSectionInput` input argument."""
+    input: UpdateGuidelinePageSectionInput!
+  ): UpdateGuidelinePageSection
+
+  """**BETA** Deletes a `GuidelinePageSection`."""
+  deleteGuidelinePageSection(
+    """**BETA** `DeleteGuidelinePageSectionInput` input argument."""
+    input: DeleteGuidelinePageSectionInput!
+  ): DeleteGuidelinePageSection
+
+  """
+  Update many `Assets` in one call, where each asset carries its own values.
+  Changes apply independently: assets and fields that cannot be updated fail
+  individually without rolling back the rest.
+  """
+  updateAssets(
+    """"""
+    input: UpdateAssetsInput!
+  ): UpdateAssets
+}

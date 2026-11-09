@@ -4,22 +4,15 @@ description: >
   Build, iterate on, and debug custom Themes for Frontify Guidelines using the
   AppBridgeTheme from the Brand SDK, and answer what Frontify does or doesn't
   support in Themes. Loaded by the build-for-frontify orchestrator when the user
-  chooses "Theme", or directly when the user asks to modify, debug, or deploy an
-  existing Theme. For NEW Theme projects, prefer routing through build-for-frontify
-  first — it owns the project-bootstrap concerns (Brand SDK prerequisites, Frontify
-  CLI install, optional PRD/tasks planning, and the shared resource skills map).
-  Load this skill whenever the user mentions Frontify themes,
-  AppBridgeTheme, defineTheme, defineSettings, @frontify/app-bridge-theme,
-  @frontify/guideline-themes, the Frontify CLI's theme deploy, the Boilerplate
-  or Muse themes, or is in a Frontify theme project (manifest.json with
-  appType: "theme", src/index.ts exporting defineTheme, scripts like
-  "frontify-cli serve" or "theme deploy"). Also use for template types
-  (cover, documentPage, library), setting blocks, theme navigation, the
-  built-in Content and Footer components, and rule/constraint questions like
-  "is X allowed", "does Frontify support Y", "can I remove the footer", or
-  "what are the baseline requirements". Prefer this skill over generic React
-  guidance when Frontify is in the picture — the theme runtime has specific
-  conventions that generic React advice gets wrong.
+  chooses "Theme", or directly to modify, debug, or deploy an existing Theme. For
+  NEW Theme projects, route through build-for-frontify first. Load whenever the
+  user mentions Frontify themes, AppBridgeTheme, defineTheme, defineSettings,
+  @frontify/app-bridge-theme, @frontify/guideline-themes, theme deploy, the
+  Boilerplate or Muse themes, or is in a theme project (manifest.json with
+  appType: "theme"). Also use for template types (cover, documentPage, library),
+  setting blocks, theme navigation, the built-in Content and Footer components,
+  and rule questions like "is X allowed" or "can I remove the footer". Prefer
+  over generic React guidance: the theme runtime has specific conventions.
 compatibility: Designed for Claude Code and similar agentic development tools.
 metadata:
   author: Frontify

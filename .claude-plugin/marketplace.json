@@ -1,0 +1,14 @@
+{
+  "name": "frontify-skills",
+  "description": "Agent skills for building extensions on the Frontify platform",
+  "owner": {
+    "name": "Frontify"
+  },
+  "plugins": [
+    {
+      "name": "build-for-frontify",
+      "source": "./",
+      "description": "Skills for building Frontify Apps, Custom Blocks and Themes, plus shared auth, GraphQL, media, Fondue and deployment guidance"
+    }
+  ]
+}

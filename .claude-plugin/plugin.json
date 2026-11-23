@@ -1,0 +1,17 @@
+{
+  "name": "build-for-frontify",
+  "description": "Skills for building Frontify Apps, Custom Blocks and Themes, plus shared auth, GraphQL, media, Fondue and deployment guidance",
+  "repository": "https://github.com/Frontify/buildforfrontify",
+  "skills": [
+    "./build-for-frontify",
+    "./frontify-app",
+    "./frontify-auth-app",
+    "./frontify-auth-integration",
+    "./frontify-custom-block",
+    "./frontify-deployment",
+    "./frontify-fondue",
+    "./frontify-graphql",
+    "./frontify-media-processing",
+    "./frontify-theme"
+  ]
+}

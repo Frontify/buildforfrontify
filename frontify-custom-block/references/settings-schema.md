@@ -335,6 +335,20 @@ infer this for you — set it deliberately on any field that stores rich text.
 
 ---
 
+### API exposure
+
+`frontify-api-read` and `frontify-api-write` decide which settings the public API can see. A field
+with neither keyword is excluded, even when the schema is otherwise valid, so a block built without
+them is translatable and searchable but dark to API consumers. Decide per field:
+
+| Setting type | Marking |
+|---|---|
+| `input`, `textarea`, rich text (`fondueRte`) | `frontify-api-read` and `frontify-api-write`. This is the content API consumers want. |
+| `switch`, `dropdown`, `segmentedControls`, `templateInput` | `frontify-api-read` only, if exposed at all. Treat write as opt-in: writing through the API bypasses the sidebar's choice constraints. |
+| `colorInput`, `link`, `fontInput`, `assetInput`, `multiInput` | Cannot be marked as declared in §6. Keywords must sit on leaves (§5), and these are `["object", "null"]` or `{}` with no inner properties, so there is no leaf. Exposing them would mean describing their inner shape, which is unconfirmed for `assetInput` and `multiInput`. Treat as a known limitation. |
+
+---
+
 ## 8. choices, enum, and defaultValue
 
 **`enum` must match `choices` exactly.** If you constrain a `dropdown` or `segmentedControls`
@@ -415,6 +429,8 @@ That is what the check script and the checklist below are for.
 - [ ] Every `input` and `textarea` is `frontify-translatable` and `frontify-serializable`, unless
       deliberately single-language.
 - [ ] Every serializable field has a `frontify-serialization-index`, and the indices are unique.
+- [ ] Every field you intend to expose via the public API carries `frontify-api-read` (and
+      `frontify-api-write` where writes are wanted), on leaves only.
 - [ ] No `i18nFields` or `searchFields` in the manifest — both are removed, and a manifest
       carrying either alongside `settingsSchema` is rejected.
 - [ ] `bash scripts/check-settings-schema.sh` is clean.

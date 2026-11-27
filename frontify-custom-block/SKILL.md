@@ -169,7 +169,9 @@ Write this minimum for any new block:
                 "type": "string",
                 "frontify-translatable": true,
                 "frontify-serializable": true,
-                "frontify-serialization-index": 1
+                "frontify-serialization-index": 1,
+                "frontify-api-read": true,
+                "frontify-api-write": true
             }
         }
     }
@@ -181,6 +183,8 @@ Write this minimum for any new block:
   translatable, not search-indexed, and returns `null` settings on the public API.
 - `properties` is keyed by the setting `id` from `src/settings.ts`, and is **flat** — a setting
   nested inside `switch.on` or `sectionHeading.blocks` still gets a top-level property.
+- `frontify-api-read` / `frontify-api-write` — without them a field is **not exposed on the public
+  API**.
 
 Full rules and the setting-type mapping: [references/settings-schema.md](references/settings-schema.md).
 

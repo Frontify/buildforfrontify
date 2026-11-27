@@ -63,7 +63,6 @@ what is genuinely unclear.
 | What should editors be able to configure in the sidebar? | Drives the settings schema — types, sections, defaults |
 | Does the block show assets from the Frontify DAM? | If yes: add `assetInput` setting + `useBlockAssets` hook |
 | Should the block behave differently in edit vs. view mode? | If yes: use `useEditorState` to branch the UI |
-| CSS preference: Tailwind, CSS Modules, or none? | Passed to the CLI prompt; affects `postcss.config.js` |
 
 Once you have enough context, proceed directly to scaffolding and code — don't ask
 for confirmation on every detail.
@@ -95,8 +94,9 @@ templates when there is no TTY:
 npx @frontify/frontify-cli@latest create
 ```
 
-This launches an interactive prompt that asks for a name, CSS framework preference (Tailwind,
-CSS Modules, or none), and other options. It then generates the full project.
+This launches an interactive prompt that asks for a name and other options. It then generates
+the full project. Blocks are always scaffolded with CSS Modules; there is no styling prompt for
+blocks.
 
 Or use the `scripts/scaffold.sh` helper in this skill directory, which wraps the CLI call with
 prerequisite checking and prints helpful next steps:
@@ -109,22 +109,19 @@ Both are interactive and need a TTY. When one is available, prefer them.
 
 ### Scaffold a new block: non-interactive (agent / CI)
 
-The `create` prompts can't be driven without a TTY (there are no flags for name or styling). In a
-sandbox, container, or CI agent, copy the CLI's own project templates instead. They are the
-canonical, tool-maintained source and ship inside the installed `@frontify/frontify-cli` package,
-one per styling choice:
+The `create` prompts can't be driven without a TTY (there are no flags for name or type). In a
+sandbox, container, or CI agent, copy the CLI's own project template instead. It is the
+canonical, tool-maintained source and ships inside the installed `@frontify/frontify-cli` package:
 
-- `templates/content-block-tailwind/`
-- `templates/content-block-css/`
 - `templates/content-block-css-modules/`
 
 Install the CLI locally so the path exists (don't rely on the `npx` cache, its path changes), then
-copy the template that matches the styling choice:
+copy the template:
 
 ```bash
 mkdir -p /tmp/frontify-cli && cd /tmp/frontify-cli && npm init -y >/dev/null
 npm i @frontify/frontify-cli
-cp -R node_modules/@frontify/frontify-cli/templates/content-block-css <path>/<block-name>
+cp -R node_modules/@frontify/frontify-cli/templates/content-block-css-modules <path>/<block-name>
 ```
 
 Then, in the new project:
@@ -193,14 +190,13 @@ my-block/
 ├── manifest.json       # Marketplace metadata (appId, settingsSchema)
 ├── package.json        # Dependencies and npm scripts
 ├── tsconfig.json       # TypeScript config
-├── postcss.config.js   # CSS pipeline (varies by CSS option chosen)
-├── tailwind.config.js  # Only present if Tailwind was selected
-├── cssModule.d.ts      # Only present if CSS Modules was selected
 ├── README.md
 └── src/
-    ├── index.ts        # Entry point — exports defineBlock({ block, settings })
-    ├── Block.tsx       # React component that renders in the Guideline
-    └── settings.ts     # Sidebar settings schema — defineSettings({...})
+    ├── index.ts            # Entry point — exports defineBlock({ block, settings })
+    ├── Block.tsx           # React component that renders in the Guideline
+    ├── settings.ts         # Sidebar settings schema — defineSettings({...})
+    ├── style.module.css    # CSS Modules stylesheet
+    └── cssModule.d.ts      # Type declarations for *.module.css imports
 ```
 
 After generation, install dependencies:
@@ -399,36 +395,41 @@ All CSS in a Content Block **must be scoped** to a unique root class to avoid le
 styles into other blocks or the surrounding Guidelines page. This is a hard requirement
 for Marketplace blocks and strongly recommended for private ones.
 
-1. Wrap the block output in a root element with a unique class:
+1. Use CSS Modules (`*.module.css`), as the scaffolded template does. Class names are hashed,
+   so they can't leak into the surrounding Guidelines page:
    ```tsx
+   import style from './style.module.css';
+
    export const ContentBlock = ({ appBridge }: BlockProps) => (
-       <div className="my-block">
+       <div className={style.root}>
            {/* content */}
        </div>
    );
    ```
 
-2. Use the PostCSS scope helper to automatically prefix all CSS:
-   ```js
-   // postcss.config.js
-   module.exports = {
-       plugins: [
-           require('./postcss/scope.js')({ scope: '.my-block' }),
-           require('tailwindcss'),
-           require('autoprefixer'),
-       ],
-   };
-   ```
-   The scope.js helper is at https://github.com/Frontify/guideline-blocks/blob/main/postcss/scope.js
-
-   If you choose anything other than Tailwind, you are responsible for ensuring that
-   all styles are properly scoped to the block's root element.
+2. Wrap the block output in a single root element, and don't write global selectors
+   (`body`, `html`, `:root`, bare element selectors) in the block's CSS.
 
 3. **Do not import global Fondue styles** (e.g. `@frontify/fondue/components/styles`)
    from inside a Content Block. The Frontify host already provides the Fondue styling
    context — re-importing it at the block level leaks unscoped CSS into the surrounding
-   Guidelines page. Tailwind is safe because it is processed through the PostCSS scope
-   pipeline and all generated classes are prefixed with the block root class.
+   Guidelines page.
+
+4. If you add another styling approach by hand (Tailwind, plain CSS, PostCSS, …), you are
+   responsible for ensuring that all of its styles are scoped to the block's root element.
+   For PostCSS-based setups, the
+   [`scope.js` helper](https://github.com/Frontify/guideline-blocks/blob/main/postcss/scope.js)
+   rewrites selectors to sit under a root class. It must run **after** `tailwindcss`:
+   ```js
+   // postcss.config.js
+   module.exports = {
+       plugins: [
+           require('tailwindcss'),
+           require('autoprefixer'),
+           require('./postcss/scope.js')({ scope: 'my-block' }),
+       ],
+   };
+   ```
 
 ---
 

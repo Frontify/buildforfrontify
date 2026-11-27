@@ -96,7 +96,7 @@ info "npx $(npx --version)"
 heading "Scaffolding Content Block"
 
 echo "  Running: npx @frontify/frontify-cli@latest create"
-echo "  Answer the prompts to configure your block name, CSS framework, etc."
+echo "  Answer the prompts to configure your block name, etc."
 echo
 
 # Capture the directory created by the CLI so we can cd into it for npm install.
